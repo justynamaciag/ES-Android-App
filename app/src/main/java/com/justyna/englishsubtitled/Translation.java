@@ -1,11 +1,13 @@
 package com.justyna.englishsubtitled;
 
-class Translation {
+import java.io.Serializable;
+
+public class Translation implements Serializable {
 
     private String engWord;
     private String plWord;
 
-    Translation(String engWord, String plWord){
+    public Translation(String engWord, String plWord){
         this.engWord = engWord;
         this.plWord = plWord;
     }
