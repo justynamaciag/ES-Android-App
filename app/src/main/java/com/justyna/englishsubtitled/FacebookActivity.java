@@ -21,21 +21,20 @@ public class FacebookActivity extends AppCompatActivity {
         setContentView(R.layout.activity_facebook);
         callbackManager = CallbackManager.Factory.create();
 
-        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton = findViewById(R.id.login_button);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // App code
+                Intent intent = new Intent(FacebookActivity.this, LessonsActivity.class);
+                FacebookActivity.this.startActivity(intent);
             }
 
             @Override
             public void onCancel() {
-                // App code
             }
 
             @Override
             public void onError(FacebookException exception) {
-                // App code
             }
 
         });
