@@ -1,6 +1,7 @@
 package com.justyna.englishsubtitled.games;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +11,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.justyna.englishsubtitled.Lesson;
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.Translation;
 
+
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 
 public class ABCDActivity extends AppCompatActivity {
@@ -115,23 +120,24 @@ public class ABCDActivity extends AppCompatActivity {
         return translations.get(random);
     }
 
-    private List<Translation> prepareTranslationList(){
-        List<Translation> translations = new ArrayList();
-        translations.add(new Translation("home", "dom"));
-        translations.add(new Translation("bag", "torba"));
-        translations.add(new Translation("computer", "komputer"));
-        translations.add(new Translation("bike", "rower"));
-        translations.add(new Translation("dog", "pies"));
-        translations.add(new Translation("cat", "kot"));
-        translations.add(new Translation("frog", "żaba"));
-        translations.add(new Translation("bed", "łóżko"));
-        translations.add(new Translation("leg", "noga"));
-        translations.add(new Translation("sleep", "spać"));
-        translations.add(new Translation("nose", "nos"));
-        translations.add(new Translation("eat", "jeść"));
-        translations.add(new Translation("talk", "mówić"));
-        translations.add(new Translation("live", "żyć"));
-        return translations;
+    private List<Translation> prepareTranslationList() {
+        Lesson lesson;
+        try {
+            lesson = new RetrieveLesson().execute().get();
+        } catch(InterruptedException | ExecutionException e){
+            lesson = null;
+            this.finish();
+        }
+        return lesson.getTranslations();
+    }
+
+    private class RetrieveLesson extends AsyncTask<Void, Void, Lesson> {
+        @Override
+        protected Lesson doInBackground(Void... voids) {
+            String baseUrl = "http://10.0.2.2:8080"; // host machine from Android VM
+            RestTemplate restTemplate = new RestTemplate();
+            return restTemplate.getForObject(baseUrl+"/lessons/2", Lesson.class);
+        }
     }
 
 }
