@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled;
+package com.justyna.englishsubtitled.stuctures;
 
 import java.io.Serializable;
 

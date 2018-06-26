@@ -9,9 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.justyna.englishsubtitled.Lesson;
+import com.justyna.englishsubtitled.stuctures.Lesson;
 import com.justyna.englishsubtitled.R;
-import com.justyna.englishsubtitled.Translation;
+import com.justyna.englishsubtitled.stuctures.Translation;
 
 
 import org.springframework.web.client.RestTemplate;
@@ -29,26 +29,18 @@ public class ABCDActivity extends AppCompatActivity {
 
     List<Translation> translations;
     Handler handler = new Handler();
-    int positiveAnsw;
-
     List<Button> buttons;
     TextView wordTextView;
     Random rand;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abcd);
 
         rand = new Random();
-
-//        Intent i = getIntent();
-//        translations = (List<Translation>) i.getSerializableExtra("translation_list");
-
         translations = prepareTranslationList();
-
         buttons = new ArrayList<>();
 
         buttons.add((Button) findViewById(R.id.btnAns1));
@@ -57,7 +49,6 @@ public class ABCDActivity extends AppCompatActivity {
         buttons.add((Button) findViewById(R.id.btnAns4));
 
         wordTextView = findViewById(R.id.wordTextView);
-        positiveAnsw = 0;
 
         for (Button b:buttons) {
             b.setOnClickListener(btnAnsListener);
@@ -73,7 +64,6 @@ public class ABCDActivity extends AppCompatActivity {
         for (Translation t:translations) {
             if(word.equals(t.getEngWord())) {
                 if (pressedBtn.getText().equals(t.getPlWord())) {
-                    positiveAnsw++;
                     Toast.makeText(this.getApplicationContext(), "Good answer", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this.getApplicationContext(), "Wrong answer", Toast.LENGTH_SHORT).show();
@@ -94,7 +84,7 @@ public class ABCDActivity extends AppCompatActivity {
         Set<String> answers = new HashSet<>();
         Translation word = getRandomTranslation();
 
-        wordTextView.setText(word.getEngWord().toUpperCase());
+        wordTextView.setText(word.getEngWord());
         answers.add(word.getPlWord());
 
         while(answers.size()<4){
@@ -116,8 +106,6 @@ public class ABCDActivity extends AppCompatActivity {
     }
 
     private Translation getRandomTranslation(){
-
-        System.out.println(translations);
         int random = rand.nextInt(translations.size());
         return translations.get(random);
     }
@@ -136,7 +124,7 @@ public class ABCDActivity extends AppCompatActivity {
     private class RetrieveLesson extends AsyncTask<Void, Void, Lesson> {
         @Override
         protected Lesson doInBackground(Void... voids) {
-            String baseUrl = "http://10.0.2.2:8080"; // host machine from Android VM
+            String baseUrl = "http://192.168.100.5:8080"; // host machine from Android VM
             RestTemplate restTemplate = new RestTemplate();
             return restTemplate.getForObject(baseUrl+"/lessons/2", Lesson.class);
         }
