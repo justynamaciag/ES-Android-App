@@ -41,7 +41,8 @@
         </activity>
         <activity android:name=".FacebookActivity" />
         <activity android:name=".LessonsActivity" />
-        <activity android:name=".games.ABCDActivity"/>
+        <activity android:name=".games.ABCDActivity" />
+        <activity android:name=".games.WordActivity"></activity>
     </application>
 
 </manifest>

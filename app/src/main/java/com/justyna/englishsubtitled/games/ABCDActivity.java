@@ -1,8 +1,6 @@
 package com.justyna.englishsubtitled.games;
 
-import android.content.Intent;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +23,7 @@ import java.util.Set;
 public class ABCDActivity extends AppCompatActivity {
 
     List<Translation> translations;
+    Handler handler = new Handler();
     int positiveAnsw;
 
     List<Button> buttons;
@@ -32,16 +31,12 @@ public class ABCDActivity extends AppCompatActivity {
     Random rand;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abcd);
 
         rand = new Random();
-
-//        Intent i = getIntent();
-//        translations = (List<Translation>) i.getSerializableExtra("translation_list");
 
         translations = prepareTranslationList();
 
@@ -58,10 +53,11 @@ public class ABCDActivity extends AppCompatActivity {
         for (Button b:buttons) {
             b.setOnClickListener(btnAnsListener);
         }
-
         setButtons();
 
     }
+
+
 
     private View.OnClickListener btnAnsListener = v -> {
         Button pressedBtn = (Button) v;
@@ -74,20 +70,24 @@ public class ABCDActivity extends AppCompatActivity {
                 }
                 else{
                         Toast.makeText(this.getApplicationContext(), "Wrong answer", Toast.LENGTH_SHORT).show();
+                }
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        setButtons();
                     }
+                }, 1000);
 
             }
         }
     };
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void setButtons(){
 
         Set<String> answers = new HashSet<>();
         Translation word = getRandomTranslation();
 
-        wordTextView.setText(word.getEngWord());
+        wordTextView.setText(word.getEngWord().toUpperCase());
         answers.add(word.getPlWord());
 
         while(answers.size()<4){
