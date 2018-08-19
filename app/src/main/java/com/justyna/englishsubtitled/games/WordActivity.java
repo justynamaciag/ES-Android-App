@@ -11,9 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.justyna.englishsubtitled.stuctures.Lesson;
+import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.R;
-import com.justyna.englishsubtitled.stuctures.Translation;
+import com.justyna.englishsubtitled.model.Translation;
 
 import org.springframework.web.client.RestTemplate;
 
@@ -35,6 +35,7 @@ public class WordActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word);
 
@@ -54,7 +55,7 @@ public class WordActivity extends AppCompatActivity {
         char pressed = pressedBtn.getText().charAt(0);
         char actual = currentTranslation.getEngWord().charAt(checkedIndex);
 
-        if(pressed == actual) {
+        if (pressed == actual) {
             letters.get(checkedIndex).setText(pressedBtn.getText().toString().toUpperCase());
             checkedIndex++;
 
@@ -67,16 +68,16 @@ public class WordActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         checkedIndex = 0;
-                        for(int i=0; i<currentTranslation.getEngWord().length(); i++){
+                        for (int i = 0; i < currentTranslation.getEngWord().length(); i++) {
 
                             ViewGroup layout = (ViewGroup) buttons.get(i).getParent();
                             ViewGroup layoutLetters = (ViewGroup) letters.get(i).getParent();
 
-                            if(null!=layout) {
+                            if (null != layout) {
                                 layout.removeView(buttons.get(i));
                             }
 
-                            if(null!=layoutLetters) {
+                            if (null != layoutLetters) {
                                 layoutLetters.removeView(letters.get(i));
                             }
                         }
@@ -91,7 +92,7 @@ public class WordActivity extends AppCompatActivity {
     };
 
 
-    public void setButtons(Translation translation){
+    public void setButtons(Translation translation) {
 
         buttons = new ArrayList<>();
         letters = new ArrayList<>();
@@ -100,7 +101,7 @@ public class WordActivity extends AppCompatActivity {
         LinearLayout wordLayout = (LinearLayout) findViewById(R.id.wordLayout);
 
 
-        for (int i=0; i<translation.getEngWord().length(); i++) {
+        for (int i = 0; i < translation.getEngWord().length(); i++) {
 
             Button letterBtn = new Button(this);
             letterBtn.setText(Character.toString(translation.getEngWord().charAt(i)));
@@ -111,7 +112,7 @@ public class WordActivity extends AppCompatActivity {
 
         Collections.shuffle(buttons);
 
-        for (Button b :buttons) {
+        for (Button b : buttons) {
             b.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             b.setWidth(20);
             buttonsLayout.addView(b);
@@ -126,7 +127,7 @@ public class WordActivity extends AppCompatActivity {
     }
 
 
-    private Translation getRandomTranslation(){
+    private Translation getRandomTranslation() {
 
         System.out.println(translations);
         int random = rand.nextInt(translations.size());
@@ -135,10 +136,11 @@ public class WordActivity extends AppCompatActivity {
 
 
     private List<Translation> prepareTranslationList() {
+
         Lesson lesson;
         try {
             lesson = new RetrieveLesson().execute().get();
-        } catch(InterruptedException | ExecutionException e){
+        } catch (InterruptedException | ExecutionException e) {
             lesson = null;
             this.finish();
         }
@@ -146,11 +148,12 @@ public class WordActivity extends AppCompatActivity {
     }
 
     private class RetrieveLesson extends AsyncTask<Void, Void, Lesson> {
+
         @Override
         protected Lesson doInBackground(Void... voids) {
-            String baseUrl = "http://192.168.100.5:8080"; // host machine from Android VM
+            String baseUrl = "http://10.0.2.2:8080";
             RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.getForObject(baseUrl+"/lessons/2", Lesson.class);
+            return restTemplate.getForObject(baseUrl + "/lessons/2", Lesson.class);
         }
     }
 }

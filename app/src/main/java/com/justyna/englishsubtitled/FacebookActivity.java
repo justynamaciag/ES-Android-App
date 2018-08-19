@@ -17,15 +17,16 @@ public class FacebookActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facebook);
         callbackManager = CallbackManager.Factory.create();
-
         loginButton = findViewById(R.id.login_button);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Intent intent = new Intent(FacebookActivity.this, LessonsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 FacebookActivity.this.startActivity(intent);
             }
 
@@ -43,8 +44,10 @@ public class FacebookActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode,  data);
+
     }
 
 }

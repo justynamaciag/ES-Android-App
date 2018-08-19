@@ -9,9 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.justyna.englishsubtitled.stuctures.Lesson;
+import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.R;
-import com.justyna.englishsubtitled.stuctures.Translation;
+import com.justyna.englishsubtitled.model.Translation;
 
 
 import org.springframework.web.client.RestTemplate;
@@ -32,17 +32,19 @@ public class ABCDActivity extends AppCompatActivity {
     List<Button> buttons;
     TextView wordTextView;
     Random rand;
+    Translation word;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abcd);
 
         rand = new Random();
         translations = prepareTranslationList();
-        buttons = new ArrayList<>();
 
+        buttons = new ArrayList<>();
         buttons.add((Button) findViewById(R.id.btnAns1));
         buttons.add((Button) findViewById(R.id.btnAns2));
         buttons.add((Button) findViewById(R.id.btnAns3));
@@ -50,7 +52,7 @@ public class ABCDActivity extends AppCompatActivity {
 
         wordTextView = findViewById(R.id.wordTextView);
 
-        for (Button b:buttons) {
+        for (Button b : buttons) {
             b.setOnClickListener(btnAnsListener);
         }
 
@@ -59,14 +61,17 @@ public class ABCDActivity extends AppCompatActivity {
     }
 
     private View.OnClickListener btnAnsListener = v -> {
+
         Button pressedBtn = (Button) v;
-        String word = wordTextView.getText().toString();
-        for (Translation t:translations) {
-            if(word.equals(t.getEngWord())) {
+        Toast answerToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        for (Translation t : translations) {
+            if (word.getEngWord().equals(t.getEngWord())) {
                 if (pressedBtn.getText().equals(t.getPlWord())) {
-                    Toast.makeText(this.getApplicationContext(), "Good answer", Toast.LENGTH_SHORT).show();
+                    answerToast.setText("Good answer");
+                    answerToast.show();
                 } else {
-                    Toast.makeText(this.getApplicationContext(), "Wrong answer", Toast.LENGTH_SHORT).show();
+                    answerToast.setText("Wrong answer");
+                    answerToast.show();
                 }
                 handler.postDelayed(new Runnable() {
                     public void run() {
@@ -79,17 +84,17 @@ public class ABCDActivity extends AppCompatActivity {
     };
 
 
-    private void setButtons(){
+    private void setButtons() {
 
         Set<String> answers = new HashSet<>();
-        Translation word = getRandomTranslation();
+        word = getRandomTranslation();
 
         wordTextView.setText(word.getEngWord());
         answers.add(word.getPlWord());
 
-        while(answers.size()<4){
+        while (answers.size() < 4) {
             Translation randomTranslation = getRandomTranslation();
-            if(!answers.contains(getRandomTranslation().getPlWord())){
+            if (!answers.contains(getRandomTranslation().getPlWord())) {
                 answers.add(randomTranslation.getPlWord());
             }
         }
@@ -99,34 +104,39 @@ public class ABCDActivity extends AppCompatActivity {
         Collections.shuffle(answerList);
 
 
-        for (Button b:buttons) {
-            b.setText(answerList.remove(answerList.size()-1));
+        for (Button b : buttons) {
+            b.setText(answerList.remove(answerList.size() - 1));
         }
 
     }
 
-    private Translation getRandomTranslation(){
+    private Translation getRandomTranslation() {
+
         int random = rand.nextInt(translations.size());
         return translations.get(random);
+
     }
 
     private List<Translation> prepareTranslationList() {
+
         Lesson lesson;
         try {
             lesson = new RetrieveLesson().execute().get();
-        } catch(InterruptedException | ExecutionException e){
+        } catch (InterruptedException | ExecutionException e) {
             lesson = null;
             this.finish();
         }
         return lesson.getTranslations();
+
     }
 
     private class RetrieveLesson extends AsyncTask<Void, Void, Lesson> {
+
         @Override
         protected Lesson doInBackground(Void... voids) {
-            String baseUrl = "http://192.168.100.5:8080"; // host machine from Android VM
+            String baseUrl = "http://10.0.2.2:8080";
             RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.getForObject(baseUrl+"/lessons/2", Lesson.class);
+            return restTemplate.getForObject(baseUrl + "/lessons/2", Lesson.class);
         }
     }
 

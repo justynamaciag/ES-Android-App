@@ -33,11 +33,13 @@ public class LessonsActivity extends AppCompatActivity {
 
     private OnClickListener lesson1BtnOnClick = v -> {
         Intent intent = new Intent(LessonsActivity.this, ABCDActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         startActivity(intent);
     };
 
     private OnClickListener lesson2BtnOnClick = v -> {
         Intent intent = new Intent(LessonsActivity.this, WordActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
         startActivity(intent);
     };
 
