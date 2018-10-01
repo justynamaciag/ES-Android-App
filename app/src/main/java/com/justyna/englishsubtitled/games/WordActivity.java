@@ -58,6 +58,7 @@ public class WordActivity extends AppCompatActivity {
         if (pressed == actual) {
             letters.get(checkedIndex).setText(pressedBtn.getText().toString().toUpperCase());
             checkedIndex++;
+            pressedBtn.setEnabled(false);
 
             if (checkedIndex == currentTranslation.getEngWord().length()) {
 
