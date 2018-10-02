@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.justyna.englishsubtitled.games.ABCDActivity;
+import com.justyna.englishsubtitled.games.CrosswordActivity;
 import com.justyna.englishsubtitled.games.WordActivity;
 
 public class LessonsActivity extends AppCompatActivity {
@@ -44,7 +45,9 @@ public class LessonsActivity extends AppCompatActivity {
     };
 
     private OnClickListener lesson3BtnOnClick = v -> {
-        Toast.makeText(this.getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(LessonsActivity.this, CrosswordActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+        startActivity(intent);
     };
 
 }
