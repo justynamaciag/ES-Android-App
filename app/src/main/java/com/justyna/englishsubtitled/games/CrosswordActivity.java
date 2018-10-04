@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
+
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -25,13 +26,14 @@ public class CrosswordActivity extends AppCompatActivity {
 
     List<Translation> translations;
     Translation currentTranslation;
-    List<String> trn;
+    List<String> gridViewLetters;
     Random rand;
     String[][] table;
     int i;
-    String prev, next;
+    String prevClicked, actualClicked;
     TextView helperTV;
     int N = 10;
+    int reverse;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -42,67 +44,43 @@ public class CrosswordActivity extends AppCompatActivity {
         rand = new Random();
         translations = prepareTranslationList();
         currentTranslation = getRandomTranslation();
-        trn = prepareTable(currentTranslation);
-        System.out.println(trn);
+        gridViewLetters = prepareTable(currentTranslation);
         i=0;
 
-        ArrayAdapter<String> crosswordAdapter = new ArrayAdapter<String>(this, R.layout.crossword, R.id.crossword, trn);
+        ArrayAdapter<String> crosswordAdapter = new ArrayAdapter<String>(this, R.layout.crossword, R.id.crossword, gridViewLetters);
 
         GridView crosswordGrid = new GridView(this);
         setContentView(crosswordGrid);
         crosswordGrid.setNumColumns(N);
-        crosswordGrid.setColumnWidth(N);
         crosswordGrid.setAdapter(crosswordAdapter);
 
 
         crosswordGrid.setOnTouchListener((v, event) -> {
             float X = event.getX();
             float Y = event.getY();
-            int row = (int) (Y/(N*10));
-            int col = (int) (X/(N*10));
+
+            int point = crosswordGrid.pointToPosition((int) X,(int) Y);
 
             CrosswordActivity.super.onTouchEvent(event);
-//            int action = event.getAction() & MotionEvent.ACTION_MASK;
-            if(event.getAction() == MotionEvent.ACTION_MOVE){
-                System.out.println("Move");
+            int action = event.getAction() & MotionEvent.ACTION_MASK;
+            if(action == MotionEvent.ACTION_MOVE){
                 if(i==0)
-                    prev = "blabla";
-                next = table[row][col];
-                System.out.println(next);
-                System.out.println(currentTranslation.getEngWord().charAt(i));
-                if(!prev.equals(next))
-                    if(next.equals(String.valueOf(currentTranslation.getEngWord().charAt(i)))){
+                    prevClicked = "";
+                actualClicked = gridViewLetters.get(point);
+                if(!prevClicked.equals(actualClicked))
+                    if(actualClicked.equals(String.valueOf(currentTranslation.getEngWord().charAt(i)))){
                         i++;
-                        prev = next;
-
+                        prevClicked = actualClicked;
                     }
-//                    else i=0;
                 if(i==currentTranslation.getEngWord().length()) {
                     Toast.makeText(getApplicationContext(), "cool", Toast.LENGTH_SHORT).show();
                     i=0;
+                    return false;
                 }
                 return true;
             }
-//            vertical - not working
-//            else if(action == MotionEvent.ACTION_DOWN){
-//                if(i==0)
-//                    prev = "blabla";
-//                next = table[col][row];
-//                System.out.println("down" + next + " " + i);
-//                if(!prev.equals(next))
-//                    if(next.equals(String.valueOf(currentTranslation.getEngWord().charAt(i)))){
-//                        i++;
-//                        prev = next;
-//
-//                    }
-//                if(i==currentTranslation.getEngWord().length()) {
-//                    Toast.makeText(getApplicationContext(), "cool", Toast.LENGTH_SHORT).show();
-//                    i=0;
-//                }
-//                return true;
-//            }
+            return true;
 
-            return false;
         });
 
     }
@@ -133,7 +111,7 @@ public class CrosswordActivity extends AppCompatActivity {
 
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){
-                table[i][j] = Character.toString((char) (rand.nextInt(90-65)+65));
+                table[i][j] = Character.toString((char) (rand.nextInt('Z'-'A')+'A'));
             }
         }
 
@@ -141,15 +119,14 @@ public class CrosswordActivity extends AppCompatActivity {
             table[row][i] = Character.toString(translation.getEngWord().charAt(i-offset)).toLowerCase();
         }
 
-        int reverse = rand.nextInt(2);
+        reverse = rand.nextInt(2);
         ArrayList<String> tableList = new ArrayList<>();
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){
-//                reverse == 1 - vertical
-//                if(reverse == 1)
-//                    tableList.add(table[j][i]);
-//                else
-                tableList.add(table[i][j]);
+                if(reverse == 1)
+                    tableList.add(table[j][i]);
+                else
+                    tableList.add(table[i][j]);
             }
         }
         return tableList;
