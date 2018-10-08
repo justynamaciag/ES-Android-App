@@ -1,6 +1,6 @@
 package com.justyna.englishsubtitled.games;
 
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,12 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Translation;
-
-
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,8 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
 
 public class ABCDActivity extends AppCompatActivity {
 
@@ -41,9 +35,10 @@ public class ABCDActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abcd);
 
-        rand = new Random();
-        translations = prepareTranslationList();
+        Intent intent = getIntent();
+        translations = (List<Translation>) intent.getSerializableExtra("translations");
 
+        rand = new Random();
         buttons = new ArrayList<>();
         buttons.add((Button) findViewById(R.id.btnAns1));
         buttons.add((Button) findViewById(R.id.btnAns2));
@@ -115,29 +110,6 @@ public class ABCDActivity extends AppCompatActivity {
         int random = rand.nextInt(translations.size());
         return translations.get(random);
 
-    }
-
-    private List<Translation> prepareTranslationList() {
-
-        Lesson lesson;
-        try {
-            lesson = new RetrieveLesson().execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            lesson = null;
-            this.finish();
-        }
-        return lesson.getTranslations();
-
-    }
-
-    private class RetrieveLesson extends AsyncTask<Void, Void, Lesson> {
-
-        @Override
-        protected Lesson doInBackground(Void... voids) {
-            String baseUrl = "http://10.0.2.2:8080";
-            RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.getForObject(baseUrl + "/lessons/2", Lesson.class);
-        }
     }
 
 }

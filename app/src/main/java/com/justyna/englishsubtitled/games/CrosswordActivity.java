@@ -1,7 +1,7 @@
 package com.justyna.englishsubtitled.games;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -12,15 +12,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
-import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.model.Translation;
-
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
 public class CrosswordActivity extends AppCompatActivity {
 
@@ -29,7 +25,7 @@ public class CrosswordActivity extends AppCompatActivity {
     List<String> gridViewLetters;
     Random rand;
     String[][] table;
-    int i;
+    int i = 0;
     String prevClicked, actualClicked;
     TextView helperTV;
     int N = 10;
@@ -39,18 +35,22 @@ public class CrosswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_crossword);
+
+        helperTV = findViewById(R.id.helperTv);
+
+        Intent intent = getIntent();
+        translations = (List<Translation>) intent.getSerializableExtra("translations");
 
         table = new String[N][N];
         rand = new Random();
-        translations = prepareTranslationList();
         currentTranslation = getRandomTranslation();
         gridViewLetters = prepareTable(currentTranslation);
-        i=0;
+
+        helperTV.setText(currentTranslation.getPlWord());
 
         ArrayAdapter<String> crosswordAdapter = new ArrayAdapter<String>(this, R.layout.crossword, R.id.crossword, gridViewLetters);
-
-        GridView crosswordGrid = new GridView(this);
-        setContentView(crosswordGrid);
+        GridView crosswordGrid = findViewById(R.id.gridview);
         crosswordGrid.setNumColumns(N);
         crosswordGrid.setAdapter(crosswordAdapter);
 
@@ -83,19 +83,6 @@ public class CrosswordActivity extends AppCompatActivity {
 
         });
 
-    }
-
-
-    private List<Translation> prepareTranslationList() {
-
-        Lesson lesson;
-        try {
-            lesson = new RetrieveLesson().execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            lesson = null;
-            this.finish();
-        }
-        return lesson.getTranslations();
     }
 
     private Translation getRandomTranslation() {
@@ -131,14 +118,5 @@ public class CrosswordActivity extends AppCompatActivity {
         }
         return tableList;
 
-    }
-
-    private class RetrieveLesson extends AsyncTask<Void, Void, Lesson> {
-        @Override
-        protected Lesson doInBackground(Void... voids) {
-            String baseUrl = "http://10.0.2.2:8080";
-            RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.getForObject(baseUrl + "/lessons/2", Lesson.class);
-        }
     }
 }

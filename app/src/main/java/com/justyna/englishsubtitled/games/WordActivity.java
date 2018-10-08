@@ -1,9 +1,9 @@
 package com.justyna.englishsubtitled.games;
 
-import android.os.AsyncTask;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -11,17 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Translation;
-
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
 public class WordActivity extends AppCompatActivity {
 
@@ -39,8 +35,10 @@ public class WordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_word);
 
+        Intent intent = getIntent();
+        translations = (List<Translation>) intent.getSerializableExtra("translations");
+
         rand = new Random();
-        translations = prepareTranslationList();
         buttons = new ArrayList<>();
         letters = new ArrayList<>();
         checkedIndex = 0;
@@ -127,7 +125,6 @@ public class WordActivity extends AppCompatActivity {
 
     }
 
-
     private Translation getRandomTranslation() {
 
         System.out.println(translations);
@@ -135,26 +132,4 @@ public class WordActivity extends AppCompatActivity {
         return translations.get(random);
     }
 
-
-    private List<Translation> prepareTranslationList() {
-
-        Lesson lesson;
-        try {
-            lesson = new RetrieveLesson().execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            lesson = null;
-            this.finish();
-        }
-        return lesson.getTranslations();
-    }
-
-    private class RetrieveLesson extends AsyncTask<Void, Void, Lesson> {
-
-        @Override
-        protected Lesson doInBackground(Void... voids) {
-            String baseUrl = "http://10.0.2.2:8080";
-            RestTemplate restTemplate = new RestTemplate();
-            return restTemplate.getForObject(baseUrl + "/lessons/2", Lesson.class);
-        }
-    }
 }
