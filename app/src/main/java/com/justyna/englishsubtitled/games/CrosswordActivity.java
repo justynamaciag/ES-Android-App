@@ -25,11 +25,12 @@ public class CrosswordActivity extends AppCompatActivity {
     List<String> gridViewLetters;
     Random rand;
     String[][] table;
-    int i = 0;
     String prevClicked, actualClicked;
     TextView helperTV;
+    int i = 0;
     int N = 10;
     int reverse;
+    int row, offset;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -56,32 +57,36 @@ public class CrosswordActivity extends AppCompatActivity {
 
 
         crosswordGrid.setOnTouchListener((v, event) -> {
-            float X = event.getX();
-            float Y = event.getY();
+            float x = event.getX();
+            float y = event.getY();
 
-            int point = crosswordGrid.pointToPosition((int) X,(int) Y);
-
-            CrosswordActivity.super.onTouchEvent(event);
-            int action = event.getAction() & MotionEvent.ACTION_MASK;
-            if(action == MotionEvent.ACTION_MOVE){
-                if(i==0)
-                    prevClicked = "";
-                actualClicked = gridViewLetters.get(point);
-                if(!prevClicked.equals(actualClicked))
-                    if(actualClicked.equals(String.valueOf(currentTranslation.getEngWord().charAt(i)))){
-                        i++;
-                        prevClicked = actualClicked;
+            try {
+                int point = crosswordGrid.pointToPosition((int) x, (int) y);
+                int action = event.getAction() & MotionEvent.ACTION_MASK;
+                if (action == MotionEvent.ACTION_MOVE) {
+                    if (i == 0)
+                        prevClicked = "";
+                    actualClicked = gridViewLetters.get(point);
+                    if (!prevClicked.equals(actualClicked))
+                        if (actualClicked.toLowerCase().equals(String.valueOf(currentTranslation.getEngWord().charAt(i)).toLowerCase())) {
+                            i++;
+                            prevClicked = actualClicked;
+                        }
+                    if (i == currentTranslation.getEngWord().length()) {
+                        Toast.makeText(getApplicationContext(), "cool", Toast.LENGTH_SHORT).show();
+                        i = 0;
+                        return false;
                     }
-                if(i==currentTranslation.getEngWord().length()) {
-                    Toast.makeText(getApplicationContext(), "cool", Toast.LENGTH_SHORT).show();
-                    i=0;
-                    return false;
+                    return true;
                 }
                 return true;
             }
-            return true;
+            catch (IndexOutOfBoundsException e){
+                return false;
+            }
 
         });
+
 
     }
 
@@ -93,8 +98,8 @@ public class CrosswordActivity extends AppCompatActivity {
 
     private List<String> prepareTable(Translation translation){
 
-        int row = rand.nextInt(N);
-        int offset = rand.nextInt(N - translation.getEngWord().length());
+        row = rand.nextInt(N);
+        offset = rand.nextInt(N - translation.getEngWord().length());
 
         for(int i=0; i<N; i++){
             for(int j=0; j<N; j++){
@@ -103,7 +108,7 @@ public class CrosswordActivity extends AppCompatActivity {
         }
 
         for(int i=offset; i<offset+translation.getEngWord().length(); i++) {
-            table[row][i] = Character.toString(translation.getEngWord().charAt(i-offset)).toLowerCase();
+            table[row][i] = Character.toString(translation.getEngWord().charAt(i-offset));
         }
 
         reverse = rand.nextInt(2);
