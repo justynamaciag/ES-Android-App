@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="40sp"
+            android:layout_marginRight="40sp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/recent_lesson_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/invisible"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/recent_lesson_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/invisible"
+                android:visibility="invisible" />
+
+            <Button
+                android:id="@+id/recent_lesson_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/invisible"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30sp" />
+
+        <Button
+            android:id="@+id/start_new_lesson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_new_lesson" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20sp"
+            android:layout_marginRight="20sp"
+            android:orientation="vertical">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="30sp" />
+
+            <Button
+                android:id="@+id/dictionary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dictionary" />
+
+            <Button
+                android:id="@+id/achievements"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/achievements" />
+
+            <Button
+                android:id="@+id/finished_lessons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/finished_lessons" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="30sp" />
+
+            <Button
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/logout" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

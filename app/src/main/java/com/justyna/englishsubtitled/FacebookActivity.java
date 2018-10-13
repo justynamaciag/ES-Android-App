@@ -25,7 +25,7 @@ public class FacebookActivity extends AppCompatActivity {
         boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
 
         if(isLoggedIn){
-            Intent intent = new Intent(FacebookActivity.this, LessonsActivity.class);
+            Intent intent = new Intent(FacebookActivity.this, MenuMainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             FacebookActivity.this.startActivity(intent);
         }
@@ -36,7 +36,7 @@ public class FacebookActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Intent intent = new Intent(FacebookActivity.this, LessonsActivity.class);
+                Intent intent = new Intent(FacebookActivity.this, MenuMainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 FacebookActivity.this.startActivity(intent);
             }

@@ -2,4 +2,10 @@
     <string name="app_name">EnglishSubtitled</string>
     <string name="facebook_app_id">733670553423793</string>
     <string name="fb_login_protocol_scheme">fb191746534808621</string>
+    <string name="start_new_lesson">Rozpocznij nową lekcję</string>
+    <string name="dictionary">Słownik</string>
+    <string name="achievements">Osiągnięcia</string>
+    <string name="finished_lessons">Ukończone lekcje</string>
+    <string name="logout">Wyloguj</string>
+    <string name="invisible">You should not see this!</string>
 </resources>

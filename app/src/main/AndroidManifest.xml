@@ -40,10 +40,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".FacebookActivity" />
+        <activity android:name=".MenuMainActivity" />
         <activity android:name=".LessonsActivity" />
         <activity android:name=".games.ABCDActivity" />
         <activity android:name=".games.WordActivity" />
-        <activity android:name=".games.CrosswordActivity"></activity>
+        <activity android:name=".games.CrosswordActivity" />
     </application>
 
 </manifest>
