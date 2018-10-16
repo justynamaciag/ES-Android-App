@@ -7,5 +7,8 @@
     <string name="achievements">Osiągnięcia</string>
     <string name="finished_lessons">Ukończone lekcje</string>
     <string name="logout">Wyloguj</string>
-    <string name="invisible">You should not see this!</string>
+    <string name="invisible">Nieprzeznaczone dla Twoich oczu!</string>
+    <string name="remove_recent_lesson_1">Usuń pierwszą spośród rozpoczętych lekcji</string>
+    <string name="remove_recent_lesson_2">Usuń drugą spośród rozpoczętych lekcji</string>
+    <string name="remove_recent_lesson_3">Usuń trzecią spośród rozpoczętych lekcji</string>
 </resources>

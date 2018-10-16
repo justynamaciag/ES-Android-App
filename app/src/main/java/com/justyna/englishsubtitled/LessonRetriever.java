@@ -42,7 +42,7 @@ public class LessonRetriever {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            String baseUrl = "https://ec2-34-215-76-93.us-west-2.compute.amazonaws.com"; //"http://10.0.2.2:8080";
+            String baseUrl = Configuration.getInstance().getBackendUrl();
             AccessToken accessToken = AccessToken.getCurrentAccessToken();
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", accessToken.getToken());
