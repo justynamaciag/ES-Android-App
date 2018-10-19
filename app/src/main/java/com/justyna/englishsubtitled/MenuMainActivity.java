@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.justyna.englishsubtitled.menu.MenuFindLessonActivity;
 import com.justyna.englishsubtitled.model.LessonSummary;
 import com.justyna.englishsubtitled.model.Progress;
 
@@ -124,7 +125,7 @@ public class MenuMainActivity extends AppCompatActivity {
 
 
     private OnClickListener startNewLessonBtnOnClick = v -> {
-        Intent intent = new Intent(MenuMainActivity.this, LessonsActivity.class);
+        Intent intent = new Intent(MenuMainActivity.this, MenuFindLessonActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     };

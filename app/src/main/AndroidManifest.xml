@@ -45,6 +45,7 @@
         <activity android:name=".games.ABCDActivity" />
         <activity android:name=".games.WordActivity" />
         <activity android:name=".games.CrosswordActivity" />
+        <activity android:name=".menu.MenuFindLessonActivity" />
     </application>
 
 </manifest>
