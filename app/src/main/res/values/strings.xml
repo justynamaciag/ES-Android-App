@@ -11,4 +11,10 @@
     <string name="remove_recent_lesson_1">Usuń pierwszą spośród rozpoczętych lekcji</string>
     <string name="remove_recent_lesson_2">Usuń drugą spośród rozpoczętych lekcji</string>
     <string name="remove_recent_lesson_3">Usuń trzecią spośród rozpoczętych lekcji</string>
+    <string name="english_label">angielski</string>
+    <string name="polish_label">polski</string>
+    <string name="english_ascending">Sortuj rosnąco według słowa po angielsku</string>
+    <string name="english_descending">Sortuj malejąco według słowa po angielsku</string>
+    <string name="polish_ascending">Sortuj rosnąco według słowa po polsku</string>
+    <string name="polish_descending">Sortuj malejąco według słowa po polsku</string>
 </resources>

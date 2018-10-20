@@ -47,6 +47,7 @@
         <activity android:name=".games.CrosswordActivity" />
         <activity android:name=".menu.MenuFindLessonActivity" />
         <activity android:name=".menu.MenuFinishedLessonsActivity" />
+        <activity android:name=".menu.MenuDictionary" />
     </application>
 
 </manifest>

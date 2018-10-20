@@ -37,7 +37,7 @@
                 <ImageButton
                     android:id="@+id/remove_recent_lesson_1"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="20"
                     android:contentDescription="@string/remove_recent_lesson_1"
                     app:srcCompat="@android:drawable/ic_delete"
@@ -61,7 +61,7 @@
                 <ImageButton
                     android:id="@+id/remove_recent_lesson_2"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="20"
                     android:contentDescription="@string/remove_recent_lesson_2"
                     app:srcCompat="@android:drawable/ic_delete"
@@ -85,9 +85,9 @@
             <ImageButton
                 android:id="@+id/remove_recent_lesson_3"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="20"
-                android:contentDescription="@string/remove_recent_lesson_2"
+                android:contentDescription="@string/remove_recent_lesson_3"
                 app:srcCompat="@android:drawable/ic_delete"
                 android:visibility="invisible"/>
             </LinearLayout>
