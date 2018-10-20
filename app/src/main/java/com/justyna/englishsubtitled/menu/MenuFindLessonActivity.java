@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.justyna.englishsubtitled.Configuration;
@@ -24,6 +25,7 @@ import java.util.List;
 import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disableChecks;
 
 public class MenuFindLessonActivity extends AppCompatActivity {
+    private TextView title;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -31,7 +33,11 @@ public class MenuFindLessonActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_find_lesson);
+        setContentView(R.layout.activity_menu_lessons_in_films);
+
+        title = findViewById(R.id.title);
+        title.setText(R.string.start_new_lesson);
+
         recyclerView = findViewById(R.id.films);
 
         // use a linear layout manager
@@ -41,7 +47,7 @@ public class MenuFindLessonActivity extends AppCompatActivity {
         List<Film> films = Collections.emptyList();
         try {
             films = new FilmsRetriever().execute().get();
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("CRITICAL: Failed to download films list from a server.");
         }
 

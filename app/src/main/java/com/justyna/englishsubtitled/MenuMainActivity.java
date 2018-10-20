@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.justyna.englishsubtitled.menu.MenuFindLessonActivity;
+import com.justyna.englishsubtitled.menu.MenuFinishedLessonsActivity;
 import com.justyna.englishsubtitled.model.LessonSummary;
 import com.justyna.englishsubtitled.model.Progress;
 
@@ -23,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +52,8 @@ public class MenuMainActivity extends AppCompatActivity {
 
     List<ImageButton> removeRecentButtons = new ArrayList<>(3);
 
-    List<LessonSummary> recentLessons = Collections.emptyList();
+    List<LessonSummary> recentLessonsCollection = Collections.emptyList();
+    List<LessonSummary> finishedLessonsCollection = Collections.emptyList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,27 +96,29 @@ public class MenuMainActivity extends AppCompatActivity {
         removeRecentButtons.add(removeRecent2);
         removeRecentButtons.add(removeRecent3);
 
-        refreshRecentLessons();
+        refreshProgress();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        refreshRecentLessons();
+        refreshProgress();
     }
 
-    private void refreshRecentLessons() {
+    private void refreshProgress() {
         try {
-            recentLessons = new RecentLessonsRetriever().execute().get();
+            Progress progress = new ProgressRetriever().execute().get();
+            recentLessonsCollection = progress.getRented();
+            finishedLessonsCollection = progress.getFinished();
 
             for (int i = 0; i < 3; i++) {
-                if (recentLessons.size() < i + 1) break;
-                recentLessonButtons.get(i).setText(recentLessons.get(i).lessonTitle);
+                if (recentLessonsCollection.size() < i + 1) break;
+                recentLessonButtons.get(i).setText(recentLessonsCollection.get(i).lessonTitle);
                 recentLessonButtons.get(i).setVisibility(View.VISIBLE);
                 removeRecentButtons.get(i).setVisibility(View.VISIBLE);
             }
 
-            for (int i = recentLessons.size(); i < 3; i++) {
+            for (int i = recentLessonsCollection.size(); i < 3; i++) {
                 recentLessonButtons.get(i).setVisibility(View.INVISIBLE);
                 removeRecentButtons.get(i).setVisibility(View.INVISIBLE);
             }
@@ -145,10 +150,10 @@ public class MenuMainActivity extends AppCompatActivity {
     };
 
     private OnClickListener finishedLessonsBtnOnClick = v -> {
-//        Intent intent = new Intent(MenuMainActivity.this, CrosswordActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
-//        intent.putExtra("translations", (Serializable) translations);
-//        startActivity(intent);
+        Intent intent = new Intent(MenuMainActivity.this, MenuFinishedLessonsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("finishedLessons", (Serializable) finishedLessonsCollection);
+        startActivity(intent);
     };
 
     private OnClickListener logoutBtnOnClick = v -> {
@@ -177,22 +182,22 @@ public class MenuMainActivity extends AppCompatActivity {
     };
 
     private OnClickListener removeRecent1BtnOnClick = v -> {
-        if (recentLessons.size() >= 1) {
-            int lessonId = recentLessons.get(0).getLessonId();
+        if (recentLessonsCollection.size() >= 1) {
+            int lessonId = recentLessonsCollection.get(0).getLessonId();
             removeRecentLesson(lessonId);
         }
     };
 
     private OnClickListener removeRecent2BtnOnClick = v -> {
-        if (recentLessons.size() >= 2) {
-            int lessonId = recentLessons.get(1).getLessonId();
+        if (recentLessonsCollection.size() >= 2) {
+            int lessonId = recentLessonsCollection.get(1).getLessonId();
             removeRecentLesson(lessonId);
         }
     };
 
     private OnClickListener removeRecent3BtnOnClick = v -> {
-        if (recentLessons.size() >= 3) {
-            int lessonId = recentLessons.get(2).getLessonId();
+        if (recentLessonsCollection.size() >= 3) {
+            int lessonId = recentLessonsCollection.get(2).getLessonId();
             removeRecentLesson(lessonId);
         }
     };
@@ -205,13 +210,13 @@ public class MenuMainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if (deleted) {
-            refreshRecentLessons();
+            refreshProgress();
         }
     }
 
-    private static class RecentLessonsRetriever extends AsyncTask<Void, Void, List<LessonSummary>> {
+    private static class ProgressRetriever extends AsyncTask<Void, Void, Progress> {
         @Override
-        protected List<LessonSummary> doInBackground(Void... voids) {
+        protected Progress doInBackground(Void... voids) {
             try {
                 disableChecks();
             } catch (Exception e) {
@@ -230,7 +235,7 @@ public class MenuMainActivity extends AppCompatActivity {
                             HttpMethod.GET, entity, new ParameterizedTypeReference<Progress>() {
                             });
 
-            return progress.getBody().getRented();
+            return progress.getBody();
         }
     }
 
