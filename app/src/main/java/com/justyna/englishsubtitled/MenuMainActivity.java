@@ -9,7 +9,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.justyna.englishsubtitled.menu.MenuAchievementsActivity;
 import com.justyna.englishsubtitled.menu.MenuDictionaryActivity;
@@ -20,7 +19,6 @@ import com.justyna.englishsubtitled.model.Progress;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -223,10 +221,7 @@ public class MenuMainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             String baseUrl = Configuration.getInstance().getBackendUrl();
-            AccessToken accessToken = AccessToken.getCurrentAccessToken();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", accessToken.getToken());
-            HttpEntity<String> entity = new HttpEntity<>(headers);
+            HttpEntity<String> entity = ConnectionUtils.getInstance().prepareHttpEntity();
 
             RestTemplate restTemplate = new RestTemplate();
 
@@ -250,10 +245,7 @@ public class MenuMainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             String baseUrl = Configuration.getInstance().getBackendUrl();
-            AccessToken accessToken = AccessToken.getCurrentAccessToken();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", accessToken.getToken());
-            HttpEntity<String> entity = new HttpEntity<>(headers);
+            HttpEntity<String> entity = ConnectionUtils.getInstance().prepareHttpEntity();
 
             RestTemplate restTemplate = new RestTemplate();
 

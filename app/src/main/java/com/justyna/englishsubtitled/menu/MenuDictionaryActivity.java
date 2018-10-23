@@ -7,22 +7,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ImageButton;
 
-import com.facebook.AccessToken;
 import com.justyna.englishsubtitled.Configuration;
+import com.justyna.englishsubtitled.ConnectionUtils;
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Translation;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
-
-import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disableChecks;
 
 public class MenuDictionaryActivity extends AppCompatActivity {
     private ImageButton englishAscending;
@@ -111,16 +108,8 @@ public class MenuDictionaryActivity extends AppCompatActivity {
     private static class DictionaryRetriever extends AsyncTask<Void, Void, List<Translation>> {
         @Override
         protected List<Translation> doInBackground(Void... voids) {
-            try {
-                disableChecks();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             String baseUrl = Configuration.getInstance().getBackendUrl();
-            AccessToken accessToken = AccessToken.getCurrentAccessToken();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", accessToken.getToken());
-            HttpEntity<String> entity = new HttpEntity<>(headers);
+            HttpEntity<String> entity = ConnectionUtils.getInstance().prepareHttpEntity();
 
             RestTemplate restTemplate = new RestTemplate();
 
