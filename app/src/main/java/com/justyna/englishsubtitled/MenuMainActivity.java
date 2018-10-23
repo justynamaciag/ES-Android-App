@@ -11,7 +11,8 @@ import android.widget.ImageButton;
 
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
-import com.justyna.englishsubtitled.menu.MenuDictionary;
+import com.justyna.englishsubtitled.menu.MenuAchievementsActivity;
+import com.justyna.englishsubtitled.menu.MenuDictionaryActivity;
 import com.justyna.englishsubtitled.menu.MenuFindLessonActivity;
 import com.justyna.englishsubtitled.menu.MenuFinishedLessonsActivity;
 import com.justyna.englishsubtitled.model.LessonSummary;
@@ -137,16 +138,15 @@ public class MenuMainActivity extends AppCompatActivity {
     };
 
     private OnClickListener dictionaryBtnOnClick = v -> {
-        Intent intent = new Intent(MenuMainActivity.this, MenuDictionary.class);
+        Intent intent = new Intent(MenuMainActivity.this, MenuDictionaryActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     };
 
     private OnClickListener achievementsBtnOnClick = v -> {
-//        Intent intent = new Intent(MenuMainActivity.this, CrosswordActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
-//        intent.putExtra("translations", (Serializable) translations);
-//        startActivity(intent);
+        Intent intent = new Intent(MenuMainActivity.this, MenuAchievementsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     };
 
     private OnClickListener finishedLessonsBtnOnClick = v -> {

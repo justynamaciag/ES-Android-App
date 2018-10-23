@@ -24,7 +24,7 @@ import java.util.List;
 
 import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disableChecks;
 
-public class MenuDictionary extends AppCompatActivity {
+public class MenuDictionaryActivity extends AppCompatActivity {
     private ImageButton englishAscending;
     private ImageButton englishDescending;
     private ImageButton polishAscending;

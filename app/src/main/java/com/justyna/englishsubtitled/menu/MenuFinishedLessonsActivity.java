@@ -26,7 +26,7 @@ public class MenuFinishedLessonsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_lessons_in_films);
+        setContentView(R.layout.activity_menu_single_list);
 
         title = findViewById(R.id.title);
         title.setText(R.string.finished_lessons);

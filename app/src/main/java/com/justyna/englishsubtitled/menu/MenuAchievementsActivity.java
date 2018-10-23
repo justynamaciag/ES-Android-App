@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.facebook.AccessToken;
 import com.justyna.englishsubtitled.Configuration;
 import com.justyna.englishsubtitled.R;
-import com.justyna.englishsubtitled.model.Film;
+import com.justyna.englishsubtitled.model.Achievement;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -19,16 +19,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disableChecks;
 
-public class MenuFindLessonActivity extends AppCompatActivity {
+public class MenuAchievementsActivity extends AppCompatActivity {
     private TextView title;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    private List<Achievement> achievements;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class MenuFindLessonActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu_single_list);
 
         title = findViewById(R.id.title);
-        title.setText(R.string.start_new_lesson);
+        title.setText(R.string.achievements);
 
         recyclerView = findViewById(R.id.films);
 
@@ -44,23 +45,20 @@ public class MenuFindLessonActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        List<Film> films = Collections.emptyList();
         try {
-            films = new FilmsRetriever().execute().get();
-        } catch (Exception e) {
-            System.out.println("CRITICAL: Failed to download films list from a server.");
+            achievements = new AchievementsRetriever().execute().get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Error while downloading an achievements list.");
         }
 
-        Collections.sort(films, (film, t1) -> film.filmTitle.compareTo(t1.filmTitle));
-
         // specify an adapter
-        adapter = new FilmsAdapter(films, this);
+        adapter = new AchievementsAdapter(achievements);
         recyclerView.setAdapter(adapter);
     }
 
-    private static class FilmsRetriever extends AsyncTask<Void, Void, List<Film>> {
+    private static class AchievementsRetriever extends AsyncTask<Void, Void, List<Achievement>> {
         @Override
-        protected List<Film> doInBackground(Void... voids) {
+        protected List<Achievement> doInBackground(Void... voids) {
             try {
                 disableChecks();
             } catch (Exception e) {
@@ -74,12 +72,12 @@ public class MenuFindLessonActivity extends AppCompatActivity {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<List<Film>> progress =
-                    restTemplate.exchange(baseUrl + "/films/",
-                            HttpMethod.GET, entity, new ParameterizedTypeReference<List<Film>>() {
+            ResponseEntity<List<Achievement>> achievements =
+                    restTemplate.exchange(baseUrl + "/achievements",
+                            HttpMethod.GET, entity, new ParameterizedTypeReference<List<Achievement>>() {
                             });
 
-            return progress.getBody();
+            return achievements.getBody();
         }
     }
 }

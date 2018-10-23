@@ -28,7 +28,7 @@ import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disabl
 
 public class DictionaryEntryAdapter extends RecyclerView.Adapter<DictionaryEntryAdapter.MyViewHolder> {
     private List<Translation> dataset;
-    private MenuDictionary caller;
+    private MenuDictionaryActivity caller;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -42,7 +42,7 @@ public class DictionaryEntryAdapter extends RecyclerView.Adapter<DictionaryEntry
         }
     }
 
-    public DictionaryEntryAdapter(List<Translation> dataset, MenuDictionary caller) {
+    public DictionaryEntryAdapter(List<Translation> dataset, MenuDictionaryActivity caller) {
         this.dataset = dataset;
         this.caller = caller;
     }
