@@ -2,4 +2,19 @@
     <string name="app_name">EnglishSubtitled</string>
     <string name="facebook_app_id">733670553423793</string>
     <string name="fb_login_protocol_scheme">fb191746534808621</string>
+    <string name="start_new_lesson">Rozpocznij nową lekcję</string>
+    <string name="dictionary">Słownik</string>
+    <string name="achievements">Osiągnięcia</string>
+    <string name="finished_lessons">Ukończone lekcje</string>
+    <string name="logout">Wyloguj</string>
+    <string name="invisible">Nieprzeznaczone dla Twoich oczu!</string>
+    <string name="remove_recent_lesson_1">Usuń pierwszą spośród rozpoczętych lekcji</string>
+    <string name="remove_recent_lesson_2">Usuń drugą spośród rozpoczętych lekcji</string>
+    <string name="remove_recent_lesson_3">Usuń trzecią spośród rozpoczętych lekcji</string>
+    <string name="english_label">angielski</string>
+    <string name="polish_label">polski</string>
+    <string name="english_ascending">Sortuj rosnąco według słowa po angielsku</string>
+    <string name="english_descending">Sortuj malejąco według słowa po angielsku</string>
+    <string name="polish_ascending">Sortuj rosnąco według słowa po polsku</string>
+    <string name="polish_descending">Sortuj malejąco według słowa po polsku</string>
 </resources>
