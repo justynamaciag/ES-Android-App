@@ -1,99 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="0dp"
+    android:weightSum="100">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:text="@string/dictionary"
+        android:textSize="24sp" />
 
     <LinearLayout
+        android:baselineAligned="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp"
+        android:layout_weight="10"
         android:weightSum="100">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:text="@string/dictionary"
-            android:textSize="24sp" />
-
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp"
-            android:layout_weight="10"
-            android:weightSum="100">
-
-            <LinearLayout
-                android:layout_width="0dp"
+            android:layout_weight="45">
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="0dp"
-                android:layout_weight="45">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/english_label"
-                    android:textSize="24sp" />
+                android:text="@string/english_label"
+                android:textSize="24sp" />
 
-                <ImageButton
-                    android:id="@+id/englishAscending"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/english_ascending"
-                    app:srcCompat="@android:drawable/arrow_up_float" />
+            <ImageButton
+                android:id="@+id/englishAscending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/english_ascending"
+                app:srcCompat="@android:drawable/arrow_up_float" />
 
-                <ImageButton
-                    android:id="@+id/englishDescending"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/english_descending"
-                    app:srcCompat="@android:drawable/arrow_down_float" />
+            <ImageButton
+                android:id="@+id/englishDescending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/english_descending"
+                app:srcCompat="@android:drawable/arrow_down_float" />
 
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="0dp"
-                android:layout_weight="45">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/polish_label"
-                    android:textSize="24sp" />
-
-                <ImageButton
-                    android:id="@+id/polishAscending"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/polish_ascending"
-                    app:srcCompat="@android:drawable/arrow_up_float" />
-
-                <ImageButton
-                    android:id="@+id/polishDescending"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/polish_descending"
-                    app:srcCompat="@android:drawable/arrow_down_float" />
-            </LinearLayout>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp"
+            android:layout_weight="45">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/films"
-            android:scrollbars="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="80"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/polish_label"
+                android:textSize="24sp" />
 
+            <ImageButton
+                android:id="@+id/polishAscending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/polish_ascending"
+                app:srcCompat="@android:drawable/arrow_up_float" />
+
+            <ImageButton
+                android:id="@+id/polishDescending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/polish_descending"
+                app:srcCompat="@android:drawable/arrow_down_float" />
+        </LinearLayout>
     </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/films"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="80"/>
+
+</LinearLayout>
