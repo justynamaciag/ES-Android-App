@@ -52,8 +52,7 @@ public class LessonRetriever {
 
             ResponseEntity<List<LessonSummary>> lessonsListEntity =
                     restTemplate.exchange(baseUrl + "/lessons/",
-                            HttpMethod.GET, null, new ParameterizedTypeReference<List<LessonSummary>>() {
-                            });
+                            HttpMethod.GET, null, new ParameterizedTypeReference<List<LessonSummary>>() {});
 
             int lessonId = lessonsListEntity.getBody().get(0).getLessonId();
 

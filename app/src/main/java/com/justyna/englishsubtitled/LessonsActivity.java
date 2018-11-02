@@ -1,62 +1,127 @@
 package com.justyna.englishsubtitled;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.widget.Toast;
 
-import com.justyna.englishsubtitled.games.ABCDActivity;
-import com.justyna.englishsubtitled.games.CrosswordActivity;
-import com.justyna.englishsubtitled.games.WordActivity;
+import com.justyna.englishsubtitled.games.ABCDFragment;
+import com.justyna.englishsubtitled.games.CrosswordFragment;
+import com.justyna.englishsubtitled.games.WordFragment;
 import com.justyna.englishsubtitled.model.Translation;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Random;
 
-public class LessonsActivity extends AppCompatActivity {
+public class LessonsActivity extends FragmentActivity implements CrosswordFragment.OnDataPass, WordFragment.OnDataPass, ABCDFragment.OnDataPass{
 
-    Button lesson1Btn;
-    Button lesson2Btn;
-    Button lesson3Btn;
     List<Translation> translations;
+    Translation currentTranslation;
+    Random rand;
+    int counter;
+    int first = 1;
+    boolean finished = true;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lessons);
+    public void onDataPass(String data) {
+        if(data.equals("1")){
+            translations.remove(currentTranslation);
+            currentTranslation.setProgress(1);
+            translations.add(currentTranslation);
+            finished = true;
+            for(Translation translation:translations)
+                if(translation.getProgress() == 0)
+                    finished = false;
 
-        lesson1Btn = findViewById(R.id.lesson1Btn);
-        lesson2Btn = findViewById(R.id.lesson2Btn);
-        lesson3Btn = findViewById(R.id.lesson3Btn);
+            if(!finished)
+                    callGame();
+            else{
+                Toast.makeText(this, "Lesson finished", Toast.LENGTH_SHORT).show();
 
-        lesson1Btn.setOnClickListener(lesson1BtnOnClick);
-        lesson2Btn.setOnClickListener(lesson2BtnOnClick);
-        lesson3Btn.setOnClickListener(lesson3BtnOnClick);
 
-        translations = LessonRetriever.prepareTranslationList();
+            }
+        }
     }
 
 
-    private OnClickListener lesson1BtnOnClick = v -> {
-        Intent intent = new Intent(LessonsActivity.this, ABCDActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
-        intent.putExtra("translations", (Serializable) translations);
-        startActivity(intent);
-    };
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
-    private OnClickListener lesson2BtnOnClick = v -> {
-        Intent intent = new Intent(LessonsActivity.this, WordActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
-        intent.putExtra("translations", (Serializable) translations);
-        startActivity(intent);
-    };
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_lessons);
 
-    private OnClickListener lesson3BtnOnClick = v -> {
-        Intent intent = new Intent(LessonsActivity.this, CrosswordActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
-        intent.putExtra("translations", (Serializable) translations);
-        startActivity(intent);
-    };
+        rand = new Random();
+        translations = LessonRetriever.prepareTranslationList();
+        counter = translations.size();
+
+        for(Translation translation:translations){
+            translation.setProgress(0);
+        }
+
+        callGame();
+    }
+
+    private void callGame() {
+
+        ABCDFragment abcdFragment = new ABCDFragment();
+        WordFragment wordFragment = new WordFragment();
+        CrosswordFragment crosswordFragment = new CrosswordFragment();
+
+        int game = getRandomNumber(0, 3);
+        currentTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("translations", (Serializable) translations);
+        bundle.putSerializable("translation", currentTranslation);
+        crosswordFragment.setArguments(bundle);
+        abcdFragment.setArguments(bundle);
+        wordFragment.setArguments(bundle);
+
+        switch (game) {
+
+            case 0:
+                if(first == 1){
+                    first = 0;
+                    getSupportFragmentManager().beginTransaction().add(R.id.list_container, crosswordFragment).commit();
+                }
+                else {
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.list_container, crosswordFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+                break;
+            case 1:
+                if(first == 1) {
+                    first = 0;
+                    getSupportFragmentManager().beginTransaction().add(R.id.list_container, abcdFragment).commit();
+                }
+                else{
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.list_container, abcdFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+                break;
+            case 2:
+                if(first == 1) {
+                    first = 0;
+                    getSupportFragmentManager().beginTransaction().add(R.id.list_container, wordFragment).commit();
+                }
+                else{
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.list_container, wordFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
+
+                }
+                break;
+        }
+    }
+
+    private int getRandomNumber(int a, int b) {
+        return rand.nextInt(b) + a;
+    }
 
 }

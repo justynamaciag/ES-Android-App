@@ -12,6 +12,7 @@ public class Translation implements Serializable, Parcelable {
 
     private String engWord;
     private String plWord;
+    private int progress;
 
     public Translation(String engWord, String plWord){
         this.engWord = engWord;
@@ -30,6 +31,14 @@ public class Translation implements Serializable, Parcelable {
 
     public String getPlWord(){
         return plWord;
+    }
+
+    public void setProgress(int progress){
+        this.progress = progress;
+    }
+
+    public int getProgress(){
+        return progress;
     }
 
     @Override

@@ -3,13 +3,15 @@ import java.util.List;
 
 public class Lesson {
 
-    Integer lessonId;
-    public String lessonTitle;
-    public String filmTitle;
+    private int lessonId;
+    private String lessonTitle;
+    private String filmTitle;
+    private boolean finished;
+    private int score;
 
-    List<Translation> translations;
+    private List<Translation> translations;
 
-    public Integer getLessonId(){
+    public int getLessonId(){
         return lessonId;
     }
 
