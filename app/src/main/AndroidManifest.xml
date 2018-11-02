@@ -10,10 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:screenOrientation="portrait">
-
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme">
+        <activity android:name=".FacebookActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,8 +39,15 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".FacebookActivity" />
+        <activity android:name=".MenuMainActivity" />
         <activity android:name=".LessonsActivity" />
+        <activity android:name=".games.ABCDActivity" />
+        <activity android:name=".games.WordActivity" />
+        <activity android:name=".games.CrosswordActivity" />
+        <activity android:name=".menu.MenuFindLessonActivity" />
+        <activity android:name=".menu.MenuFinishedLessonsActivity" />
+        <activity android:name=".menu.MenuDictionaryActivity" />
+        <activity android:name=".menu.MenuAchievementsActivity" />
     </application>
 
 </manifest>

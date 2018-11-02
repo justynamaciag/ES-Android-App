@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -18,25 +19,18 @@ public class FacebookActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-
-        if(isLoggedIn){
-            Intent intent = new Intent(FacebookActivity.this, LessonsActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            FacebookActivity.this.startActivity(intent);
-        }
-
         setContentView(R.layout.activity_facebook);
+
+        skipIfLoggedIn();
+
         callbackManager = CallbackManager.Factory.create();
         loginButton = findViewById(R.id.login_button);
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Intent intent = new Intent(FacebookActivity.this, LessonsActivity.class);
+                Intent intent = new Intent(FacebookActivity.this, MenuMainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 FacebookActivity.this.startActivity(intent);
             }
@@ -48,9 +42,37 @@ public class FacebookActivity extends AppCompatActivity {
             @Override
             public void onError(FacebookException exception) {
             }
-
         });
 
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        skipIfLoggedIn();
+    }
+
+    private void skipIfLoggedIn(){
+
+        goToMenu(AccessToken.getCurrentAccessToken());
+
+        new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
+                stopTracking();
+                goToMenu(newAccessToken);
+            }
+        };
+    }
+
+    private void goToMenu(AccessToken accessToken){
+        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+
+        if (isLoggedIn) {
+            Intent intent = new Intent(FacebookActivity.this, MenuMainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            FacebookActivity.this.startActivity(intent);
+        }
     }
 
     @Override
