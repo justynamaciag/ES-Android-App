@@ -3,12 +3,12 @@ package com.justyna.englishsubtitled;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.widget.Toast;
 
 import com.justyna.englishsubtitled.games.ABCDFragment;
 import com.justyna.englishsubtitled.games.CrosswordFragment;
 import com.justyna.englishsubtitled.games.WordFragment;
 import com.justyna.englishsubtitled.model.Translation;
+import com.justyna.englishsubtitled.utils.FinishLessonFragment;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,7 +19,6 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     List<Translation> translations;
     Translation currentTranslation;
     Random rand;
-    int counter;
     int first = 1;
     boolean finished = true;
 
@@ -30,21 +29,25 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
             translations.remove(currentTranslation);
             currentTranslation.setProgress(1);
             translations.add(currentTranslation);
-            finished = true;
-            for(Translation translation:translations)
-                if(translation.getProgress() == 0)
-                    finished = false;
-
-            if(!finished)
-                    callGame();
-            else{
-                Toast.makeText(this, "Lesson finished", Toast.LENGTH_SHORT).show();
-
-
-            }
+        }
+        finished = true;
+        for(Translation translation:translations)
+            if(translation.getProgress() == 0)
+                finished = false;
+        if(!finished)
+            callGame();
+        else{
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.list_container, new FinishLessonFragment());
+            ft.addToBackStack(null);
+            ft.commit();
         }
     }
 
+    @Override
+    public void onBackPressed(){
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +57,9 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
         rand = new Random();
         translations = LessonRetriever.prepareTranslationList();
-        counter = translations.size();
-
         for(Translation translation:translations){
             translation.setProgress(0);
         }
-
         callGame();
     }
 
@@ -70,10 +70,12 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         CrosswordFragment crosswordFragment = new CrosswordFragment();
 
         int game = getRandomNumber(0, 3);
+
         currentTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
         Bundle bundle = new Bundle();
         bundle.putSerializable("translations", (Serializable) translations);
         bundle.putSerializable("translation", currentTranslation);
+
         crosswordFragment.setArguments(bundle);
         abcdFragment.setArguments(bundle);
         wordFragment.setArguments(bundle);
@@ -114,7 +116,6 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                     ft.replace(R.id.list_container, wordFragment);
                     ft.addToBackStack(null);
                     ft.commit();
-
                 }
                 break;
         }

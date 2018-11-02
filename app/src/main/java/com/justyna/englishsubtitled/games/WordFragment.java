@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,27 +59,6 @@ public class WordFragment extends Fragment {
         return view;
     }
 
-    private View.OnClickListener btnListener = v -> {
-
-        Button pressedBtn = (Button) v;
-        char pressed = pressedBtn.getText().charAt(0);
-        char actual = currentTranslation.getEngWord().charAt(checkedIndex);
-
-        if (pressed == actual) {
-            letters.get(checkedIndex).setText(pressedBtn.getText().toString().toUpperCase());
-            checkedIndex++;
-            pressedBtn.setEnabled(false);
-
-            if (checkedIndex == currentTranslation.getEngWord().length()) {
-
-                Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
-
-            }
-        }
-
-    };
-
-
     @SuppressLint("ClickableViewAccessibility")
     public void setButtons(Translation translation) {
 
@@ -108,6 +86,8 @@ public class WordFragment extends Fragment {
                 String clicked = buttons.get(index);
                 String correct = Character.toString(currentTranslation.getEngWord().charAt(checkedIndex));
                 if (clicked.equals(correct)) {
+
+
                     letters.get(checkedIndex).setText(clicked);
                     if (checkedIndex + 1 == currentTranslation.getEngWord().length()) {
                         Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
@@ -130,6 +110,17 @@ public class WordFragment extends Fragment {
         }
 
     }
+    Thread thread = new Thread(){
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
 
     public void passData(String data) {
         dataPasser.onDataPass(data);

@@ -92,6 +92,7 @@ public class ABCDFragment extends Fragment {
 
     }
 
+
     private Translation getRandomTranslation() {
         int random = rand.nextInt(translations.size());
         return translations.get(random);

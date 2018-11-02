@@ -26,13 +26,12 @@ public class CrosswordFragment extends Fragment {
 
     Translation currentTranslation;
     List<String> gridViewLetters;
-    Random rand;
+    Random rand = new Random();
     String[][] table;
     String clicked;
     TextView helperTV;
     int i = 0, N = 10, reverse, row, offset;
     View view;
-    int prev = 0;
 
 
     OnDataPass dataPasser;
@@ -57,10 +56,11 @@ public class CrosswordFragment extends Fragment {
             currentTranslation = (Translation) bundle.getSerializable("translation");
         }
         String currentTranslationPL = currentTranslation.getPlWord();
-
-        if(currentTranslationPL.length()>N) {
-            System.out.println("c");
+        if(currentTranslation.getEngWord().length()>=N) {
+            passData("0");
+            return view;
         }
+
         table = new String[N][N];
         rand = new Random();
         gridViewLetters = prepareTable(currentTranslation);
@@ -83,7 +83,6 @@ public class CrosswordFragment extends Fragment {
                     if(reverse==1) {
                         System.out.println(clicked + " " + table[row][offset+i] + " " + i);
                         if (clicked.toLowerCase().equals(table[row][offset+i].toLowerCase())) {
-                            System.out.println("jetsem w euals");
                             i++;
                         }
                     }
@@ -99,12 +98,6 @@ public class CrosswordFragment extends Fragment {
 
                     }
                 }
-
-                if (i == currentTranslation.getEngWord().length()) {
-                    Toast.makeText(getContext(), "cool", Toast.LENGTH_SHORT).show();
-                    passData("1");
-
-                }
                 return true;
             }
             catch (IndexOutOfBoundsException e){
@@ -116,6 +109,16 @@ public class CrosswordFragment extends Fragment {
         return view;
     }
 
+    Thread thread = new Thread(){
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     private List<String> prepareTable(Translation translation){
 
