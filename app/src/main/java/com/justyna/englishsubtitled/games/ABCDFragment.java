@@ -25,20 +25,18 @@ import java.util.Random;
 public class ABCDFragment extends Fragment implements WordButtonsAdapter.customButtonListener {
 
     OnDataPass dataPasser;
+    List<Translation> translations;
+    TextView wordTextView;
+    Random rand = new Random();
+    Translation currentTranslation;
+    View view;
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         dataPasser = (OnDataPass) context;
     }
-
-
-    List<Translation> translations;
-    HashSet<String> buttons;
-    TextView wordTextView;
-    Random rand = new Random();
-    Translation word;
-    View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,68 +45,66 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
         Bundle bundle = getArguments();
         if (bundle != null) {
             translations = (List<Translation>) bundle.getSerializable("translations");
-            word = (Translation) bundle.getSerializable("translation");
+            currentTranslation = (Translation) bundle.getSerializable("translation");
         }
-        prepareGame();
+        List<Button> buttonList = prepareGame();
+        callGame(buttonList);
 
         return view;
     }
 
-    public void prepareGame() {
-
-        String wordPL = word.getPlWord();
-        wordTextView = view.findViewById(R.id.wordTextView);
-        wordTextView.setText(word.getEngWord());
-
-        buttons = new HashSet<>();
-        buttons.add(wordPL);
-
-        while (buttons.size() < 4)
-            buttons.add(getRandomTranslation().getPlWord());
-
-        ArrayList<String> buttonList = new ArrayList<>();
-
-        buttonList.addAll(buttons);
-        Collections.shuffle(buttonList);
-
-
-        List<Button> btns = new ArrayList<>();
-        for (String b : buttonList) {
-            Button btn = new Button(getContext());
-            btn.setText(b);
-            btns.add(btn);
-            System.out.println(btn.getText());
-        }
+    private void callGame(List<Button> buttonList){
 
         ListView listView = (ListView) view.findViewById(R.id.abcdListView);
-        WordButtonsAdapter a = new WordButtonsAdapter(getContext(), btns);
+        WordButtonsAdapter a = new WordButtonsAdapter(getContext(), buttonList);
         a.setCustomButtonListner(ABCDFragment.this);
         listView.setAdapter(a);
 
         Drawable background = view.getBackground();
         listView.setDivider(background);
-
     }
 
+    public List<Button> prepareGame() {
+
+        String wordPL = currentTranslation.getPlWord();
+        wordTextView = view.findViewById(R.id.wordTextView);
+        wordTextView.setText(currentTranslation.getEngWord());
+
+        HashSet<String> buttonSet = new HashSet<>();
+        buttonSet.add(wordPL);
+        while (buttonSet.size() < 4)
+            buttonSet.add(getRandomTranslation().getPlWord());
+
+        List<Button> buttonList = new ArrayList<>();
+        for (String b : buttonSet) {
+            Button btn = new Button(getContext());
+            btn.setText(b);
+            buttonList.add(btn);
+        }
+
+        Collections.shuffle(buttonList);
+
+        return buttonList;
+
+    }
 
     private Translation getRandomTranslation() {
         int random = rand.nextInt(translations.size());
         return translations.get(random);
     }
 
-    public void passData(String data) {
-        dataPasser.onDataPass(data);
-    }
-
     @Override
     public void onButtonClickListner(Button b) {
 
         String clicked = String.valueOf(b.getText());
-
-        if (clicked.equals(word.getPlWord())) {
+        if (clicked.equals(currentTranslation.getPlWord())) {
             Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
             passData("1");
-            }
+        }
+    }
+
+    public void passData(String data) {
+        dataPasser.onDataPass(data);
     }
 
     public interface OnDataPass {

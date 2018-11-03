@@ -23,12 +23,11 @@ import java.util.Random;
 public class CrosswordFragment extends Fragment implements CrosswordAdapter.customTVListener {
 
     Translation currentTranslation;
-    List<String> gridViewLetters;
     Random rand = new Random();
     String[][] table;
     String clicked;
     TextView helperTV;
-    int i = 0, N = 10, reverse, row, offset;
+    int i = 0, N = 10, directions = 2, reverse, row, offset, a = 'A', z = 'Z';
     View view;
     boolean startOk = false;
 
@@ -53,17 +52,22 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         if (bundle != null) {
             currentTranslation = (Translation) bundle.getSerializable("translation");
         }
-        String currentTranslationPL = currentTranslation.getPlWord();
+
         if (currentTranslation.getEngWord().length() >= N) {
             passData("0");
             return view;
         }
 
-        table = new String[N][N];
         rand = new Random();
-        gridViewLetters = prepareTable(currentTranslation);
+        List<String> gridViewLetters = prepareTable(currentTranslation);
+        callGame(gridViewLetters);
 
-        helperTV.setText(currentTranslationPL);
+        return view;
+    }
+
+    private void callGame(List<String> gridViewLetters){
+
+        helperTV.setText(currentTranslation.getPlWord());
 
         List<TextView> lettersTV = new ArrayList<>();
         for (String letter : gridViewLetters) {
@@ -71,6 +75,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             tv.setText(letter);
             lettersTV.add(tv);
         }
+
         GridView crosswordGrid = (GridView) view.findViewById(R.id.gridview);
         crosswordGrid.setNumColumns(N);
         CrosswordAdapter a = new CrosswordAdapter(getContext(), lettersTV);
@@ -96,14 +101,12 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
                         passData("1");
                     }
                 }
-
                 if (action == MotionEvent.ACTION_DOWN) {
                     if (clicked.toLowerCase().equals((table[row][offset])))
                         startOk = true;
                     else
                         startOk = false;
                 }
-
                 return true;
 
             } catch (IndexOutOfBoundsException e) {
@@ -111,19 +114,18 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             }
 
         });
-
-        return view;
     }
 
 
     private List<String> prepareTable(Translation translation) {
 
+        table = new String[N][N];
         row = rand.nextInt(N);
         offset = rand.nextInt(N - translation.getEngWord().length());
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                table[i][j] = Character.toString((char) (rand.nextInt('Z' - 'A') + 'A'));
+                table[i][j] = Character.toString((char) (rand.nextInt(z - a) + a));
             }
         }
 
@@ -131,7 +133,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             table[row][i] = Character.toString(translation.getEngWord().charAt(i - offset));
         }
 
-        reverse = rand.nextInt(2);
+        reverse = rand.nextInt(directions);
         ArrayList<String> tableList = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
@@ -148,7 +150,6 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     public void passData(String data) {
         dataPasser.onDataPass(data);
     }
-
 
     @Override
     public boolean onTVClickListner(int position, TextView tv, MotionEvent event) {return true;}

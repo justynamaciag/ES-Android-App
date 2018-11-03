@@ -1,6 +1,7 @@
 package com.justyna.englishsubtitled;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
@@ -14,38 +15,43 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
-public class LessonsActivity extends FragmentActivity implements CrosswordFragment.OnDataPass, WordFragment.OnDataPass, ABCDFragment.OnDataPass{
+public class LessonsActivity extends FragmentActivity implements CrosswordFragment.OnDataPass, WordFragment.OnDataPass, ABCDFragment.OnDataPass {
 
     List<Translation> translations;
     Translation currentTranslation;
-    Random rand;
-    int first = 1;
-    boolean finished = true;
-
+    Random rand = new Random();
+    boolean first = true, finished = true;
+    int minRepeats = 2;
 
     @Override
     public void onDataPass(String data) {
-        if(data.equals("1")){
+        if (data.equals("1")) {
             translations.remove(currentTranslation);
-            currentTranslation.setProgress(1);
+            currentTranslation.setProgress(currentTranslation.getProgress() + 1);
             translations.add(currentTranslation);
         }
         finished = true;
-        for(Translation translation:translations)
-            if(translation.getProgress() == 0)
+        for (Translation t : translations) {
+            if (t.getProgress() < minRepeats) {
                 finished = false;
-        if(!finished)
-            callGame();
-        else{
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.list_container, new FinishLessonFragment());
-            ft.addToBackStack(null);
-            ft.commit();
+            }
         }
+        if (!finished)
+            prepareGame();
+        else
+            callFragment(new FinishLessonFragment());
+
+    }
+
+    private void callFragment(Fragment fragment) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.list_container, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed() {
         finish();
     }
 
@@ -55,70 +61,53 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons);
 
-        rand = new Random();
         translations = LessonRetriever.prepareTranslationList();
-        for(Translation translation:translations){
+        for (Translation translation : translations) {
             translation.setProgress(0);
         }
-        callGame();
+        prepareGame();
     }
 
-    private void callGame() {
+    private Translation getRandomTranslation() {
+        Translation tempTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
+        while ((tempTranslation.getProgress() >= minRepeats))
+            tempTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
 
-        ABCDFragment abcdFragment = new ABCDFragment();
-        WordFragment wordFragment = new WordFragment();
-        CrosswordFragment crosswordFragment = new CrosswordFragment();
+        return tempTranslation;
+    }
 
-        int game = getRandomNumber(0, 3);
+    private void callGame(int game, Bundle bundle) {
 
-        currentTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("translations", (Serializable) translations);
-        bundle.putSerializable("translation", currentTranslation);
-
-        crosswordFragment.setArguments(bundle);
-        abcdFragment.setArguments(bundle);
-        wordFragment.setArguments(bundle);
-
+        Fragment fragment = new Fragment();
         switch (game) {
-
             case 0:
-                if(first == 1){
-                    first = 0;
-                    getSupportFragmentManager().beginTransaction().add(R.id.list_container, crosswordFragment).commit();
-                }
-                else {
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.list_container, crosswordFragment);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                }
+                fragment = new CrosswordFragment();
                 break;
             case 1:
-                if(first == 1) {
-                    first = 0;
-                    getSupportFragmentManager().beginTransaction().add(R.id.list_container, abcdFragment).commit();
-                }
-                else{
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.list_container, abcdFragment);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                }
+                fragment = new ABCDFragment();
+                bundle.putSerializable("translations", (Serializable) translations);
                 break;
             case 2:
-                if(first == 1) {
-                    first = 0;
-                    getSupportFragmentManager().beginTransaction().add(R.id.list_container, wordFragment).commit();
-                }
-                else{
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.list_container, wordFragment);
-                    ft.addToBackStack(null);
-                    ft.commit();
-                }
+                fragment = new WordFragment();
                 break;
         }
+        fragment.setArguments(bundle);
+        if (first) {
+            first = false;
+            getSupportFragmentManager().beginTransaction().add(R.id.list_container, fragment).commit();
+        } else
+            callFragment(fragment);
+
+    }
+
+
+    private void prepareGame() {
+        int game = getRandomNumber(0, 3);
+        currentTranslation = getRandomTranslation();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("translation", currentTranslation);
+
+        callGame(game, bundle);
     }
 
     private int getRandomNumber(int a, int b) {

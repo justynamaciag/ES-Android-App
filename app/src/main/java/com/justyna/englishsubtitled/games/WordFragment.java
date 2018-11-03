@@ -23,23 +23,19 @@ import java.util.Random;
 
 public class WordFragment extends Fragment implements WordButtonsAdapter.customButtonListener {
 
-    Translation currentTranslation;
-    List<String> buttons;
-    List<TextView> letters;
-    Random rand;
-    int checkedIndex;
-    View view;
-    int colNum = 5;
-    TextView plWordTextView;
-
     WordFragment.OnDataPass dataPasser;
+    Translation currentTranslation;
+    List<TextView> letters;
+    TextView plWordTextView;
+    Random rand = new Random();
+    View view;
+    int colNum = 5, checkedIndex = 0;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         dataPasser = (WordFragment.OnDataPass) context;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,59 +46,47 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
             currentTranslation = (Translation) bundle.getSerializable("translation");
         }
 
-        rand = new Random();
-        buttons = new ArrayList<>();
-        letters = new ArrayList<>();
-        checkedIndex = 0;
         plWordTextView = view.findViewById(R.id.plWordTv);
 
-        setButtons(currentTranslation);
+        List<Button> buttonList = prepareButtons(currentTranslation);
+        callGame(buttonList);
 
         return view;
     }
 
-    public void setButtons(Translation translation) {
+    private List<Button> prepareButtons(Translation translation){
 
-        buttons = new ArrayList<>();
-        letters = new ArrayList<>();
+        List<Button> buttonList = new ArrayList<>();
+        for (int i = 0; i < translation.getEngWord().length(); i++) {
+            Button btn = new Button(getContext());
+            btn.setText(Character.toString(translation.getEngWord().charAt(i)));
+            buttonList.add(btn);
+        }
+        Collections.shuffle(buttonList);
 
+        return buttonList;
+    }
+
+    private void callGame(List<Button> buttonList) {
 
         LinearLayout wordLayout = view.findViewById(R.id.wordLayout);
-
-        for (int i = 0; i < translation.getEngWord().length(); i++) {
-            buttons.add(Character.toString(translation.getEngWord().charAt(i)));
-        }
-
-        Collections.shuffle(buttons);
-
-        List<Button> btns = new ArrayList<>();
-        for (String b : buttons) {
-            Button btn = new Button(getContext());
-            btn.setText(b);
-            btns.add(btn);
-            System.out.println(btn.getText());
-        }
-
         plWordTextView.setText(currentTranslation.getPlWord());
 
         GridView gridview = (GridView) view.findViewById(R.id.buttonsLayout);
         gridview.setNumColumns(colNum);
-        WordButtonsAdapter a = new WordButtonsAdapter(getContext(), btns);
+        WordButtonsAdapter a = new WordButtonsAdapter(getContext(), buttonList);
         a.setCustomButtonListner(WordFragment.this);
         gridview.setAdapter(a);
 
-        for (String b : buttons) {
+        int buttonListSize = buttonList.size();
+        letters = new ArrayList<>();
+        for (int i=0; i<buttonListSize; i++) {
             TextView letterTV = new TextView(getContext());
             letters.add(letterTV);
             letterTV.setTextSize(24);
             letterTV.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             wordLayout.addView(letterTV);
         }
-
-    }
-
-    public void passData(String data) {
-        dataPasser.onDataPass(data);
     }
 
     @Override
@@ -120,6 +104,10 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
             checkedIndex++;
             b.setEnabled(false);
         }
+    }
+
+    public void passData(String data) {
+        dataPasser.onDataPass(data);
     }
 
     public interface OnDataPass {
