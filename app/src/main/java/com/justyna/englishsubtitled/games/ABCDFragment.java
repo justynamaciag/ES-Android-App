@@ -1,6 +1,7 @@
 package com.justyna.englishsubtitled.games;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -83,6 +84,9 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
         WordButtonsAdapter a = new WordButtonsAdapter(getContext(), btns);
         a.setCustomButtonListner(ABCDFragment.this);
         listView.setAdapter(a);
+
+        Drawable background = view.getBackground();
+        listView.setDivider(background);
 
     }
 

@@ -30,6 +30,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     int checkedIndex;
     View view;
     int colNum = 5;
+    TextView plWordTextView;
 
     WordFragment.OnDataPass dataPasser;
 
@@ -53,6 +54,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
         buttons = new ArrayList<>();
         letters = new ArrayList<>();
         checkedIndex = 0;
+        plWordTextView = view.findViewById(R.id.plWordTv);
 
         setButtons(currentTranslation);
 
@@ -63,6 +65,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
 
         buttons = new ArrayList<>();
         letters = new ArrayList<>();
+
 
         LinearLayout wordLayout = view.findViewById(R.id.wordLayout);
 
@@ -80,6 +83,8 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
             System.out.println(btn.getText());
         }
 
+        plWordTextView.setText(currentTranslation.getPlWord());
+
         GridView gridview = (GridView) view.findViewById(R.id.buttonsLayout);
         gridview.setNumColumns(colNum);
         WordButtonsAdapter a = new WordButtonsAdapter(getContext(), btns);
@@ -89,7 +94,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
         for (String b : buttons) {
             TextView letterTV = new TextView(getContext());
             letters.add(letterTV);
-            letterTV.setTextSize(20);
+            letterTV.setTextSize(24);
             letterTV.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             wordLayout.addView(letterTV);
         }

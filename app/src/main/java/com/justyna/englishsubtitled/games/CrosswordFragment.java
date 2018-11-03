@@ -94,7 +94,6 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
                     if (i == currentTranslation.getEngWord().length()) {
                         Toast.makeText(getContext(), "cool", Toast.LENGTH_SHORT).show();
                         passData("1");
-
                     }
                 }
 
