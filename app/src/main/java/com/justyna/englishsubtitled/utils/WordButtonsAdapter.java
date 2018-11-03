@@ -11,7 +11,7 @@ import com.justyna.englishsubtitled.R;
 
 import java.util.List;
 
-public class ABCDButtonAdapter extends BaseAdapter {
+public class WordButtonsAdapter extends BaseAdapter {
 
     customButtonListener customListener;
     private Context mContext;
@@ -28,7 +28,7 @@ public class ABCDButtonAdapter extends BaseAdapter {
     }
 
 
-    public ABCDButtonAdapter(Context c, List<Button> buttons) {
+    public WordButtonsAdapter(Context c, List<Button> buttons) {
         mContext = c;
         this.buttons = buttons;
     }
@@ -54,10 +54,10 @@ public class ABCDButtonAdapter extends BaseAdapter {
         if (convertView == null) {
 
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.abcd_buttons,  null);
+            view = inflater.inflate(R.layout.buttons,  null);
         }
 
-        Button button = (Button) view.findViewById(R.id.abcdButtons);
+        Button button = (Button) view.findViewById(R.id.buttons);
         button.setText(buttons.get(position).getText());
 
         button.setOnClickListener(v -> {
@@ -65,6 +65,7 @@ public class ABCDButtonAdapter extends BaseAdapter {
                 customListener.onButtonClickListner(button);
             }
         });
+
 
         return button;
 

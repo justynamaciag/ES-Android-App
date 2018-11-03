@@ -1,28 +1,26 @@
 package com.justyna.englishsubtitled.games;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Translation;
+import com.justyna.englishsubtitled.utils.CrosswordAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CrosswordFragment extends Fragment {
-
-    //za długie słówko - obsluga
+public class CrosswordFragment extends Fragment implements CrosswordAdapter.customTVListener {
 
     Translation currentTranslation;
     List<String> gridViewLetters;
@@ -32,6 +30,7 @@ public class CrosswordFragment extends Fragment {
     TextView helperTV;
     int i = 0, N = 10, reverse, row, offset;
     View view;
+    boolean startOk = false;
 
 
     OnDataPass dataPasser;
@@ -43,7 +42,6 @@ public class CrosswordFragment extends Fragment {
     }
 
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,7 +54,7 @@ public class CrosswordFragment extends Fragment {
             currentTranslation = (Translation) bundle.getSerializable("translation");
         }
         String currentTranslationPL = currentTranslation.getPlWord();
-        if(currentTranslation.getEngWord().length()>=N) {
+        if (currentTranslation.getEngWord().length() >= N) {
             passData("0");
             return view;
         }
@@ -67,10 +65,17 @@ public class CrosswordFragment extends Fragment {
 
         helperTV.setText(currentTranslationPL);
 
-        ArrayAdapter<String> crosswordAdapter = new ArrayAdapter<String>(getContext(), R.layout.crossword, R.id.crossword, gridViewLetters);
-        GridView crosswordGrid = view.findViewById(R.id.gridview);
+        List<TextView> lettersTV = new ArrayList<>();
+        for (String letter : gridViewLetters) {
+            TextView tv = new TextView(getContext());
+            tv.setText(letter);
+            lettersTV.add(tv);
+        }
+        GridView crosswordGrid = (GridView) view.findViewById(R.id.gridview);
         crosswordGrid.setNumColumns(N);
-        crosswordGrid.setAdapter(crosswordAdapter);
+        CrosswordAdapter a = new CrosswordAdapter(getContext(), lettersTV);
+        a.setCustomTVListner(CrosswordFragment.this);
+        crosswordGrid.setAdapter(a);
 
         crosswordGrid.setOnTouchListener((v, event) -> {
             float x = event.getX();
@@ -78,29 +83,31 @@ public class CrosswordFragment extends Fragment {
             try {
                 int point = crosswordGrid.pointToPosition((int) x, (int) y);
                 int action = event.getAction() & MotionEvent.ACTION_MASK;
+                clicked = gridViewLetters.get(point);
                 if (action == MotionEvent.ACTION_MOVE) {
-                    clicked = gridViewLetters.get(point);
-                    if(reverse==1) {
-                        System.out.println(clicked + " " + table[row][offset+i] + " " + i);
-                        if (clicked.toLowerCase().equals(table[row][offset+i].toLowerCase())) {
-                            i++;
-                        }
-                    }
-                    else if(reverse==0) {
-                        System.out.println(clicked + " " + table[row][offset+i] + " " + i);
-                        if (clicked.toLowerCase().equals(table[row][offset+i].toLowerCase())) {
-                            i++;
-                        }
-                    }
+                    if (clicked.toLowerCase().equals(table[row][offset + i].toLowerCase()) && startOk) {
+                        TextView tv = a.getItem(point);
+                        tv.setBackgroundColor(Color.parseColor("#ffae19"));
+                        i++;
+                    } else if (!clicked.toLowerCase().equals(table[row][offset + i - 1].toLowerCase()))
+                        i = 0;
                     if (i == currentTranslation.getEngWord().length()) {
                         Toast.makeText(getContext(), "cool", Toast.LENGTH_SHORT).show();
                         passData("1");
 
                     }
                 }
+
+                if (action == MotionEvent.ACTION_DOWN) {
+                    if (clicked.toLowerCase().equals((table[row][offset])))
+                        startOk = true;
+                    else
+                        startOk = false;
+                }
+
                 return true;
-            }
-            catch (IndexOutOfBoundsException e){
+
+            } catch (IndexOutOfBoundsException e) {
                 return false;
             }
 
@@ -109,37 +116,27 @@ public class CrosswordFragment extends Fragment {
         return view;
     }
 
-    Thread thread = new Thread(){
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(2000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
-    private List<String> prepareTable(Translation translation){
+    private List<String> prepareTable(Translation translation) {
 
         row = rand.nextInt(N);
         offset = rand.nextInt(N - translation.getEngWord().length());
 
-        for(int i=0; i<N; i++){
-            for(int j=0; j<N; j++){
-                table[i][j] = Character.toString((char) (rand.nextInt('Z'-'A')+'A'));
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                table[i][j] = Character.toString((char) (rand.nextInt('Z' - 'A') + 'A'));
             }
         }
 
-        for(int i=offset; i<offset+translation.getEngWord().length(); i++) {
-            table[row][i] = Character.toString(translation.getEngWord().charAt(i-offset));
+        for (int i = offset; i < offset + translation.getEngWord().length(); i++) {
+            table[row][i] = Character.toString(translation.getEngWord().charAt(i - offset));
         }
 
         reverse = rand.nextInt(2);
         ArrayList<String> tableList = new ArrayList<>();
-        for(int i=0; i<N; i++){
-            for(int j=0; j<N; j++){
-                if(reverse == 1)
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (reverse == 1)
                     tableList.add(table[j][i]);
                 else
                     tableList.add(table[i][j]);
@@ -152,6 +149,10 @@ public class CrosswordFragment extends Fragment {
     public void passData(String data) {
         dataPasser.onDataPass(data);
     }
+
+
+    @Override
+    public boolean onTVClickListner(int position, TextView tv, MotionEvent event) {return true;}
 
     public interface OnDataPass {
         void onDataPass(String data);

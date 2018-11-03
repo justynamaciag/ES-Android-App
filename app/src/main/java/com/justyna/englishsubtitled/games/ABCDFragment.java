@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utils.ABCDButtonAdapter;
+import com.justyna.englishsubtitled.utils.WordButtonsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-public class ABCDFragment extends Fragment implements ABCDButtonAdapter.customButtonListener {
+public class ABCDFragment extends Fragment implements WordButtonsAdapter.customButtonListener {
 
     OnDataPass dataPasser;
 
@@ -80,10 +80,10 @@ public class ABCDFragment extends Fragment implements ABCDButtonAdapter.customBu
         }
 
         ListView listView = (ListView) view.findViewById(R.id.abcdListView);
-        ABCDButtonAdapter a = new ABCDButtonAdapter(getContext(), btns);
+        WordButtonsAdapter a = new WordButtonsAdapter(getContext(), btns);
         a.setCustomButtonListner(ABCDFragment.this);
         listView.setAdapter(a);
-        
+
     }
 
 

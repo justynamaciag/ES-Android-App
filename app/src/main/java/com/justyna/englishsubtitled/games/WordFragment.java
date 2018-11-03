@@ -1,6 +1,5 @@
 package com.justyna.englishsubtitled.games;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,14 +14,14 @@ import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utils.ButtonAdapter;
+import com.justyna.englishsubtitled.utils.WordButtonsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class WordFragment extends Fragment implements ButtonAdapter.customButtonListener {
+public class WordFragment extends Fragment implements WordButtonsAdapter.customButtonListener {
 
     Translation currentTranslation;
     List<String> buttons;
@@ -30,6 +29,7 @@ public class WordFragment extends Fragment implements ButtonAdapter.customButton
     Random rand;
     int checkedIndex;
     View view;
+    int colNum = 5;
 
     WordFragment.OnDataPass dataPasser;
 
@@ -59,7 +59,6 @@ public class WordFragment extends Fragment implements ButtonAdapter.customButton
         return view;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     public void setButtons(Translation translation) {
 
         buttons = new ArrayList<>();
@@ -82,8 +81,8 @@ public class WordFragment extends Fragment implements ButtonAdapter.customButton
         }
 
         GridView gridview = (GridView) view.findViewById(R.id.buttonsLayout);
-        gridview.setNumColumns(5);
-        ButtonAdapter a = new ButtonAdapter(getContext(), btns);
+        gridview.setNumColumns(colNum);
+        WordButtonsAdapter a = new WordButtonsAdapter(getContext(), btns);
         a.setCustomButtonListner(WordFragment.this);
         gridview.setAdapter(a);
 
