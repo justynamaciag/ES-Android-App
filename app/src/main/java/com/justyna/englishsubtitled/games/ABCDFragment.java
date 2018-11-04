@@ -31,7 +31,6 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     Translation currentTranslation;
     View view;
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

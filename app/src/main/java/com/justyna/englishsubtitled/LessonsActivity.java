@@ -1,14 +1,18 @@
 package com.justyna.englishsubtitled;
 
+import android.app.usage.UsageEvents;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.widget.Button;
 
 import com.justyna.englishsubtitled.games.ABCDFragment;
 import com.justyna.englishsubtitled.games.CrosswordFragment;
 import com.justyna.englishsubtitled.games.WordFragment;
 import com.justyna.englishsubtitled.model.Translation;
+import com.justyna.englishsubtitled.utils.DictionarySender;
 import com.justyna.englishsubtitled.utils.FinishLessonFragment;
 
 import java.io.Serializable;
@@ -22,6 +26,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     Random rand = new Random();
     boolean first = true, finished = true;
     int minRepeats = 2;
+    Button dictionaryBtn;
 
     @Override
     public void onDataPass(String data) {
@@ -61,11 +66,18 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons);
 
+        dictionaryBtn = this.findViewById(R.id.dictionary_btn);
+        dictionaryBtn.setOnClickListener(v -> sendToBackend(currentTranslation));
+
         translations = LessonRetriever.prepareTranslationList();
         for (Translation translation : translations) {
             translation.setProgress(0);
         }
         prepareGame();
+    }
+
+    private void sendToBackend(Translation translation){
+        DictionarySender.addToDict(translation);
     }
 
     private Translation getRandomTranslation() {
