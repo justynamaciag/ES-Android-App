@@ -29,7 +29,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     TextView polishTranslationDisplay;
     int i = 0, N = 10, row, offset, a = 'a', z = 'z';
     View view;
-    boolean transpose, firstCellCorrect = false, finishLessonSuccess = true, finishLessonFail = false;
+    boolean transpose, firstCellCorrect = false, finishGameSuccess = true, finishGameFail = false;
 
     OnDataPass dataPasser;
 
@@ -53,7 +53,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         }
 
         if (currentTranslation.getEngWord().length() >= N) {
-            passData(finishLessonFail);
+            passData(finishGameFail);
             return view;
         }
 
@@ -66,7 +66,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     }
 
 
-    private GridView prepareCrosswordGrid(List<String> gridViewLetters){
+    private GridView prepareCrosswordGrid(List<String> gridViewLetters) {
 
         List<TextView> crosswordCells = new ArrayList<>();
         for (String letter : gridViewLetters) {
@@ -85,7 +85,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void callGame(GridView crosswordGrid, List<String> gridViewLetters){
+    private void callGame(GridView crosswordGrid, List<String> gridViewLetters) {
 
         polishTranslationDisplay.setText(currentTranslation.getPlWord());
 
@@ -113,15 +113,15 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         });
     }
 
-//  check if first touched cell is correct,
+    //  check if first touched cell is correct,
 //  drawing entire row/column containing correct translation wont work, only specific letters
-    private boolean checkIfFirstCellCorrect(){
+    private boolean checkIfFirstCellCorrect() {
         if (clicked.toUpperCase().equals((table[row][offset])))
             return true;
         return false;
     }
 
-    private void checkIfUserClicksCorrect(){
+    private void checkIfUserClicksCorrect() {
 
         if (clicked.equalsIgnoreCase(table[row][offset + i]) && firstCellCorrect)
             i++;
@@ -131,11 +131,10 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             i = 0;
 
         if (i == currentTranslation.getEngWord().length()) {
-            Toast.makeText(getContext(), "cool", Toast.LENGTH_SHORT).show();
-            passData(finishLessonSuccess);
+            Toast.makeText(view.getContext(), "Perfect!", Toast.LENGTH_SHORT).show();
+            passData(finishGameSuccess);
         }
     }
-
 
     private List<String> prepareGameTable(Translation translation) {
 
@@ -174,7 +173,9 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     }
 
     @Override
-    public boolean onTVClickListner(int position, TextView tv, MotionEvent event) {return true;}
+    public boolean onTVClickListner(int position, TextView tv, MotionEvent event) {
+        return true;
+    }
 
     public interface OnDataPass {
         void onDataPass(boolean data);

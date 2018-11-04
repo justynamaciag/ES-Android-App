@@ -1,7 +1,11 @@
 package com.justyna.englishsubtitled.games.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +31,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     List<TextView> letters;
     TextView plWordTextView;
     View view;
-    boolean finishLessonSuccess = true;
+    boolean finishGameSuccess = true;
     int colNum = 5, checkedIndex = 0;
 
     @Override
@@ -53,7 +57,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
         return view;
     }
 
-    private List<Button> prepareButtons(Translation translation){
+    private List<Button> prepareButtons(Translation translation) {
 
         List<Button> buttonList = new ArrayList<>();
         for (int i = 0; i < translation.getEngWord().length(); i++) {
@@ -79,7 +83,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
 
         int buttonListSize = buttonList.size();
         letters = new ArrayList<>();
-        for (int i=0; i<buttonListSize; i++) {
+        for (int i = 0; i < buttonListSize; i++) {
             TextView letterTV = new TextView(getContext());
             letters.add(letterTV);
             letterTV.setTextSize(24);
@@ -96,14 +100,40 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
 
         if (clicked.equals(correct)) {
             letters.get(checkedIndex).setText(clicked);
+
+            callButtonColorAnimation(Color.GREEN, b, 400);
+
             if (checkedIndex + 1 == currentTranslation.getEngWord().length()) {
                 Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
-                passData(finishLessonSuccess);
+
+                Handler handler = new Handler();
+                handler.postDelayed(() -> passData(finishGameSuccess), Toast.LENGTH_SHORT);
+
             }
             checkedIndex++;
             b.setEnabled(false);
-        }
+        } else
+            callButtonColorAnimation(Color.RED, b, 500);
+
     }
+
+
+    private void callButtonColorAnimation(int color, Button button, int duration) {
+
+        button.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+
+        new CountDownTimer(duration, 1) {
+            @Override
+            public void onTick(long arg0) {
+            }
+
+            @Override
+            public void onFinish() {
+                button.getBackground().clearColorFilter();
+            }
+        }.start();
+    }
+
 
     public void passData(boolean data) {
         dataPasser.onDataPass(data);

@@ -1,8 +1,12 @@
 package com.justyna.englishsubtitled.games.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.games.utilities.WordButtonsAdapter;
@@ -30,8 +33,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     Random rand = new Random();
     Translation currentTranslation;
     View view;
-    boolean finishLessonSuccess = true;
-
+    boolean finishGameSuccess = true;
 
     @Override
     public void onAttach(Context context) {
@@ -54,7 +56,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
         return view;
     }
 
-    private void callGame(List<Button> buttonList){
+    private void callGame(List<Button> buttonList) {
 
         ListView listView = view.findViewById(R.id.abcdListView);
         WordButtonsAdapter adapter = new WordButtonsAdapter(getContext(), buttonList);
@@ -99,9 +101,31 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
 
         String clicked = String.valueOf(b.getText());
         if (clicked.equals(currentTranslation.getPlWord())) {
-            Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
-            passData(finishLessonSuccess);
-        }
+
+            b.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+
+            Handler handler = new Handler();
+            handler.postDelayed(() -> passData(finishGameSuccess), 900);
+
+        } else
+            callButtonColorAnimation(Color.RED, b, 400);
+
+    }
+
+    private void callButtonColorAnimation(int color, Button button, int duration) {
+
+        button.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+
+        new CountDownTimer(duration, 1) {
+            @Override
+            public void onTick(long arg0) {
+            }
+
+            @Override
+            public void onFinish() {
+                button.getBackground().clearColorFilter();
+            }
+        }.start();
     }
 
     public void passData(boolean data) {
