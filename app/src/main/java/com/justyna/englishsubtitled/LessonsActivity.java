@@ -7,12 +7,13 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
 import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
-import com.justyna.englishsubtitled.games.fragments.WordFragment;
-import com.justyna.englishsubtitled.model.Translation;
 import com.justyna.englishsubtitled.games.fragments.FinishLessonFragment;
+import com.justyna.englishsubtitled.games.fragments.WordFragment;
 import com.justyna.englishsubtitled.games.utilities.Game;
+import com.justyna.englishsubtitled.model.Translation;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -27,9 +28,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     @Override
     public void onDataPass(boolean data) {
         if (data == finishLessonSuccess) {
-            translations.remove(currentTranslation);
             currentTranslation.setProgress(currentTranslation.getProgress() + 1);
-            translations.add(currentTranslation);
         }
 
         finishedLesson = true;
@@ -71,11 +70,15 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     }
 
     private Translation chooseNextTranslation() {
-        Translation tempTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
-        while (tempTranslation.getProgress() >= wordRepeats)
-            tempTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
+        Translation temp = translations.get(getRandomNumber(0, translations.size() - 1));
+        if (temp.getProgress() < wordRepeats)
+            return temp;
 
-        return tempTranslation;
+        Collections.shuffle(translations);
+        for (Translation t : translations)
+            if (t.getProgress() < wordRepeats)
+                return t;
+        return null;
     }
 
     private void callGame(int gameNum, Bundle bundle) {
@@ -104,9 +107,10 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     }
 
-
     private void prepareGame() {
         currentTranslation = chooseNextTranslation();
+        if (chooseNextTranslation() == null)
+            callFragment(new FinishLessonFragment());
         Bundle bundle = new Bundle();
         bundle.putSerializable("translation", currentTranslation);
 
