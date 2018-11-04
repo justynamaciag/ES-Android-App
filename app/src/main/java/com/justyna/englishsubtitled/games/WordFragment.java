@@ -14,12 +14,11 @@ import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utils.WordButtonsAdapter;
+import com.justyna.englishsubtitled.utilities.WordButtonsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class WordFragment extends Fragment implements WordButtonsAdapter.customButtonListener {
 
@@ -27,8 +26,8 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     Translation currentTranslation;
     List<TextView> letters;
     TextView plWordTextView;
-    Random rand = new Random();
     View view;
+    boolean finishLessonSuccess = true;
     int colNum = 5, checkedIndex = 0;
 
     @Override
@@ -99,19 +98,19 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
             letters.get(checkedIndex).setText(clicked);
             if (checkedIndex + 1 == currentTranslation.getEngWord().length()) {
                 Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
-                passData("1");
+                passData(finishLessonSuccess);
             }
             checkedIndex++;
             b.setEnabled(false);
         }
     }
 
-    public void passData(String data) {
+    public void passData(boolean data) {
         dataPasser.onDataPass(data);
     }
 
     public interface OnDataPass {
-        void onDataPass(String data);
+        void onDataPass(boolean data);
     }
 
 }

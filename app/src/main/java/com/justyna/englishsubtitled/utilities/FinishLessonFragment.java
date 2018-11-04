@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled.utils;
+package com.justyna.englishsubtitled.utilities;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

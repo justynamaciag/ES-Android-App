@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utils.WordButtonsAdapter;
+import com.justyna.englishsubtitled.utilities.WordButtonsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +30,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     Random rand = new Random();
     Translation currentTranslation;
     View view;
+    boolean finishLessonSuccess = true;
 
 
     @Override
@@ -99,16 +100,16 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
         String clicked = String.valueOf(b.getText());
         if (clicked.equals(currentTranslation.getPlWord())) {
             Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
-            passData("1");
+            passData(finishLessonSuccess);
         }
     }
 
-    public void passData(String data) {
+    public void passData(boolean data) {
         dataPasser.onDataPass(data);
     }
 
     public interface OnDataPass {
-        void onDataPass(String data);
+        void onDataPass(boolean data);
     }
 
 }
