@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled.utilities;
+package com.justyna.englishsubtitled.games.utilities;
 
 public enum Game{
     CROSSWORD,

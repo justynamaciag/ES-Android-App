@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled.utilities;
+package com.justyna.englishsubtitled.games.utilities;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.justyna.englishsubtitled.R;
 
 import java.util.List;
+
 
 public class WordButtonsAdapter extends BaseAdapter {
 

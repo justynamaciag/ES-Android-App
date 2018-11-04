@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled.games;
+package com.justyna.englishsubtitled.games.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
+import com.justyna.englishsubtitled.games.utilities.WordButtonsAdapter;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utilities.WordButtonsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,7 +71,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
         LinearLayout wordLayout = view.findViewById(R.id.wordLayout);
         plWordTextView.setText(currentTranslation.getPlWord());
 
-        GridView gridview = (GridView) view.findViewById(R.id.buttonsLayout);
+        GridView gridview = view.findViewById(R.id.buttonsLayout);
         gridview.setNumColumns(colNum);
         WordButtonsAdapter a = new WordButtonsAdapter(getContext(), buttonList);
         a.setCustomButtonListner(WordFragment.this);

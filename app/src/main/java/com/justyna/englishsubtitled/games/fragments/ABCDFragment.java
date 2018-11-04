@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled.games;
+package com.justyna.englishsubtitled.games.fragments;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
+import com.justyna.englishsubtitled.games.utilities.WordButtonsAdapter;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utilities.WordButtonsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,10 +56,10 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
 
     private void callGame(List<Button> buttonList){
 
-        ListView listView = (ListView) view.findViewById(R.id.abcdListView);
-        WordButtonsAdapter a = new WordButtonsAdapter(getContext(), buttonList);
-        a.setCustomButtonListner(ABCDFragment.this);
-        listView.setAdapter(a);
+        ListView listView = view.findViewById(R.id.abcdListView);
+        WordButtonsAdapter adapter = new WordButtonsAdapter(getContext(), buttonList);
+        adapter.setCustomButtonListner(ABCDFragment.this);
+        listView.setAdapter(adapter);
 
         Drawable background = view.getBackground();
         listView.setDivider(background);
@@ -71,13 +71,13 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
         wordTextView = view.findViewById(R.id.wordTextView);
         wordTextView.setText(currentTranslation.getEngWord());
 
-        HashSet<String> buttonSet = new HashSet<>();
-        buttonSet.add(wordPL);
-        while (buttonSet.size() < 4)
-            buttonSet.add(getRandomTranslation().getPlWord());
+        HashSet<String> buttonLabels = new HashSet<>();
+        buttonLabels.add(wordPL);
+        while (buttonLabels.size() < 4)
+            buttonLabels.add(getRandomTranslation().getPlWord());
 
         List<Button> buttonList = new ArrayList<>();
-        for (String b : buttonSet) {
+        for (String b : buttonLabels) {
             Button btn = new Button(getContext());
             btn.setText(b);
             buttonList.add(btn);

@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled.utilities;
+package com.justyna.englishsubtitled.games.utilities;
 
 import android.content.Context;
 import android.view.LayoutInflater;

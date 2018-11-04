@@ -1,8 +1,7 @@
-package com.justyna.englishsubtitled.games;
+package com.justyna.englishsubtitled.games.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
+import com.justyna.englishsubtitled.games.utilities.CrosswordAdapter;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utilities.CrosswordAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +26,10 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     Random rand = new Random();
     String[][] table;
     String clicked;
-    TextView helperTV;
-    int i = 0, N = 10, directions = 2, reverse, row, offset, a = 'a', z = 'z';
+    TextView polishTranslationDisplay;
+    int i = 0, N = 10, row, offset, a = 'a', z = 'z';
     View view;
-    boolean startOk = false, finishLessonSuccess = true, finishLessonFail = false;
+    boolean transpose, firstCellCorrect = false, finishLessonSuccess = true, finishLessonFail = false;
 
     OnDataPass dataPasser;
 
@@ -46,7 +45,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_crossword, container, false);
-        helperTV = view.findViewById(R.id.helperTv);
+        polishTranslationDisplay = view.findViewById(R.id.polishTranslation);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -59,55 +58,52 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         }
 
         rand = new Random();
-        List<String> gridViewLetters = prepareTable(currentTranslation);
-        callGame(gridViewLetters);
+        List<String> gridViewLetters = prepareGameTable(currentTranslation);
+        GridView crosswordGrid = prepareCrosswordGrid(gridViewLetters);
+        callGame(crosswordGrid, gridViewLetters);
 
         return view;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private void callGame(List<String> gridViewLetters){
 
-        helperTV.setText(currentTranslation.getPlWord());
+    private GridView prepareCrosswordGrid(List<String> gridViewLetters){
 
-        List<TextView> lettersTV = new ArrayList<>();
+        List<TextView> crosswordCells = new ArrayList<>();
         for (String letter : gridViewLetters) {
             TextView tv = new TextView(getContext());
             tv.setText(letter);
-            lettersTV.add(tv);
+            crosswordCells.add(tv);
         }
 
-        GridView crosswordGrid = view.findViewById(R.id.gridview);
+        GridView crosswordGrid = view.findViewById(R.id.gridview_crossword);
         crosswordGrid.setNumColumns(N);
-        CrosswordAdapter a = new CrosswordAdapter(getContext(), lettersTV);
-        a.setCustomTVListner(CrosswordFragment.this);
-        crosswordGrid.setAdapter(a);
+        CrosswordAdapter adapter = new CrosswordAdapter(getContext(), crosswordCells);
+        adapter.setCustomTVListner(CrosswordFragment.this);
+        crosswordGrid.setAdapter(adapter);
+
+        return crosswordGrid;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void callGame(GridView crosswordGrid, List<String> gridViewLetters){
+
+        polishTranslationDisplay.setText(currentTranslation.getPlWord());
 
         crosswordGrid.setOnTouchListener((v, event) -> {
             float x = event.getX();
             float y = event.getY();
             try {
+
                 int point = crosswordGrid.pointToPosition((int) x, (int) y);
                 int action = event.getAction() & MotionEvent.ACTION_MASK;
                 clicked = gridViewLetters.get(point);
-                if (action == MotionEvent.ACTION_MOVE) {
-                    if (clicked.toUpperCase().equals(table[row][offset + i].toUpperCase()) && startOk) {
-                        TextView tv = a.getItem(point);
-                        tv.setBackgroundColor(Color.parseColor("#ffae19"));
-                        i++;
-                    } else if (!clicked.toUpperCase().equals(table[row][offset + i - 1].toUpperCase()))
-                        i = 0;
-                    if (i == currentTranslation.getEngWord().length()) {
-                        Toast.makeText(getContext(), "cool", Toast.LENGTH_SHORT).show();
-                        passData(finishLessonSuccess);
-                    }
-                }
-                if (action == MotionEvent.ACTION_DOWN) {
-                    if (clicked.toUpperCase().equals((table[row][offset])))
-                        startOk = true;
-                    else
-                        startOk = false;
-                }
+
+                if (action == MotionEvent.ACTION_MOVE)
+                    checkIfUserClicksCorrect();
+
+//                ACTION_DOWN - called when first touched cell, touching next cells - ACTION_MOVE
+                if (action == MotionEvent.ACTION_DOWN)
+                    firstCellCorrect = checkIfFirstCellCorrect();
                 return true;
 
             } catch (IndexOutOfBoundsException e) {
@@ -117,8 +113,31 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         });
     }
 
+//  check if first touched cell is correct,
+//  drawing entire row/column containing correct translation wont work, only specific letters
+    private boolean checkIfFirstCellCorrect(){
+        if (clicked.toUpperCase().equals((table[row][offset])))
+            return true;
+        return false;
+    }
 
-    private List<String> prepareTable(Translation translation) {
+    private void checkIfUserClicksCorrect(){
+
+        if (clicked.equalsIgnoreCase(table[row][offset + i]) && firstCellCorrect)
+            i++;
+
+//      (-1) added due to fact that listener is called multiple times in drawing at one cell
+        else if (!clicked.equalsIgnoreCase(table[row][offset + i - 1]))
+            i = 0;
+
+        if (i == currentTranslation.getEngWord().length()) {
+            Toast.makeText(getContext(), "cool", Toast.LENGTH_SHORT).show();
+            passData(finishLessonSuccess);
+        }
+    }
+
+
+    private List<String> prepareGameTable(Translation translation) {
 
         table = new String[N][N];
         row = rand.nextInt(N);
@@ -130,15 +149,17 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             }
         }
 
+//        offset - where correct translation starts
         for (int i = offset; i < offset + translation.getEngWord().length(); i++) {
             table[row][i] = Character.toString(translation.getEngWord().charAt(i - offset)).toUpperCase();
         }
 
-        reverse = rand.nextInt(directions);
+
+        transpose = rand.nextBoolean();
         ArrayList<String> tableList = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                if (reverse == 1)
+                if (transpose)
                     tableList.add(table[j][i]);
                 else
                     tableList.add(table[i][j]);

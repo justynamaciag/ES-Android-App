@@ -5,12 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
-import com.justyna.englishsubtitled.games.ABCDFragment;
-import com.justyna.englishsubtitled.games.CrosswordFragment;
-import com.justyna.englishsubtitled.games.WordFragment;
+import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
+import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
+import com.justyna.englishsubtitled.games.fragments.WordFragment;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utilities.FinishLessonFragment;
-import com.justyna.englishsubtitled.utilities.Game;
+import com.justyna.englishsubtitled.games.fragments.FinishLessonFragment;
+import com.justyna.englishsubtitled.games.utilities.Game;
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,8 +26,11 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     @Override
     public void onDataPass(boolean data) {
-        if (data == finishLessonSuccess)
+        if (data == finishLessonSuccess) {
+            translations.remove(currentTranslation);
             currentTranslation.setProgress(currentTranslation.getProgress() + 1);
+            translations.add(currentTranslation);
+        }
 
         finishedLesson = true;
         for (Translation t : translations) {
@@ -44,7 +47,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     private void callFragment(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.list_container, fragment);
+        ft.replace(R.id.fragment_container, fragment);
         ft.addToBackStack(null);
         ft.commit();
     }
@@ -69,7 +72,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     private Translation chooseNextTranslation() {
         Translation tempTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
-        while ((tempTranslation.getProgress() >= wordRepeats))
+        while (tempTranslation.getProgress() >= wordRepeats)
             tempTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
 
         return tempTranslation;
@@ -95,7 +98,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         fragment.setArguments(bundle);
         if (first) {
             first = false;
-            getSupportFragmentManager().beginTransaction().add(R.id.list_container, fragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
         } else
             callFragment(fragment);
 
