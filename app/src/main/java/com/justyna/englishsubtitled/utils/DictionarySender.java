@@ -44,8 +44,6 @@ public class DictionarySender {
         protected Boolean doInBackground(Translation... translations) {
             if(translations.length < 1) return false;
             Translation translation = (Translation) translations[0];
-
-
             try {
                 disableChecks();
             } catch (Exception e) {
@@ -62,7 +60,8 @@ public class DictionarySender {
             body.add("engWord", translation.getEngWord());
             body.add("plWord", translation.getPlWord());
 
-            HttpEntity<?> entity = new HttpEntity<Object>(headers, body);
+
+            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
 
             RestTemplate restTemplate = new RestTemplate();
 
@@ -70,7 +69,7 @@ public class DictionarySender {
 
 
             ResponseEntity<String> result =
-                    restTemplate.exchange(baseUrl + "/bookmarks", HttpMethod.PUT, entity, String.class);
+                    restTemplate.exchange(baseUrl + "/bookmarks/", HttpMethod.PUT, entity, String.class);
 
             if (result.getStatusCode() != HttpStatus.OK) {
                 System.out.println("Back-end responded with: " + result.getBody());
