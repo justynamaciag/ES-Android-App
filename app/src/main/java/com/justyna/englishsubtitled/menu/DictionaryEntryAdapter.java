@@ -33,16 +33,16 @@ public class DictionaryEntryAdapter extends RecyclerView.Adapter<DictionaryEntry
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public LinearLayout linearLayout;
+    static class MyViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout linearLayout;
 
-        public MyViewHolder(LinearLayout v) {
+        MyViewHolder(LinearLayout v) {
             super(v);
             linearLayout = v;
         }
     }
 
-    public DictionaryEntryAdapter(List<Translation> dataset, MenuDictionaryActivity caller) {
+    DictionaryEntryAdapter(List<Translation> dataset, MenuDictionaryActivity caller) {
         this.dataset = dataset;
         this.caller = caller;
     }
@@ -81,7 +81,7 @@ public class DictionaryEntryAdapter extends RecyclerView.Adapter<DictionaryEntry
         Translation translation = dataset.get(position);
         ((TextView) holder.linearLayout.getChildAt(0)).setText(translation.getEngWord());
         ((TextView) holder.linearLayout.getChildAt(1)).setText(translation.getPlWord());
-        ((ImageButton) holder.linearLayout.getChildAt(2)).setOnClickListener(view -> {
+        holder.linearLayout.getChildAt(2).setOnClickListener(view -> {
             boolean result = false;
             try {
                 result = new DictionaryEntryRemover().execute(translation).get();
@@ -90,7 +90,6 @@ public class DictionaryEntryAdapter extends RecyclerView.Adapter<DictionaryEntry
             }
             if (result) {
                 caller.refreshDictionaryData();
-                caller.refreshDictionaryView();
             }
         });
     }

@@ -18,4 +18,6 @@
     <string name="polish_ascending">Sortuj rosnąco według słowa po polsku</string>
     <string name="polish_descending">Sortuj malejąco według słowa po polsku</string>
     <string name="app_logo">Logo aplikacji</string>
+    <string name="no_internet_connection">Aplikacja nie zadziała bez dostępu do internetu.</string>
+    <string name="please_wait">Proszę czekać, pobieranie danych…</string>
 </resources>

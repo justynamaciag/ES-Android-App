@@ -21,16 +21,16 @@ public class AchievementsAdapter extends RecyclerView.Adapter<AchievementsAdapte
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class AchievementHolder extends RecyclerView.ViewHolder {
-        public LinearLayout linearLayout;
+    static class AchievementHolder extends RecyclerView.ViewHolder {
+        LinearLayout linearLayout;
 
-        public AchievementHolder(LinearLayout v) {
+        AchievementHolder(LinearLayout v) {
             super(v);
             linearLayout = v;
         }
     }
 
-    public AchievementsAdapter(List<Achievement> dataset) {
+    AchievementsAdapter(List<Achievement> dataset) {
         this.dataset = dataset;
     }
 
