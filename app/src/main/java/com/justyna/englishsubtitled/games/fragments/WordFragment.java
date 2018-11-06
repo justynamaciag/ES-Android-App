@@ -104,8 +104,6 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
             callButtonColorAnimation(Color.GREEN, b, 400);
 
             if (checkedIndex + 1 == currentTranslation.getEngWord().length()) {
-                Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
-
                 Handler handler = new Handler();
                 handler.postDelayed(() -> passData(finishGameSuccess), Toast.LENGTH_SHORT);
 

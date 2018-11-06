@@ -27,7 +27,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     String[][] table;
     String clicked;
     TextView polishTranslationDisplay;
-    int i = 0, N = 10, row, offset, a = 'a', z = 'z';
+    int i = 0, N = 10, row, offset;
     View view;
     boolean transpose, firstCellCorrect = false, finishGameSuccess = true, finishGameFail = false;
 
@@ -116,7 +116,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     //  check if first touched cell is correct,
 //  drawing entire row/column containing correct translation wont work, only specific letters
     private boolean checkIfFirstCellCorrect() {
-        if (clicked.toUpperCase().equals((table[row][offset])))
+        if (clicked.equalsIgnoreCase((table[row][offset])))
             return true;
         return false;
     }
@@ -144,7 +144,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                table[i][j] = Character.toString((char) (rand.nextInt(z - a) + a)).toUpperCase();
+                table[i][j] = Character.toString((char) (rand.nextInt('Z' - 'A') + 'A'));
             }
         }
 
