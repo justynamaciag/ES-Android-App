@@ -1,4 +1,4 @@
-<resources>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">EnglishSubtitled</string>
     <string name="facebook_app_id">733670553423793</string>
     <string name="fb_login_protocol_scheme">fb191746534808621</string>
@@ -18,4 +18,7 @@
     <string name="polish_ascending">Sortuj rosnąco według słowa po polsku</string>
     <string name="polish_descending">Sortuj malejąco według słowa po polsku</string>
     <string name="app_logo">Logo aplikacji</string>
+    <string name="congratulations">"Congratulations</string>
+    <string name="lesson_finish">"Lesson finished"</string>
+
 </resources>
