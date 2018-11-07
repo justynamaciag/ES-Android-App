@@ -19,17 +19,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MenuDictionaryActivity extends AppCompatActivity {
-    private ImageButton englishAscending;
-    private ImageButton englishDescending;
-    private ImageButton polishAscending;
-    private ImageButton polishDescending;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private List<Translation> translations = Collections.emptyList();
+    private final List<Translation> translations = new LinkedList<>();
     private SortingStrategy sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
 
     @Override
@@ -37,19 +32,20 @@ public class MenuDictionaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_dictionary);
 
-        englishAscending = findViewById(R.id.englishAscending);
-        englishDescending = findViewById(R.id.englishDescending);
-        polishAscending = findViewById(R.id.polishAscending);
-        polishDescending = findViewById(R.id.polishDescending);
+        ImageButton englishAscending = findViewById(R.id.englishAscending);
+        ImageButton englishDescending = findViewById(R.id.englishDescending);
+        ImageButton polishAscending = findViewById(R.id.polishAscending);
+        ImageButton polishDescending = findViewById(R.id.polishDescending);
 
         recyclerView = findViewById(R.id.films);
 
         // use a linear layout manager
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        recyclerView.setAdapter(new PleaseWaitAdapter(this));
+
         refreshDictionaryData();
-        refreshDictionaryView();
 
         englishAscending.setOnClickListener(view -> {
             sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
@@ -70,18 +66,18 @@ public class MenuDictionaryActivity extends AppCompatActivity {
     }
 
     protected void refreshDictionaryData() {
-        try {
-            translations = new DictionaryRetriever().execute().get();
-        } catch (Exception e) {
-            System.out.println("CRITICAL: Failed to download translation list from a server.");
-        }
+        new DictionaryRetriever().execute();
     }
 
     protected void refreshDictionaryView() {
-        sort();
+        List<Translation> sortedTranslations = new LinkedList<>();
+        synchronized (translations) {
+            sort();
+            sortedTranslations.addAll(translations);
+        }
 
         // specify an adapter
-        adapter = new DictionaryEntryAdapter(translations, this);
+        RecyclerView.Adapter adapter = new DictionaryEntryAdapter(sortedTranslations, this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -105,7 +101,7 @@ public class MenuDictionaryActivity extends AppCompatActivity {
         ENGLISH_ASCENDING, ENGLISH_DESCENDING, POLISH_ASCENDING, POLISH_DESCENDING
     }
 
-    private static class DictionaryRetriever extends AsyncTask<Void, Void, List<Translation>> {
+    private class DictionaryRetriever extends AsyncTask<Void, Void, List<Translation>> {
         @Override
         protected List<Translation> doInBackground(Void... voids) {
             String baseUrl = Configuration.getInstance().getBackendUrl();
@@ -119,6 +115,16 @@ public class MenuDictionaryActivity extends AppCompatActivity {
                             });
 
             return progress.getBody();
+        }
+
+        @Override
+        protected void onPostExecute(List<Translation> receivedTranslations) {
+            super.onPostExecute(receivedTranslations);
+            synchronized (translations) {
+                translations.clear();
+                translations.addAll(receivedTranslations);
+            }
+            refreshDictionaryView();
         }
     }
 }

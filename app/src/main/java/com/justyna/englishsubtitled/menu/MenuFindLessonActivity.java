@@ -22,40 +22,28 @@ import java.util.Collections;
 import java.util.List;
 
 public class MenuFindLessonActivity extends AppCompatActivity {
-    private TextView title;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_single_list);
 
-        title = findViewById(R.id.title);
+        TextView title = findViewById(R.id.title);
         title.setText(R.string.start_new_lesson);
 
         recyclerView = findViewById(R.id.films);
 
         // use a linear layout manager
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        List<Film> films = Collections.emptyList();
-        try {
-            films = new FilmsRetriever().execute().get();
-        } catch (Exception e) {
-            System.out.println("CRITICAL: Failed to download films list from a server.");
-        }
+        recyclerView.setAdapter(new PleaseWaitAdapter(this));
 
-        Collections.sort(films, (film, t1) -> film.filmTitle.compareTo(t1.filmTitle));
-
-        // specify an adapter
-        adapter = new FilmsAdapter(films, this);
-        recyclerView.setAdapter(adapter);
+        new FilmsRetriever().execute();
     }
 
-    private static class FilmsRetriever extends AsyncTask<Void, Void, List<Film>> {
+    private class FilmsRetriever extends AsyncTask<Void, Void, List<Film>> {
         @Override
         protected List<Film> doInBackground(Void... voids) {
             String baseUrl = Configuration.getInstance().getBackendUrl();
@@ -69,6 +57,17 @@ public class MenuFindLessonActivity extends AppCompatActivity {
                             });
 
             return progress.getBody();
+        }
+
+        @Override
+        protected void onPostExecute(List<Film> films) {
+            super.onPostExecute(films);
+
+            Collections.sort(films, (film, t1) -> film.filmTitle.compareTo(t1.filmTitle));
+
+            // specify an adapter
+            RecyclerView.Adapter adapter = new FilmsAdapter(films, MenuFindLessonActivity.this);
+            recyclerView.setAdapter(adapter);
         }
     }
 }

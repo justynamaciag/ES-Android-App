@@ -19,41 +19,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class MenuAchievementsActivity extends AppCompatActivity {
-    private TextView title;
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private List<Achievement> achievements;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_single_list);
 
-        title = findViewById(R.id.title);
+        TextView title = findViewById(R.id.title);
         title.setText(R.string.achievements);
 
         recyclerView = findViewById(R.id.films);
 
         // use a linear layout manager
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        try {
-            achievements = new AchievementsRetriever().execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Error while downloading an achievements list.");
-        }
+        recyclerView.setAdapter(new PleaseWaitAdapter(this));
 
-        // specify an adapter
-        adapter = new AchievementsAdapter(achievements);
-        recyclerView.setAdapter(adapter);
+        new AchievementsRetriever().execute();
     }
 
-    private static class AchievementsRetriever extends AsyncTask<Void, Void, List<Achievement>> {
+    private class AchievementsRetriever extends AsyncTask<Void, Void, List<Achievement>> {
         @Override
         protected List<Achievement> doInBackground(Void... voids) {
             String baseUrl = Configuration.getInstance().getBackendUrl();
@@ -67,6 +56,13 @@ public class MenuAchievementsActivity extends AppCompatActivity {
                             });
 
             return achievements.getBody();
+        }
+
+        @Override
+        protected void onPostExecute(List<Achievement> achievements) {
+            super.onPostExecute(achievements);
+            RecyclerView.Adapter adapter = new AchievementsAdapter(achievements);
+            recyclerView.setAdapter(adapter);
         }
     }
 }
