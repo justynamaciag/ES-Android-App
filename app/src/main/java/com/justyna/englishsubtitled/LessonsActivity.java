@@ -1,47 +1,43 @@
 package com.justyna.englishsubtitled;
 
-import android.app.usage.UsageEvents;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import android.widget.Button;
 
-import com.justyna.englishsubtitled.games.ABCDFragment;
-import com.justyna.englishsubtitled.games.CrosswordFragment;
-import com.justyna.englishsubtitled.games.WordFragment;
+import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
+import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
+import com.justyna.englishsubtitled.games.fragments.FinishLessonFragment;
+import com.justyna.englishsubtitled.games.fragments.WordFragment;
+import com.justyna.englishsubtitled.games.utilities.Game;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utils.DictionarySender;
-import com.justyna.englishsubtitled.utils.FinishLessonFragment;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class LessonsActivity extends FragmentActivity implements CrosswordFragment.OnDataPass, WordFragment.OnDataPass, ABCDFragment.OnDataPass {
 
+    Random rand = new Random();
     List<Translation> translations;
     Translation currentTranslation;
-    Random rand = new Random();
-    boolean first = true, finished = true;
-    int minRepeats = 2;
-    Button dictionaryBtn;
+    boolean first = true, finishedLesson = true, finishLessonSuccess = true;
+    int wordRepeats = 2;
 
     @Override
-    public void onDataPass(String data) {
-        if (data.equals("1")) {
-            translations.remove(currentTranslation);
+    public void onDataPass(boolean data) {
+        if (data == finishLessonSuccess) {
             currentTranslation.setProgress(currentTranslation.getProgress() + 1);
-            translations.add(currentTranslation);
         }
-        finished = true;
+
+        finishedLesson = true;
         for (Translation t : translations) {
-            if (t.getProgress() < minRepeats) {
-                finished = false;
+            if (t.getProgress() < wordRepeats) {
+                finishedLesson = false;
             }
         }
-        if (!finished)
+        if (!finishedLesson)
             prepareGame();
         else
             callFragment(new FinishLessonFragment());
@@ -50,7 +46,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     private void callFragment(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.list_container, fragment);
+        ft.replace(R.id.fragment_container, fragment);
         ft.addToBackStack(null);
         ft.commit();
     }
@@ -66,9 +62,6 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons);
 
-        dictionaryBtn = this.findViewById(R.id.dictionary_btn);
-        dictionaryBtn.setOnClickListener(v -> sendToBackend(currentTranslation));
-
         translations = LessonRetriever.prepareTranslationList();
         for (Translation translation : translations) {
             translation.setProgress(0);
@@ -76,50 +69,52 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         prepareGame();
     }
 
-    private void sendToBackend(Translation translation){
-        DictionarySender.addToDict(translation);
+    private Translation chooseNextTranslation() {
+        Translation temp = translations.get(getRandomNumber(0, translations.size() - 1));
+        if (temp.getProgress() < wordRepeats)
+            return temp;
+
+        Collections.shuffle(translations);
+        for (Translation t : translations)
+            if (t.getProgress() < wordRepeats)
+                return t;
+        return null;
     }
 
-    private Translation getRandomTranslation() {
-        Translation tempTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
-        while ((tempTranslation.getProgress() >= minRepeats))
-            tempTranslation = translations.get(getRandomNumber(0, translations.size() - 1));
-
-        return tempTranslation;
-    }
-
-    private void callGame(int game, Bundle bundle) {
+    private void callGame(int gameNum, Bundle bundle) {
 
         Fragment fragment = new Fragment();
+
+        Game game = Game.values()[gameNum];
         switch (game) {
-            case 0:
+            case CROSSWORD:
                 fragment = new CrosswordFragment();
                 break;
-            case 1:
+            case ABCD:
                 fragment = new ABCDFragment();
                 bundle.putSerializable("translations", (Serializable) translations);
                 break;
-            case 2:
+            case PUZZLE:
                 fragment = new WordFragment();
                 break;
         }
         fragment.setArguments(bundle);
         if (first) {
             first = false;
-            getSupportFragmentManager().beginTransaction().add(R.id.list_container, fragment).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
         } else
             callFragment(fragment);
 
     }
 
-
     private void prepareGame() {
-        int game = getRandomNumber(0, 3);
-        currentTranslation = getRandomTranslation();
+        currentTranslation = chooseNextTranslation();
+        if (chooseNextTranslation() == null)
+            callFragment(new FinishLessonFragment());
         Bundle bundle = new Bundle();
         bundle.putSerializable("translation", currentTranslation);
 
-        callGame(game, bundle);
+        callGame(getRandomNumber(0, 3), bundle);
     }
 
     private int getRandomNumber(int a, int b) {

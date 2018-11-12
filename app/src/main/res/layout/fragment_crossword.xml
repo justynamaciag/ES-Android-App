@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".games.CrosswordFragment">
+    tools:context=".games.fragments.CrosswordFragment">
 
 
     <TextView
-        android:id="@+id/helperTv"
+        android:id="@+id/polishTranslation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -26,7 +26,7 @@
         app:layout_constraintVertical_bias="0.052" />
 
     <GridView
-        android:id="@+id/gridview"
+        android:id="@+id/gridview_crossword"
         android:layout_width="361dp"
         android:layout_height="360dp"
         android:layout_margin="8dp"

@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled.utils;
+package com.justyna.englishsubtitled.games.utilities;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,8 @@ import com.justyna.englishsubtitled.R;
 
 import java.util.List;
 
-public class ABCDAdapter extends BaseAdapter {
+
+public class WordButtonsAdapter extends BaseAdapter {
 
     customButtonListener customListener;
     private Context mContext;
@@ -28,7 +29,7 @@ public class ABCDAdapter extends BaseAdapter {
     }
 
 
-    public ABCDAdapter(Context c, List<Button> buttons) {
+    public WordButtonsAdapter(Context c, List<Button> buttons) {
         mContext = c;
         this.buttons = buttons;
     }
@@ -54,10 +55,10 @@ public class ABCDAdapter extends BaseAdapter {
         if (convertView == null) {
 
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.abcd_buttons,  null);
+            view = inflater.inflate(R.layout.buttons,  null);
         }
 
-        Button button = (Button) view.findViewById(R.id.abcdButtons);
+        Button button = (Button) view.findViewById(R.id.buttons);
         button.setText(buttons.get(position).getText());
 
         button.setOnClickListener(v -> {
@@ -65,6 +66,7 @@ public class ABCDAdapter extends BaseAdapter {
                 customListener.onButtonClickListner(button);
             }
         });
+
 
         return button;
 

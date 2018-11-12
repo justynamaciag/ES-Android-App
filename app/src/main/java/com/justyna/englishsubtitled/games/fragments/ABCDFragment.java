@@ -1,8 +1,12 @@
-package com.justyna.englishsubtitled.games;
+package com.justyna.englishsubtitled.games.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +14,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
+import com.justyna.englishsubtitled.games.utilities.WordButtonsAdapter;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utils.WordButtonsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +33,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     Random rand = new Random();
     Translation currentTranslation;
     View view;
+    boolean finishGameSuccess = true;
 
     @Override
     public void onAttach(Context context) {
@@ -52,12 +56,12 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
         return view;
     }
 
-    private void callGame(List<Button> buttonList){
+    private void callGame(List<Button> buttonList) {
 
-        ListView listView = (ListView) view.findViewById(R.id.abcdListView);
-        WordButtonsAdapter a = new WordButtonsAdapter(getContext(), buttonList);
-        a.setCustomButtonListner(ABCDFragment.this);
-        listView.setAdapter(a);
+        ListView listView = view.findViewById(R.id.abcdListView);
+        WordButtonsAdapter adapter = new WordButtonsAdapter(getContext(), buttonList);
+        adapter.setCustomButtonListner(ABCDFragment.this);
+        listView.setAdapter(adapter);
 
         Drawable background = view.getBackground();
         listView.setDivider(background);
@@ -69,13 +73,13 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
         wordTextView = view.findViewById(R.id.wordTextView);
         wordTextView.setText(currentTranslation.getEngWord());
 
-        HashSet<String> buttonSet = new HashSet<>();
-        buttonSet.add(wordPL);
-        while (buttonSet.size() < 4)
-            buttonSet.add(getRandomTranslation().getPlWord());
+        HashSet<String> buttonLabels = new HashSet<>();
+        buttonLabels.add(wordPL);
+        while (buttonLabels.size() < 4)
+            buttonLabels.add(getRandomTranslation().getPlWord());
 
         List<Button> buttonList = new ArrayList<>();
-        for (String b : buttonSet) {
+        for (String b : buttonLabels) {
             Button btn = new Button(getContext());
             btn.setText(b);
             buttonList.add(btn);
@@ -97,17 +101,39 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
 
         String clicked = String.valueOf(b.getText());
         if (clicked.equals(currentTranslation.getPlWord())) {
-            Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
-            passData("1");
-        }
+
+            b.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+
+            Handler handler = new Handler();
+            handler.postDelayed(() -> passData(finishGameSuccess), 900);
+
+        } else
+            callButtonColorAnimation(Color.RED, b, 400);
+
     }
 
-    public void passData(String data) {
+    private void callButtonColorAnimation(int color, Button button, int duration) {
+
+        button.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+
+        new CountDownTimer(duration, 1) {
+            @Override
+            public void onTick(long arg0) {
+            }
+
+            @Override
+            public void onFinish() {
+                button.getBackground().clearColorFilter();
+            }
+        }.start();
+    }
+
+    public void passData(boolean data) {
         dataPasser.onDataPass(data);
     }
 
     public interface OnDataPass {
-        void onDataPass(String data);
+        void onDataPass(boolean data);
     }
 
 }

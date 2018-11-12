@@ -1,7 +1,11 @@
-package com.justyna.englishsubtitled.games;
+package com.justyna.englishsubtitled.games.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
+import com.justyna.englishsubtitled.games.utilities.WordButtonsAdapter;
 import com.justyna.englishsubtitled.model.Translation;
-import com.justyna.englishsubtitled.utils.WordButtonsAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class WordFragment extends Fragment implements WordButtonsAdapter.customButtonListener {
 
@@ -27,8 +30,8 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     Translation currentTranslation;
     List<TextView> letters;
     TextView plWordTextView;
-    Random rand = new Random();
     View view;
+    boolean finishGameSuccess = true;
     int colNum = 5, checkedIndex = 0;
 
     @Override
@@ -54,7 +57,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
         return view;
     }
 
-    private List<Button> prepareButtons(Translation translation){
+    private List<Button> prepareButtons(Translation translation) {
 
         List<Button> buttonList = new ArrayList<>();
         for (int i = 0; i < translation.getEngWord().length(); i++) {
@@ -72,7 +75,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
         LinearLayout wordLayout = view.findViewById(R.id.wordLayout);
         plWordTextView.setText(currentTranslation.getPlWord());
 
-        GridView gridview = (GridView) view.findViewById(R.id.buttonsLayout);
+        GridView gridview = view.findViewById(R.id.buttonsLayout);
         gridview.setNumColumns(colNum);
         WordButtonsAdapter a = new WordButtonsAdapter(getContext(), buttonList);
         a.setCustomButtonListner(WordFragment.this);
@@ -80,7 +83,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
 
         int buttonListSize = buttonList.size();
         letters = new ArrayList<>();
-        for (int i=0; i<buttonListSize; i++) {
+        for (int i = 0; i < buttonListSize; i++) {
             TextView letterTV = new TextView(getContext());
             letters.add(letterTV);
             letterTV.setTextSize(24);
@@ -97,21 +100,45 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
 
         if (clicked.equals(correct)) {
             letters.get(checkedIndex).setText(clicked);
+
+            callButtonColorAnimation(Color.GREEN, b, 400);
+
             if (checkedIndex + 1 == currentTranslation.getEngWord().length()) {
-                Toast.makeText(view.getContext(), "Great!", Toast.LENGTH_SHORT).show();
-                passData("1");
+                Handler handler = new Handler();
+                handler.postDelayed(() -> passData(finishGameSuccess), Toast.LENGTH_SHORT);
+
             }
             checkedIndex++;
             b.setEnabled(false);
-        }
+        } else
+            callButtonColorAnimation(Color.RED, b, 500);
+
     }
 
-    public void passData(String data) {
+
+    private void callButtonColorAnimation(int color, Button button, int duration) {
+
+        button.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+
+        new CountDownTimer(duration, 1) {
+            @Override
+            public void onTick(long arg0) {
+            }
+
+            @Override
+            public void onFinish() {
+                button.getBackground().clearColorFilter();
+            }
+        }.start();
+    }
+
+
+    public void passData(boolean data) {
         dataPasser.onDataPass(data);
     }
 
     public interface OnDataPass {
-        void onDataPass(String data);
+        void onDataPass(boolean data);
     }
 
 }
