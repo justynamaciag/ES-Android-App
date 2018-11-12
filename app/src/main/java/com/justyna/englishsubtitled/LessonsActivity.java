@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.Button;
 
 import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
 import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
 import com.justyna.englishsubtitled.games.fragments.FinishLessonFragment;
 import com.justyna.englishsubtitled.games.fragments.WordFragment;
 import com.justyna.englishsubtitled.games.utilities.Game;
+import com.justyna.englishsubtitled.games.utilities.DictionarySender;
 import com.justyna.englishsubtitled.model.Translation;
 
 import java.io.Serializable;
@@ -19,11 +21,17 @@ import java.util.Random;
 
 public class LessonsActivity extends FragmentActivity implements CrosswordFragment.OnDataPass, WordFragment.OnDataPass, ABCDFragment.OnDataPass {
 
+//    ilosc minimalna/maksymalna błędów w danej lekcji
+//    ilosc słówek dodanych do słownika
+//    ile za pierwszym razem odpowiedział dobrze
+
     Random rand = new Random();
     List<Translation> translations;
     Translation currentTranslation;
     boolean first = true, finishedLesson = true, finishLessonSuccess = true;
     int wordRepeats = 2;
+    Button dictionaryBtn;
+
 
     @Override
     public void onDataPass(boolean data) {
@@ -62,11 +70,24 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons);
 
-        translations = LessonRetriever.prepareTranslationList();
+        dictionaryBtn = this.findViewById(R.id.dictionary_btn);
+        dictionaryBtn.setOnClickListener(v -> sendToBackend(currentTranslation));
+
+        Bundle bundle = getIntent().getExtras();
+        String lessonName = null;
+        if(bundle != null)
+            lessonName = (String) bundle.get("lessonName");
+
+        translations = LessonRetriever.prepareTranslationList(lessonName);
+
         for (Translation translation : translations) {
             translation.setProgress(0);
         }
         prepareGame();
+    }
+
+    private void sendToBackend(Translation translation){
+        DictionarySender.addToDict(translation);
     }
 
     private Translation chooseNextTranslation() {

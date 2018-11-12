@@ -1,4 +1,4 @@
-package com.justyna.englishsubtitled.utils;
+package com.justyna.englishsubtitled.games.utilities;
 
 import android.os.AsyncTask;
 
