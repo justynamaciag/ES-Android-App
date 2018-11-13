@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.justyna.englishsubtitled.R;
+import com.justyna.englishsubtitled.games.utilities.GameResult;
 import com.justyna.englishsubtitled.games.utilities.WordButtonsAdapter;
 import com.justyna.englishsubtitled.model.Translation;
 
@@ -33,7 +34,6 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     Random rand = new Random();
     Translation currentTranslation;
     View view;
-    boolean finishGameSuccess = true;
 
     @Override
     public void onAttach(Context context) {
@@ -105,10 +105,12 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
             b.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
 
             Handler handler = new Handler();
-            handler.postDelayed(() -> passData(finishGameSuccess), 900);
+            handler.postDelayed(() -> passData(GameResult.SUCCESS), 900);
 
-        } else
+        } else {
+            passData(GameResult.FAIL);
             callButtonColorAnimation(Color.RED, b, 400);
+        }
 
     }
 
@@ -128,12 +130,12 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
         }.start();
     }
 
-    public void passData(boolean data) {
+    public void passData(GameResult data) {
         dataPasser.onDataPass(data);
     }
 
     public interface OnDataPass {
-        void onDataPass(boolean data);
+        void onDataPass(GameResult data);
     }
 
 }

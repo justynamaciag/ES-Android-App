@@ -14,6 +14,12 @@ public class FinishLessonFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Bundle bundle = getArguments();
+
+        if(bundle != null)
+            System.out.println(bundle.getSerializable("lessonResult"));
+
+
         return inflater.inflate(R.layout.fragment_finish_lesson, container, false);
     }
 

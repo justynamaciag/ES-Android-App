@@ -18,7 +18,7 @@
     <string name="polish_ascending">Sortuj rosnąco według słowa po polsku</string>
     <string name="polish_descending">Sortuj malejąco według słowa po polsku</string>
     <string name="app_logo">Logo aplikacji</string>
-    <string name="congratulations">"Congratulations</string>
-    <string name="lesson_finish">"Lesson finished"</string>
+    <string name="congratulations">"Gratulacje</string>
+    <string name="lesson_finish">"Lekcja ukonczona"</string>
 
 </resources>
