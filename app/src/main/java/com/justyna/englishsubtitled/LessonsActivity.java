@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 import android.widget.Button;
 
 import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
@@ -58,6 +59,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
             if (!finishedLesson)
                 prepareGame();
             else {
+                findViewById(R.id.dictionary_btn).setVisibility(View.GONE);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("lessonResult", lessonResult);
                 Fragment finishLessonFragment = new FinishLessonFragment();
