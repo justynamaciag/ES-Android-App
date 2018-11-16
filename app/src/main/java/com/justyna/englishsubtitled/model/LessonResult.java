@@ -4,14 +4,11 @@ import java.io.Serializable;
 
 public class LessonResult implements Serializable {
 
-    private int lessonId;
-    private String lessonName;
-
 //    ilość błędów, które użytkownik popełnił
-    private int failures=0;
+    private int mistakes = 0;
 
 //    ile razy użytkownik poprawinie odpowiedział pod rząd
-    private int correctInRow=0;
+    private int correctAnswersInRow = 0;
 
 //    ile razy uzytkownik odpowiedział poprawnie za pierwszym razem
     private int correctAnswersAsFirst=0;
@@ -20,71 +17,60 @@ public class LessonResult implements Serializable {
     private int dictionaryAddings=0;
 
 //    ilość wykonanych ćwiczeń z każdego rodzaju
-    private int crosswordGameNum=0;
-    private int abcdGameNum=0;
-    private int wordGameNum=0;
+    private int crosswordGames = 0;
+    private int abcdGames = 0;
+    private int wordGames = 0;
 
     public void incrementCorrectAnswerAsFirst(){
         this.correctAnswersAsFirst++;
     }
 
-    public void incrementFailure(){
-        this.failures++;
+    public void incrementMistakes(){
+        this.mistakes++;
     }
 
-    public void incrementCrosswordGameNum(){
-        this.crosswordGameNum++;
+    public void incrementCrosswordGames(){
+        this.crosswordGames++;
     }
 
-    public void incrementWordGameNum(){
-        this.wordGameNum++;
+    public void incrementWordGames(){
+        this.wordGames++;
     }
 
-    public void incrementABCDGameNum(){
-        this.abcdGameNum++;
+    public void incrementABCDGames(){
+        this.abcdGames++;
     }
 
-    public void incrementDictionaryAddings(){
+    public void incrementDictionaryAdditions(){
         this.dictionaryAddings++;
     }
 
-    public void decrementCrosswordNum(){
-        this.crosswordGameNum--;
+    public void decrementCrosswords(){
+        this.crosswordGames--;
     }
 
-    public void setCorrectInRow(int correctInRow){
-        this.correctInRow = correctInRow;
+    public void setCorrectAnswersInRow(int correctAnswersInRow){
+        this.correctAnswersInRow = correctAnswersInRow;
     }
 
-    public int getCorrectInRow(){
-        return this.correctInRow;
+    public int getCorrectAnswersInRow(){
+        return this.correctAnswersInRow;
     }
 
-    public int getFailures(){
-        return this.failures;
+    public int getMistakes(){
+        return this.mistakes;
     }
 
-    public int getCorrectAnswersAsFirst(){
-        return this.correctAnswersAsFirst;
+    public int getCrosswordGames(){
+        return this.crosswordGames;
     }
 
-    public int getDictionaryAddings(){
-        return this.dictionaryAddings;
+    public int getAbcdGames(){
+        return this.abcdGames;
     }
 
-    public int getCrosswordGameNum(){
-        return this.crosswordGameNum;
+    public int getWordGames(){
+        return this.wordGames;
     }
 
-    public int getAbcdGameNum(){
-        return this.abcdGameNum;
-    }
-
-    public int getWordGameNum(){
-        return this.wordGameNum;
-    }
-
-    public int getLessonId(){
-        return this.lessonId;
-    }
 }

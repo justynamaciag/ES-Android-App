@@ -22,11 +22,13 @@ import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disabl
 
 public class LessonResultSender {
 
-    public static Boolean sendStatistics(LessonResult lessonResult){
+    public static Boolean sendStatistics(int lessonId, LessonResult lessonResult){
 
         Boolean result;
         try {
-            result = new SendResult().execute(lessonResult).get();
+            ExtendedLessonResult extendedLessonResult = new ExtendedLessonResult(lessonId, lessonResult);
+
+            result = new SendResult().execute(extendedLessonResult).get();
         }catch (InterruptedException | ExecutionException e) {
             System.out.println(e);
             result = false;
@@ -34,12 +36,13 @@ public class LessonResultSender {
         return result;
     }
 
-    private static class SendResult extends AsyncTask<LessonResult, Void, Boolean>{
+    private static class SendResult extends AsyncTask<ExtendedLessonResult, Void, Boolean>{
 
         @Override
-        protected Boolean doInBackground(LessonResult... lessonResults) {
+        protected Boolean doInBackground(ExtendedLessonResult... lessonResults) {
             if(lessonResults.length < 1) return false;
-            LessonResult lessonResult = lessonResults[0];
+            LessonResult lessonResult = lessonResults[0].lessonResult;
+            int lessonId = lessonResults[0].lessonId;
             try {
                 disableChecks();
             } catch (Exception e) {
@@ -63,7 +66,7 @@ public class LessonResultSender {
             restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
             ResponseEntity<String> result =
-                    restTemplate.exchange(baseUrl + "/progress/" + lessonResult.getLessonId(), HttpMethod.PUT, entity, String.class);
+                    restTemplate.exchange(baseUrl + "/progress/" + lessonId, HttpMethod.PUT, entity, String.class);
 
             if (result.getStatusCode() != HttpStatus.OK) {
                 System.out.println("Back-end responded with: " + result.getBody());
@@ -71,6 +74,18 @@ public class LessonResultSender {
             }
             return false;
         }
+    }
+
+    private static class ExtendedLessonResult{
+
+        private int lessonId;
+        private LessonResult lessonResult;
+
+        ExtendedLessonResult(int lessonId, LessonResult lessonResult){
+            this.lessonId = lessonId;
+            this.lessonResult = lessonResult;
+        }
+
     }
 
 }

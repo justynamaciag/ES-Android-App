@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.justyna.englishsubtitled.R;
+import com.justyna.englishsubtitled.games.utilities.LessonResultSender;
 import com.justyna.englishsubtitled.model.LessonResult;
 
 public class FinishLessonFragment extends Fragment {
@@ -24,9 +25,10 @@ public class FinishLessonFragment extends Fragment {
 
         if(bundle != null) {
             LessonResult lessonResult = (LessonResult) bundle.getSerializable("lessonResult");
+            int lessonId = bundle.getInt("lessonId");
 
             fillTextViews(lessonResult);
-//            LessonResultSender.sendStatistics(lessonResult);
+//            LessonResultSender.sendStatistics(lessonId, lessonResult);
 
         }
 
@@ -37,16 +39,16 @@ public class FinishLessonFragment extends Fragment {
         Resources resources = getResources();
 
         TextView textView = view.findViewById(R.id.crossword_num_textview);
-        textView.setText(resources.getString(R.string.crossword_numbers, lessonResult.getCrosswordGameNum()));
+        textView.setText(resources.getString(R.string.crossword_numbers, lessonResult.getCrosswordGames()));
 
         textView = view.findViewById(R.id.word_num_textview);
-        textView.setText(resources.getString(R.string.word_numbers, lessonResult.getWordGameNum()));
+        textView.setText(resources.getString(R.string.word_numbers, lessonResult.getWordGames()));
 
         textView = view.findViewById(R.id.abcd_num_textview);
-        textView.setText(resources.getString(R.string.abcd_numbers, lessonResult.getAbcdGameNum()));
+        textView.setText(resources.getString(R.string.abcd_numbers, lessonResult.getAbcdGames()));
 
         textView = view.findViewById(R.id.failures_textview);
-        textView.setText((resources.getString(R.string.failure_numbers, lessonResult.getFailures())));
+        textView.setText((resources.getString(R.string.failure_numbers, lessonResult.getMistakes())));
     }
 
 }

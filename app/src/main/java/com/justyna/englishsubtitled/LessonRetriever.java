@@ -21,7 +21,7 @@ import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disabl
 
 public class LessonRetriever {
 
-    public static List<Translation> prepareTranslationList(String lessonName) {
+    public static Lesson prepareTranslationList(String lessonName) {
 
         Lesson lesson;
         try {
@@ -30,7 +30,7 @@ public class LessonRetriever {
             System.out.println(e);
             lesson = null;
         }
-        return lesson.getTranslations();
+        return lesson;
 
     }
 

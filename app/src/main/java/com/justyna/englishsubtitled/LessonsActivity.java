@@ -14,6 +14,7 @@ import com.justyna.englishsubtitled.games.fragments.WordFragment;
 import com.justyna.englishsubtitled.games.utilities.DictionarySender;
 import com.justyna.englishsubtitled.games.utilities.Game;
 import com.justyna.englishsubtitled.games.utilities.GameResult;
+import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.model.LessonResult;
 import com.justyna.englishsubtitled.model.Translation;
 
@@ -32,8 +33,9 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     Random rand = new Random();
     List<Translation> translations;
     Translation currentTranslation;
+    int lessonId;
     boolean first = true, finishedLesson = true;
-    int wordRepeats = 2, currentTranslationFailures = 0, correctAnswersInRow = 0;
+    int wordRepeats = 2, maxFails=2, currentTranslationFailures = 0, correctAnswersInRow = 0;
     Button dictionaryBtn;
     LessonResult lessonResult;
 
@@ -45,14 +47,14 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                 lessonResult.incrementCorrectAnswerAsFirst();
 
             correctAnswersInRow++;
-            if(correctAnswersInRow > lessonResult.getCorrectInRow())
-                lessonResult.setCorrectInRow(correctAnswersInRow);
+            if(correctAnswersInRow > lessonResult.getCorrectAnswersInRow())
+                lessonResult.setCorrectAnswersInRow(correctAnswersInRow);
 
             currentTranslation.setProgress(currentTranslation.getProgress() + 1);
 
             finishedLesson = true;
             for (Translation t : translations) {
-                if (t.getProgress() < wordRepeats || t.getFails() > 5) {
+                if (t.getProgress() < wordRepeats || t.getFails() > maxFails) {
                     finishedLesson = false;
                 }
             }
@@ -62,6 +64,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                 findViewById(R.id.dictionary_btn).setVisibility(View.GONE);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("lessonResult", lessonResult);
+                bundle.putInt("lessonId", lessonId);
                 Fragment finishLessonFragment = new FinishLessonFragment();
                 finishLessonFragment.setArguments(bundle);
                 callFragment(finishLessonFragment);
@@ -69,11 +72,11 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         }
         else if(data == GameResult.FAIL){
             currentTranslation.addFailAnswer();
-            lessonResult.incrementFailure();
+            lessonResult.incrementMistakes();
             correctAnswersInRow = 0;
         }
         else if(data == GameResult.CANT_EXECUTE) {
-            lessonResult.decrementCrosswordNum();
+            lessonResult.decrementCrosswords();
             prepareGame();
         }
 
@@ -106,7 +109,9 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
             lessonName = (String) bundle.get("lessonName");
 
         lessonResult = new LessonResult();
-        translations = LessonRetriever.prepareTranslationList(lessonName);
+        Lesson lesson = LessonRetriever.prepareTranslationList(lessonName);
+        translations = lesson.getTranslations();
+        lessonId = lesson.getLessonId();
 
 //        TODO - poprawic
         if(translations.size() == 0 || translations.size() == 1){
@@ -123,19 +128,19 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     private void sendToBackend(Translation translation){
 
-        lessonResult.incrementDictionaryAddings();
+        lessonResult.incrementDictionaryAdditions();
         DictionarySender.addToDict(translation);
     }
 
     private Translation chooseNextTranslation() {
 
         Translation temp = translations.get(getRandomNumber(0, translations.size() - 1));
-        if (temp.getProgress() < wordRepeats || temp.getFails() > 5 )
+        if (temp.getProgress() < wordRepeats || temp.getFails() > maxFails )
             return temp;
 
         Collections.shuffle(translations);
         for (Translation t : translations)
-            if (t.getProgress() < wordRepeats || temp.getFails() > 5)
+            if (t.getProgress() < wordRepeats || temp.getFails() > maxFails)
                 return t;
         return null;
     }
@@ -149,16 +154,16 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         Game game = Game.values()[gameNum];
         switch (game) {
             case CROSSWORD:
-                lessonResult.incrementCrosswordGameNum();
+                lessonResult.incrementCrosswordGames();
                 fragment = new CrosswordFragment();
                 break;
             case ABCD:
-                lessonResult.incrementABCDGameNum();
+                lessonResult.incrementABCDGames();
                 fragment = new ABCDFragment();
                 bundle.putSerializable("translations", (Serializable) translations);
                 break;
             case PUZZLE:
-                lessonResult.incrementWordGameNum();
+                lessonResult.incrementWordGames();
                 fragment = new WordFragment();
                 break;
         }
