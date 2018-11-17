@@ -14,7 +14,7 @@ public class LessonResult implements Serializable {
     private int correctAnswersAsFirst=0;
 
 //    ilośc dodań do słownika
-    private int dictionaryAddings=0;
+    private int dictionaryAddictions =0;
 
 //    ilość wykonanych ćwiczeń z każdego rodzaju
     private int crosswordGames = 0;
@@ -42,7 +42,7 @@ public class LessonResult implements Serializable {
     }
 
     public void incrementDictionaryAdditions(){
-        this.dictionaryAddings++;
+        this.dictionaryAddictions++;
     }
 
     public void decrementCrosswords(){
