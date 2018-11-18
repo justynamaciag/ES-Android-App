@@ -29,7 +29,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     List<Translation> translations;
     Translation currentTranslation;
     boolean first = true, finishedLesson = true;
-    int wordRepeats = 2, maxFails=2, currentTranslationFailures = 0, correctAnswersInRow = 0;
+    int wordRepeats = 2, maxFails = 2, currentTranslationFailures = 0, correctAnswersInRow = 0;
     ImageButton dictionaryBtn;
     LessonResult lessonResult;
 
@@ -38,24 +38,25 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     public void onDataPass(GameResult data) {
         if (data == GameResult.SUCCESS) {
 
-            if(currentTranslationFailures == 0) {
+            if (currentTranslationFailures == 0) {
                 lessonResult.incrementCorrectAnswerAsFirst();
             }
-            currentTranslation.setProgress(currentTranslation.getProgress()+1);
+            currentTranslation.setProgress(currentTranslation.getProgress() + 1);
 
             correctAnswersInRow++;
-            if(correctAnswersInRow > lessonResult.getCorrectAnswersInRow())
+            if (correctAnswersInRow > lessonResult.getCorrectAnswersInRow())
                 lessonResult.setCorrectAnswersInRow(correctAnswersInRow);
 
             finishedLesson = true;
             for (Translation t : translations) {
-                if (t.getProgress() < wordRepeats || t.getFails() > maxFails) {
+                if (t.getProgress() < wordRepeats || t.getFails() > maxFails)
                     finishedLesson = false;
-                }
+
             }
             if (!finishedLesson) {
                 prepareGame();
-            else {
+
+            } else {
                 findViewById(R.id.dictionary_btn).setVisibility(View.GONE);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("lessonResult", lessonResult);
@@ -63,13 +64,11 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                 finishLessonFragment.setArguments(bundle);
                 callFragment(finishLessonFragment);
             }
-        }
-        else if(data == GameResult.FAIL){
+        } else if (data == GameResult.FAIL) {
             currentTranslation.addFailAnswer();
             lessonResult.incrementMistakes();
             correctAnswersInRow = 0;
-        }
-        else if(data == GameResult.CANT_EXECUTE) {
+        } else if (data == GameResult.CANT_EXECUTE) {
             lessonResult.decrementCrosswords();
             prepareGame();
         }
@@ -101,7 +100,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
         Bundle bundle = getIntent().getExtras();
         String lessonName = null;
-        if(bundle != null)
+        if (bundle != null)
             lessonName = (String) bundle.get("lessonName");
 
         lessonResult = new LessonResult();
@@ -109,9 +108,8 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         translations = lesson.getTranslations();
         lessonResult.setLessonId(lesson.getLessonId());
 
-        if(translations.size() == 0){
+        if (translations.size() == 0)
             finish();
-        }
         else {
             for (Translation translation : translations) {
                 translation.setProgress(0);
@@ -121,10 +119,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         }
     }
 
-    private void sendToBackend(Translation translation){
-
-        Toast.makeText(getApplicationContext(), "Dodano do słownika", Toast.LENGTH_SHORT).show();
-        dictionaryBtn.setImageResource(android.R.drawable.star_big_on);
+    private void sendToBackend(Translation translation) {
         lessonResult.incrementDictionaryAdditions();
         DictionarySender.addToDict(translation);
     }
@@ -133,15 +128,16 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
         Translation temp = translations.get(getRandomNumber(0, translations.size() - 1));
 
-        if (temp.getProgress() < wordRepeats || temp.getFails() > maxFails ) {
+        if (temp.getProgress() < wordRepeats || temp.getFails() > maxFails)
             return temp;
-        }
+
 
         Collections.shuffle(translations);
         for (Translation t : translations) {
-            System.out.println(t.getEngWord() + " " + t.getFails());
-            if (t.getProgress() < wordRepeats || t.getFails() > maxFails) {
+            if (t.getProgress() < wordRepeats || t.getFails() > maxFails)
                 return t;
+
+        }
         return null;
     }
 
@@ -177,9 +173,8 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     }
 
     private void prepareGame() {
-        if(translations.size() == 1)
+        if (translations.size() == 1)
             currentTranslation = translations.get(0);
-
         else
             currentTranslation = chooseNextTranslation();
 
