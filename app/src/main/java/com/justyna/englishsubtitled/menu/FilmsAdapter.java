@@ -22,16 +22,16 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.MyViewHolder
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public LinearLayout linearLayout;
+    static class MyViewHolder extends RecyclerView.ViewHolder {
+        LinearLayout linearLayout;
 
-        public MyViewHolder(LinearLayout v) {
+        MyViewHolder(LinearLayout v) {
             super(v);
             linearLayout = v;
         }
     }
 
-    public FilmsAdapter(List<Film> dataset, AppCompatActivity caller) {
+    FilmsAdapter(List<Film> dataset, AppCompatActivity caller) {
         this.dataset = dataset;
         this.caller = caller;
     }

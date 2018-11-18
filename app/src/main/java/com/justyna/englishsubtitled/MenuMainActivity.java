@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.justyna.englishsubtitled.menu.MenuAchievementsActivity;
@@ -26,9 +27,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disableChecks;
 
@@ -52,8 +52,8 @@ public class MenuMainActivity extends AppCompatActivity {
 
     List<ImageButton> removeRecentButtons = new ArrayList<>(3);
 
-    List<LessonSummary> recentLessonsCollection = Collections.emptyList();
-    List<LessonSummary> finishedLessonsCollection = Collections.emptyList();
+    private final List<LessonSummary> recentLessonsCollection = new ArrayList<>(3);
+    private final List<LessonSummary> finishedLessonsCollection = new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,38 +96,14 @@ public class MenuMainActivity extends AppCompatActivity {
         removeRecentButtons.add(removeRecent2);
         removeRecentButtons.add(removeRecent3);
 
-        refreshProgress();
+        new ProgressRetriever().execute();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        refreshProgress();
+        new ProgressRetriever().execute();
     }
-
-    private void refreshProgress() {
-        try {
-            Progress progress = new ProgressRetriever().execute().get();
-            recentLessonsCollection = progress.getRented();
-            finishedLessonsCollection = progress.getFinished();
-
-            for (int i = 0; i < 3; i++) {
-                if (recentLessonsCollection.size() < i + 1) break;
-                recentLessonButtons.get(i).setText(recentLessonsCollection.get(i).lessonTitle);
-                recentLessonButtons.get(i).setVisibility(View.VISIBLE);
-                removeRecentButtons.get(i).setVisibility(View.VISIBLE);
-            }
-
-            for (int i = recentLessonsCollection.size(); i < 3; i++) {
-                recentLessonButtons.get(i).setVisibility(View.INVISIBLE);
-                removeRecentButtons.get(i).setVisibility(View.INVISIBLE);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            System.out.println("Error while downloading recent lessons list:");
-            e.printStackTrace();
-        }
-    }
-
 
     private OnClickListener startNewLessonBtnOnClick = v -> {
         Intent intent = new Intent(MenuMainActivity.this, MenuFindLessonActivity.class);
@@ -150,7 +126,9 @@ public class MenuMainActivity extends AppCompatActivity {
     private OnClickListener finishedLessonsBtnOnClick = v -> {
         Intent intent = new Intent(MenuMainActivity.this, MenuFinishedLessonsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("finishedLessons", (Serializable) finishedLessonsCollection);
+        synchronized (finishedLessonsCollection) {
+            intent.putExtra("finishedLessons", (Serializable) finishedLessonsCollection);
+        }
         startActivity(intent);
     };
 
@@ -175,39 +153,32 @@ public class MenuMainActivity extends AppCompatActivity {
     };
 
     private OnClickListener removeRecent1BtnOnClick = v -> {
-        if (recentLessonsCollection.size() >= 1) {
-            int lessonId = recentLessonsCollection.get(0).getLessonId();
-            removeRecentLesson(lessonId);
-        }
+        removeRecentLesson(1);
     };
 
     private OnClickListener removeRecent2BtnOnClick = v -> {
-        if (recentLessonsCollection.size() >= 2) {
-            int lessonId = recentLessonsCollection.get(1).getLessonId();
-            removeRecentLesson(lessonId);
-        }
+        removeRecentLesson(2);
     };
 
     private OnClickListener removeRecent3BtnOnClick = v -> {
-        if (recentLessonsCollection.size() >= 3) {
-            int lessonId = recentLessonsCollection.get(2).getLessonId();
-            removeRecentLesson(lessonId);
-        }
+        removeRecentLesson(3);
     };
 
-    private void removeRecentLesson(int lessonId) {
-        boolean deleted = false;
-        try {
-            deleted = new RecentLessonsRemover().execute(lessonId).get();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void removeRecentLesson(int buttonOrder) {
+        boolean removing = false;
+        int lessonId = -1; // Value just for compiler
+        synchronized (recentLessonsCollection) {
+            if (recentLessonsCollection.size() >= buttonOrder) {
+                lessonId = recentLessonsCollection.get(buttonOrder - 1).getLessonId();
+                removing = true;
+            }
         }
-        if (deleted) {
-            refreshProgress();
+        if (removing) {
+            new RecentLessonsRemover().execute(lessonId);
         }
     }
 
-    private static class ProgressRetriever extends AsyncTask<Void, Void, Progress> {
+    private class ProgressRetriever extends AsyncTask<Void, Void, Progress> {
         @Override
         protected Progress doInBackground(Void... voids) {
             try {
@@ -220,16 +191,52 @@ public class MenuMainActivity extends AppCompatActivity {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<Progress> progress =
-                    restTemplate.exchange(baseUrl + "/progress/",
-                            HttpMethod.GET, entity, new ParameterizedTypeReference<Progress>() {
-                            });
+            ResponseEntity<Progress> progress;
+
+            try {
+                progress = restTemplate.exchange(baseUrl + "/progress/",
+                        HttpMethod.GET, entity, new ParameterizedTypeReference<Progress>() {
+                        });
+            } catch (Exception e) {
+                this.cancel(true);
+                return null;
+            }
 
             return progress.getBody();
         }
+
+        @Override
+        protected void onPostExecute(Progress progress) {
+            super.onPostExecute(progress);
+            synchronized (finishedLessonsCollection) {
+                finishedLessonsCollection.clear();
+                finishedLessonsCollection.addAll(progress.getFinished());
+            }
+            synchronized (recentLessonsCollection) {
+                recentLessonsCollection.clear();
+                recentLessonsCollection.addAll(progress.getRented());
+                for (int i = 0; i < 3; i++) {
+                    if (recentLessonsCollection.size() < i + 1) break;
+                    recentLessonButtons.get(i).setText(recentLessonsCollection.get(i).lessonTitle);
+                    recentLessonButtons.get(i).setVisibility(View.VISIBLE);
+                    removeRecentButtons.get(i).setVisibility(View.VISIBLE);
+                }
+
+                for (int i = recentLessonsCollection.size(); i < 3; i++) {
+                    recentLessonButtons.get(i).setVisibility(View.INVISIBLE);
+                    removeRecentButtons.get(i).setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Toast.makeText(MenuMainActivity.this, R.string.no_internet_connection, Toast.LENGTH_LONG).show();
+        }
     }
 
-    private static class RecentLessonsRemover extends AsyncTask<Integer, Void, Boolean> {
+    private class RecentLessonsRemover extends AsyncTask<Integer, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Integer... integers) {
             if (integers.length < 1) return false;
@@ -253,6 +260,14 @@ public class MenuMainActivity extends AppCompatActivity {
                 return false;
             }
             return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean deleted) {
+            super.onPostExecute(deleted);
+            if (deleted) {
+                new ProgressRetriever().execute();
+            }
         }
     }
 }
