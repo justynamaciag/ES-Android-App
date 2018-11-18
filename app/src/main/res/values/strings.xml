@@ -25,5 +25,6 @@
     <string name="abcd_numbers">"Liczba wykonanych pytań zamkniętych %1$d"</string>
     <string name="word_numbers">"Liczba wykonanych rozsypanek %1$d"</string>
     <string name="failure_numbers">"Liczba błędów %1$d"</string>
+    <string name="dictionary_add">Star button</string>
 
 </resources>

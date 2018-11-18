@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
 import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
@@ -25,18 +26,13 @@ import java.util.Random;
 
 public class LessonsActivity extends FragmentActivity implements CrosswordFragment.OnDataPass, WordFragment.OnDataPass, ABCDFragment.OnDataPass {
 
-//    ilosc minimalna/maksymalna błędów w danej lekcji
-//    ilosc słówek dodanych do słownika
-//    ile za pierwszym razem odpowiedział dobrze - bezblednie
-//    ile dobrze odpowiedział pod rzad poprawnie
-
     Random rand = new Random();
     List<Translation> translations;
     Translation currentTranslation;
     int lessonId;
     boolean first = true, finishedLesson = true;
     int wordRepeats = 2, maxFails=2, currentTranslationFailures = 0, correctAnswersInRow = 0;
-    Button dictionaryBtn;
+    ImageButton dictionaryBtn;
     LessonResult lessonResult;
 
 
@@ -101,6 +97,8 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         setContentView(R.layout.activity_lessons);
 
         dictionaryBtn = this.findViewById(R.id.dictionary_btn);
+        dictionaryBtn.setImageResource(android.R.drawable.star_big_on);
+        dictionaryBtn.setBackground(null);
         dictionaryBtn.setOnClickListener(v -> sendToBackend(currentTranslation));
 
         Bundle bundle = getIntent().getExtras();
@@ -128,6 +126,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     private void sendToBackend(Translation translation){
 
+        dictionaryBtn.setImageResource(android.R.drawable.star_big_on);
         lessonResult.incrementDictionaryAdditions();
         DictionarySender.addToDict(translation);
     }
