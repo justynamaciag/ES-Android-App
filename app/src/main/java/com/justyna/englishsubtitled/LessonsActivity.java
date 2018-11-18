@@ -121,7 +121,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     private void sendToBackend(Translation translation) {
         lessonResult.incrementDictionaryAdditions();
-        DictionarySender.addToDict(translation);
+        new DictionarySender().addToDict(translation, this);
     }
 
     private Translation chooseNextTranslation() {

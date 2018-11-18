@@ -1,10 +1,12 @@
 package com.justyna.englishsubtitled.games.utilities;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.justyna.englishsubtitled.Configuration;
+import com.justyna.englishsubtitled.LessonsActivity;
 import com.justyna.englishsubtitled.model.Translation;
 
 import org.springframework.http.HttpEntity;
@@ -15,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutionException;
 
@@ -22,11 +25,12 @@ import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disabl
 
 public class DictionarySender {
 
-    public static Boolean addToDict(Translation translation){
+
+    public Boolean addToDict(Translation translation, LessonsActivity lessonsActivity){
 
         Boolean result;
         try {
-            result = new AddDictionary().execute(translation).get();
+            result = new AddDictionary(lessonsActivity).execute(translation).get();
         }catch (InterruptedException | ExecutionException e) {
             System.out.println(e);
             result = false;
@@ -34,7 +38,13 @@ public class DictionarySender {
         return result;
     }
 
-    private static class AddDictionary extends AsyncTask<Translation, Void, Boolean>{
+    private class AddDictionary extends AsyncTask<Translation, Void, Boolean>{
+
+        private WeakReference<LessonsActivity> activityReference;
+
+        AddDictionary(LessonsActivity context) {
+            activityReference = new WeakReference<>(context);
+        }
 
         @Override
         protected Boolean doInBackground(Translation... translations) {
@@ -70,6 +80,11 @@ public class DictionarySender {
                 return true;
             }
             return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            Toast.makeText(activityReference.get(), "Dodano do słownika", Toast.LENGTH_SHORT).show();
         }
     }
 

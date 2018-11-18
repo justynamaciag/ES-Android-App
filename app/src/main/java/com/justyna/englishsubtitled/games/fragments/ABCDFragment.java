@@ -104,8 +104,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
 
             b.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
 
-            Handler handler = new Handler();
-            handler.postDelayed(() -> passData(GameResult.SUCCESS), 900);
+            passData(GameResult.SUCCESS);
 
         } else {
             passData(GameResult.FAIL);
