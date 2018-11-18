@@ -30,7 +30,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     TextView polishTranslationDisplay;
     int i = 0, N = 10, row, offset;
     View view;
-    boolean transpose, firstCellCorrect = false, finishGameSuccess = true;
+    boolean transpose, firstCellCorrect = false;
 
     OnDataPass dataPasser;
 

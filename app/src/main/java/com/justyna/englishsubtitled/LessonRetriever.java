@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import com.facebook.AccessToken;
 import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.model.LessonSummary;
-import com.justyna.englishsubtitled.model.Translation;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;

@@ -25,11 +25,9 @@ public class FinishLessonFragment extends Fragment {
 
         if(bundle != null) {
             LessonResult lessonResult = (LessonResult) bundle.getSerializable("lessonResult");
-            int lessonId = bundle.getInt("lessonId");
 
             fillTextViews(lessonResult);
-//            LessonResultSender.sendStatistics(lessonId, lessonResult);
-
+            LessonResultSender.sendStatistics(lessonResult);
         }
 
         return view;

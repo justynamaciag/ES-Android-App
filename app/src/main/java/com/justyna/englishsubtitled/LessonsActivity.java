@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
 import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
@@ -29,7 +29,6 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     Random rand = new Random();
     List<Translation> translations;
     Translation currentTranslation;
-    int lessonId;
     boolean first = true, finishedLesson = true;
     int wordRepeats = 2, maxFails=2, currentTranslationFailures = 0, correctAnswersInRow = 0;
     ImageButton dictionaryBtn;
@@ -60,7 +59,6 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                 findViewById(R.id.dictionary_btn).setVisibility(View.GONE);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("lessonResult", lessonResult);
-                bundle.putInt("lessonId", lessonId);
                 Fragment finishLessonFragment = new FinishLessonFragment();
                 finishLessonFragment.setArguments(bundle);
                 callFragment(finishLessonFragment);
@@ -109,10 +107,9 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         lessonResult = new LessonResult();
         Lesson lesson = LessonRetriever.prepareTranslationList(lessonName);
         translations = lesson.getTranslations();
-        lessonId = lesson.getLessonId();
+        lessonResult.setLessonId(lesson.getLessonId());
 
-//        TODO - poprawic
-        if(translations.size() == 0 || translations.size() == 1){
+        if(translations.size() == 0){
             finish();
         }
         else {
@@ -126,6 +123,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     private void sendToBackend(Translation translation){
 
+        Toast.makeText(getApplicationContext(), "Dodano do słownika", Toast.LENGTH_SHORT).show();
         dictionaryBtn.setImageResource(android.R.drawable.star_big_on);
         lessonResult.incrementDictionaryAdditions();
         DictionarySender.addToDict(translation);
@@ -176,9 +174,15 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     }
 
     private void prepareGame() {
-        currentTranslation = chooseNextTranslation();
+        if(translations.size() == 1)
+            currentTranslation = translations.get(0);
+
+        else
+            currentTranslation = chooseNextTranslation();
+
         if (currentTranslation == null)
             callFragment(new FinishLessonFragment());
+
         Bundle bundle = new Bundle();
         bundle.putSerializable("translation", currentTranslation);
 
