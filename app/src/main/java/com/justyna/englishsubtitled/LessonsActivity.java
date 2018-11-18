@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
 import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
@@ -38,14 +37,15 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     @Override
     public void onDataPass(GameResult data) {
         if (data == GameResult.SUCCESS) {
-            if(currentTranslationFailures == 0)
+
+            if(currentTranslationFailures == 0) {
                 lessonResult.incrementCorrectAnswerAsFirst();
+            }
+            currentTranslation.setProgress(currentTranslation.getProgress()+1);
 
             correctAnswersInRow++;
             if(correctAnswersInRow > lessonResult.getCorrectAnswersInRow())
                 lessonResult.setCorrectAnswersInRow(correctAnswersInRow);
-
-            currentTranslation.setProgress(currentTranslation.getProgress() + 1);
 
             finishedLesson = true;
             for (Translation t : translations) {
@@ -53,7 +53,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                     finishedLesson = false;
                 }
             }
-            if (!finishedLesson)
+            if (!finishedLesson) {
                 prepareGame();
             else {
                 findViewById(R.id.dictionary_btn).setVisibility(View.GONE);
@@ -132,12 +132,15 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     private Translation chooseNextTranslation() {
 
         Translation temp = translations.get(getRandomNumber(0, translations.size() - 1));
-        if (temp.getProgress() < wordRepeats || temp.getFails() > maxFails )
+
+        if (temp.getProgress() < wordRepeats || temp.getFails() > maxFails ) {
             return temp;
+        }
 
         Collections.shuffle(translations);
-        for (Translation t : translations)
-            if (t.getProgress() < wordRepeats || temp.getFails() > maxFails)
+        for (Translation t : translations) {
+            System.out.println(t.getEngWord() + " " + t.getFails());
+            if (t.getProgress() < wordRepeats || t.getFails() > maxFails) {
                 return t;
         return null;
     }
@@ -182,6 +185,9 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
         if (currentTranslation == null)
             callFragment(new FinishLessonFragment());
+
+        currentTranslation.setFails(0);
+
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("translation", currentTranslation);
