@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
 import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
@@ -95,7 +96,6 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
         dictionaryBtn = this.findViewById(R.id.dictionary_btn);
         dictionaryBtn.setImageResource(android.R.drawable.star_big_on);
-        dictionaryBtn.setBackground(null);
         dictionaryBtn.setOnClickListener(v -> sendToBackend(currentTranslation));
 
         Bundle bundle = getIntent().getExtras();
@@ -114,14 +114,21 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
             for (Translation translation : translations) {
                 translation.setProgress(0);
                 translation.setFails(0);
+                translation.setDictionaryAdded(false);
             }
             prepareGame();
         }
     }
 
     private void sendToBackend(Translation translation) {
-        lessonResult.incrementDictionaryAdditions();
-        new DictionarySender().addToDict(translation, this);
+        if(!translation.getDictionaryAdded()){
+            translation.setDictionaryAdded(true);
+            lessonResult.incrementDictionaryAdditions();
+            new DictionarySender().addToDict(translation, LessonsActivity.this);
+        }
+        else
+            Toast.makeText(getApplicationContext(), "Słowo zostało już dodane do słownika", Toast.LENGTH_SHORT).show();
+
     }
 
     private Translation chooseNextTranslation() {
@@ -130,7 +137,6 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
         if (temp.getProgress() < wordRepeats || temp.getFails() > maxFails)
             return temp;
-
 
         Collections.shuffle(translations);
         for (Translation t : translations) {

@@ -12,6 +12,7 @@ public class Translation implements Serializable, Parcelable {
     private String plWord;
     private int progress;
     private int fails;
+    private Boolean dictionaryAdded;
 
     protected Translation(Parcel in) {
         engWord = in.readString();
@@ -44,6 +45,14 @@ public class Translation implements Serializable, Parcelable {
 
     public int getFails(){
         return this.fails;
+    }
+
+    public Boolean getDictionaryAdded() {
+        return this.dictionaryAdded;
+    }
+
+    public void setDictionaryAdded(Boolean dictionaryAdded){
+        this.dictionaryAdded = dictionaryAdded;
     }
 
     @Override

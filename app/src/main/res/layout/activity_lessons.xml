@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.018"
-        android:contentDescription="@string/dictionary_add"/>
+        android:contentDescription="@string/dictionary_add" />
 
 
     <FrameLayout

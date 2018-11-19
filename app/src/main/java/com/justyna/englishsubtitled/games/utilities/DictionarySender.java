@@ -19,26 +19,19 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
-import java.util.concurrent.ExecutionException;
 
 import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disableChecks;
 
 public class DictionarySender {
 
 
-    public Boolean addToDict(Translation translation, LessonsActivity lessonsActivity){
+    public void addToDict(Translation translation, LessonsActivity lessonsActivity) {
 
-        Boolean result;
-        try {
-            result = new AddDictionary(lessonsActivity).execute(translation).get();
-        }catch (InterruptedException | ExecutionException e) {
-            System.out.println(e);
-            result = false;
-        }
-        return result;
+        new AddDictionary(lessonsActivity).execute(translation);
+
     }
 
-    private class AddDictionary extends AsyncTask<Translation, Void, Boolean>{
+    private class AddDictionary extends AsyncTask<Translation, Void, Boolean> {
 
         private WeakReference<LessonsActivity> activityReference;
 
@@ -48,7 +41,7 @@ public class DictionarySender {
 
         @Override
         protected Boolean doInBackground(Translation... translations) {
-            if(translations.length < 1) return false;
+            if (translations.length < 1) return false;
             Translation translation = translations[0];
             try {
                 disableChecks();
