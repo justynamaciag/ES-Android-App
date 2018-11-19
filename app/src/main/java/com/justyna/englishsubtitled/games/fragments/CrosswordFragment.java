@@ -26,7 +26,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     Translation currentTranslation;
     Random rand = new Random();
     String[][] table;
-    String clicked;
+    String clicked, previouslyClicked = "";
     TextView polishTranslationDisplay;
     int i = 0, N = 10, row, offset;
     View view;
@@ -97,6 +97,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
 
                 int point = crosswordGrid.pointToPosition((int) x, (int) y);
                 int action = event.getAction() & MotionEvent.ACTION_MASK;
+
                 clicked = gridViewLetters.get(point);
 
                 if (action == MotionEvent.ACTION_MOVE)
@@ -121,16 +122,17 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     }
 
     private void checkIfUserClicksCorrect() {
-
 //        correct
         if (clicked.equalsIgnoreCase(table[row][offset + i]) && firstCellCorrect)
             i++;
 //      incorrect - (-1) added due to fact that listener is called multiple times in drawing at one cell
         else if (!clicked.equalsIgnoreCase(table[row][offset + i - 1])) {
             i = 0;
-            passData(GameResult.FAIL);
+//            one click at a cell can call multiplied listeners, increment mistakes only once
+            if (!previouslyClicked.equalsIgnoreCase(clicked))
+                passData(GameResult.FAIL);
+            previouslyClicked = clicked;
         }
-
 //        if entire word was marked
         if (i == currentTranslation.getEngWord().length()) {
             Toast.makeText(view.getContext(), "Perfect!", Toast.LENGTH_SHORT).show();
