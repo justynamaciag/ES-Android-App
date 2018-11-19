@@ -20,12 +20,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.018"
-        android:contentDescription="@string/dictionary_add" />
+        android:contentDescription="@string/dictionary_add"
+        android:src="@android:drawable/star_big_on"/>
 
 
     <FrameLayout
         android:id="@+id/fragment_container"
-        android:layout_width="488dp"
+        android:layout_width="wrap_content"
         android:layout_height="504dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="52dp"
@@ -34,8 +35,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>

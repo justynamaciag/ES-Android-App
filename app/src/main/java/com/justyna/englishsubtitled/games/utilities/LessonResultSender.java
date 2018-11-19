@@ -16,22 +16,15 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.Charset;
-import java.util.concurrent.ExecutionException;
 
 import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disableChecks;
 
 public class LessonResultSender {
 
-    public static Boolean sendStatistics(LessonResult lessonResult){
+    public static void sendStatistics(LessonResult lessonResult){
 
-        Boolean result;
-        try {
-            result = new SendResult().execute(lessonResult).get();
-        }catch (InterruptedException | ExecutionException e) {
-            System.out.println(e);
-            result = false;
-        }
-        return result;
+        new SendResult().execute(lessonResult);
+
     }
 
     private static class SendResult extends AsyncTask<LessonResult, Void, Boolean>{

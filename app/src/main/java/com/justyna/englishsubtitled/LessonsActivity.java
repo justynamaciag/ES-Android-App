@@ -95,7 +95,6 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         setContentView(R.layout.activity_lessons);
 
         dictionaryBtn = this.findViewById(R.id.dictionary_btn);
-        dictionaryBtn.setImageResource(android.R.drawable.star_big_on);
         dictionaryBtn.setOnClickListener(v -> sendToBackend(currentTranslation));
 
         Bundle bundle = getIntent().getExtras();
@@ -105,6 +104,12 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
         lessonResult = new LessonResult();
         Lesson lesson = LessonRetriever.prepareTranslationList(lessonName);
+
+        if(lesson == null){
+            Toast.makeText(getApplicationContext(), "Nie można pobrać lekcji!", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         translations = lesson.getTranslations();
         lessonResult.setLessonId(lesson.getLessonId());
 
