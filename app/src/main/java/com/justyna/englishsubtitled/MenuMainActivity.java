@@ -1,6 +1,7 @@
 package com.justyna.englishsubtitled;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -67,8 +68,13 @@ public class MenuMainActivity extends AppCompatActivity {
         logout = findViewById(R.id.logout);
 
         recentLesson1 = findViewById(R.id.recent_lesson_1);
+        recentLesson1.getBackground().setColorFilter(getResources().getColor(R.color.colorBrown), PorterDuff.Mode.MULTIPLY);
+
         recentLesson2 = findViewById(R.id.recent_lesson_2);
+        recentLesson2.getBackground().setColorFilter(getResources().getColor(R.color.colorBrown), PorterDuff.Mode.MULTIPLY);
+
         recentLesson3 = findViewById(R.id.recent_lesson_3);
+        recentLesson3.getBackground().setColorFilter(getResources().getColor(R.color.colorBrown), PorterDuff.Mode.MULTIPLY);
 
         removeRecent1 = findViewById(R.id.remove_recent_lesson_1);
         removeRecent2 = findViewById(R.id.remove_recent_lesson_2);
