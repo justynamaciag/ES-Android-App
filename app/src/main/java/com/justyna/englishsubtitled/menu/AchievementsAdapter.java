@@ -38,11 +38,16 @@ public class AchievementsAdapter extends RecyclerView.Adapter<AchievementsAdapte
     @Override
     public AchievementHolder onCreateViewHolder(ViewGroup parent,
                                                 int viewType) {
+
+
         // create a new view
         LinearLayout linearLayout = new LinearLayout(parent.getContext());
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        linearLayout.setWeightSum(100f);
+        ViewGroup.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ((LinearLayout.LayoutParams) layoutParams).setMargins(40, 0,0,0);
+        linearLayout.setLayoutParams(layoutParams);
+//        linearLayout.setWeightSum(100f);
+
 
         ImageView imageView = new ImageView(linearLayout.getContext());
         imageView.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 10f));

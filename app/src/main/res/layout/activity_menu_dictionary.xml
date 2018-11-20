@@ -8,37 +8,46 @@
     android:orientation="vertical"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="0dp"
-    android:weightSum="100">
+    android:weightSum="100"
+    android:background="@drawable/background4">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
         android:text="@string/dictionary"
-        android:textSize="24sp" />
+        android:textSize="30sp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="60dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorDarkDarkBrown"/>
 
     <LinearLayout
         android:baselineAligned="true"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp"
         android:layout_weight="10"
         android:weightSum="100">
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp"
-            android:layout_weight="45">
+            tools:layout_editor_absoluteY="0dp">
+            <!--android:layout_weight="60">-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/english_label"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorDarkBrown"/>
 
             <ImageButton
                 android:id="@+id/englishAscending"
@@ -56,18 +65,20 @@
 
         </LinearLayout>
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp"
-            android:layout_weight="45">
+            tools:layout_editor_absoluteY="0dp">
+            <!--android:layout_weight="60">-->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/polish_label"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorDarkBrown"/>
 
             <ImageButton
                 android:id="@+id/polishAscending"
@@ -90,6 +101,7 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="80"/>
+        android:layout_weight="80"
+        android:layout_margin="20dp" />
 
 </LinearLayout>
