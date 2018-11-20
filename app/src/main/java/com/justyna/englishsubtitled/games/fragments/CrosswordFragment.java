@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.games.utilities.CrosswordAdapter;
+import com.justyna.englishsubtitled.games.utilities.GameResult;
 import com.justyna.englishsubtitled.model.Translation;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     TextView polishTranslationDisplay;
     int i = 0, N = 10, row, offset;
     View view;
-    boolean transpose, firstCellCorrect = false, finishGameSuccess = true, finishGameFail = false;
+    boolean transpose, firstCellCorrect = false;
 
     OnDataPass dataPasser;
 
@@ -53,7 +54,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         }
 
         if (currentTranslation.getEngWord().length() >= N) {
-            passData(finishGameFail);
+            passData(GameResult.CANT_EXECUTE);
             return view;
         }
 
@@ -96,6 +97,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
 
                 int point = crosswordGrid.pointToPosition((int) x, (int) y);
                 int action = event.getAction() & MotionEvent.ACTION_MASK;
+
                 clicked = gridViewLetters.get(point);
 
                 if (action == MotionEvent.ACTION_MOVE)
@@ -116,23 +118,27 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     //  check if first touched cell is correct,
 //  drawing entire row/column containing correct translation wont work, only specific letters
     private boolean checkIfFirstCellCorrect() {
-        if (clicked.equalsIgnoreCase((table[row][offset])))
+        if(clicked.equalsIgnoreCase((table[row][offset]))){
             return true;
-        return false;
+        }
+        else {
+            passData(GameResult.FAIL);
+            return false;
+        }
     }
 
     private void checkIfUserClicksCorrect() {
-
+//        correct
         if (clicked.equalsIgnoreCase(table[row][offset + i]) && firstCellCorrect)
             i++;
-
-//      (-1) added due to fact that listener is called multiple times in drawing at one cell
-        else if (!clicked.equalsIgnoreCase(table[row][offset + i - 1]))
+//      incorrect - (-1) added due to fact that listener is called multiple times in drawing at one cell
+        else if (!clicked.equalsIgnoreCase(table[row][offset + i - 1])) {
             i = 0;
-
+        }
+//        if entire word was marked
         if (i == currentTranslation.getEngWord().length()) {
             Toast.makeText(view.getContext(), "Perfect!", Toast.LENGTH_SHORT).show();
-            passData(finishGameSuccess);
+            passData(GameResult.SUCCESS);
         }
     }
 
@@ -168,7 +174,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
 
     }
 
-    public void passData(boolean data) {
+    public void passData(GameResult data) {
         dataPasser.onDataPass(data);
     }
 
@@ -178,6 +184,6 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     }
 
     public interface OnDataPass {
-        void onDataPass(boolean data);
+        void onDataPass(GameResult data);
     }
 }

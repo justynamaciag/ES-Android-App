@@ -1,6 +1,7 @@
 package com.justyna.englishsubtitled.menu;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
@@ -63,6 +64,11 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.MyViewHolder
             button.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
             button.setOnClickListener(v -> {
                 Intent intent = new Intent(caller, LessonsActivity.class);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("lessonName", button.getText().toString());
+                intent.putExtras(bundle);
+
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 caller.startActivity(intent);
             });

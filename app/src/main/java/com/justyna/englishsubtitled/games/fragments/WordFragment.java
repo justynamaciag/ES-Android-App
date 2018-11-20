@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
+import com.justyna.englishsubtitled.games.utilities.GameResult;
 import com.justyna.englishsubtitled.games.utilities.WordButtonsAdapter;
 import com.justyna.englishsubtitled.model.Translation;
 
@@ -105,13 +106,15 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
 
             if (checkedIndex + 1 == currentTranslation.getEngWord().length()) {
                 Handler handler = new Handler();
-                handler.postDelayed(() -> passData(finishGameSuccess), Toast.LENGTH_SHORT);
+                handler.postDelayed(() -> passData(GameResult.SUCCESS), Toast.LENGTH_SHORT);
 
             }
             checkedIndex++;
             b.setEnabled(false);
-        } else
+        } else {
+            passData(GameResult.FAIL);
             callButtonColorAnimation(Color.RED, b, 500);
+        }
 
     }
 
@@ -133,12 +136,12 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     }
 
 
-    public void passData(boolean data) {
+    public void passData(GameResult data) {
         dataPasser.onDataPass(data);
     }
 
     public interface OnDataPass {
-        void onDataPass(boolean data);
+        void onDataPass(GameResult data);
     }
 
 }

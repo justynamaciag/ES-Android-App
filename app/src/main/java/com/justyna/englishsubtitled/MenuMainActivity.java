@@ -86,9 +86,9 @@ public class MenuMainActivity extends AppCompatActivity {
         finishedLessons.setOnClickListener(finishedLessonsBtnOnClick);
         logout.setOnClickListener(logoutBtnOnClick);
 
-        recentLesson1.setOnClickListener(recentLesson1BtnOnClick);
-        recentLesson2.setOnClickListener(recentLesson2BtnOnClick);
-        recentLesson3.setOnClickListener(recentLesson3BtnOnClick);
+        recentLesson1.setOnClickListener(recentLessonBtnOnClick);
+        recentLesson2.setOnClickListener(recentLessonBtnOnClick);
+        recentLesson3.setOnClickListener(recentLessonBtnOnClick);
 
         recentLessonButtons.add(recentLesson1);
         recentLessonButtons.add(recentLesson2);
@@ -145,22 +145,17 @@ public class MenuMainActivity extends AppCompatActivity {
         startActivity(intent);
     };
 
-    private OnClickListener recentLesson1BtnOnClick = v -> {
-//        Intent intent = new Intent(MenuMainActivity.this, LessonsActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
-    };
+    private OnClickListener recentLessonBtnOnClick = v -> {
 
-    private OnClickListener recentLesson2BtnOnClick = v -> {
-//        Intent intent = new Intent(MenuMainActivity.this, LessonsActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
-    };
+        Intent intent = new Intent(this, LessonsActivity.class);
 
-    private OnClickListener recentLesson3BtnOnClick = v -> {
-//        Intent intent = new Intent(MenuMainActivity.this, LessonsActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        startActivity(intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("lessonName", ((Button) v).getText().toString());
+        intent.putExtras(bundle);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
     };
 
     private OnClickListener removeRecent1BtnOnClick = v -> {
