@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import com.facebook.AccessToken;
 import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.model.LessonSummary;
-import com.justyna.englishsubtitled.model.Translation;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -21,27 +20,31 @@ import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disabl
 
 public class LessonRetriever {
 
-    public static List<Translation> prepareTranslationList() {
+    public static Lesson prepareTranslationList(String lessonName) {
 
         Lesson lesson;
         try {
-            lesson = new RetrieveLesson().execute().get();
+            lesson = new RetrieveLesson().execute(lessonName).get();
         } catch (InterruptedException | ExecutionException e) {
             System.out.println(e);
             lesson = null;
         }
-        return lesson.getTranslations();
+        return lesson;
 
     }
 
-    private static class RetrieveLesson extends AsyncTask<Void, Void, Lesson> {
+    private static class RetrieveLesson extends AsyncTask<String, Void, Lesson> {
         @Override
-        protected Lesson doInBackground(Void... voids) {
+        protected Lesson doInBackground(String... strings) {
+            if(strings.length < 1) return null;
+            String lessonName = strings[0];
+
             try {
                 disableChecks();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             String baseUrl = Configuration.getInstance().getBackendUrl();
             AccessToken accessToken = AccessToken.getCurrentAccessToken();
             HttpHeaders headers = new HttpHeaders();
@@ -54,11 +57,19 @@ public class LessonRetriever {
                     restTemplate.exchange(baseUrl + "/lessons/",
                             HttpMethod.GET, null, new ParameterizedTypeReference<List<LessonSummary>>() {});
 
-            int lessonId = lessonsListEntity.getBody().get(0).getLessonId();
+            int lessonId = getLessonId(lessonName, lessonsListEntity.getBody());
 
             ResponseEntity<Lesson> responseEntity = restTemplate.exchange(baseUrl + "/lessons/" + lessonId,
                     HttpMethod.GET, entity, Lesson.class);
             return responseEntity.getBody();
+        }
+
+        private int getLessonId(String lessonName, List<LessonSummary> lessonSummaries){
+            for(LessonSummary lesson:lessonSummaries)
+                if(lesson.lessonTitle.equals(lessonName))
+                    return lesson.getLessonId();
+
+            return 0;
         }
     }
 }
