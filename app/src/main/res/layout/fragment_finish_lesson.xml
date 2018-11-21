@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".games.fragments.FinishLessonFragment">
+    tools:context=".games.fragments.FinishLessonFragment"
+    android:background="@drawable/background">
 
     <TextView
         android:id="@+id/congrats_textview"
@@ -40,9 +41,9 @@
 
 
     <LinearLayout
-        android:layout_width="353dp"
+        android:layout_width="match_parent"
         android:layout_height="304dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"

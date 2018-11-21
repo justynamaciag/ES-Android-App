@@ -27,7 +27,7 @@ public class MenuFindLessonActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_single_list);
+        setContentView(R.layout.activity_menu_list_lessons);
 
         TextView title = findViewById(R.id.title);
         title.setText(R.string.start_new_lesson);

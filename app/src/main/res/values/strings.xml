@@ -21,7 +21,7 @@
     <string name="no_internet_connection">Aplikacja nie zadziała bez dostępu do internetu.</string>
     <string name="please_wait">Proszę czekać, pobieranie danych…</string>
     <string name="congratulations">"Gratulacje</string>
-    <string name="lesson_finish">"Lekcja ukonczona"</string>
+    <string name="lesson_finish">"Lekcja ukończona"</string>
     <string name="lesson_statistics">"Statystyki lekcji"</string>
     <string name="crossword_numbers">"Liczba wykonanych wykreślanek: %1$d"</string>
     <string name="abcd_numbers">"Liczba wykonanych pytań zamkniętych: %1$d"</string>

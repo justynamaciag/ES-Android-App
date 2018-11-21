@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/borders"
-        android:text="ABC"
+        android:backgroundTint="@color/colorLightLightBrown"
+        android:textColor="@color/colorDarkBrown"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

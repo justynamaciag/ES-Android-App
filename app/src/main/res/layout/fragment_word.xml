@@ -10,50 +10,44 @@
     <LinearLayout
         android:id="@+id/wordLayout"
         android:layout_width="match_parent"
-        android:layout_height="175dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="81dp"
+        android:layout_margin="40dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.662"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.825" />
+        app:layout_constraintTop_toTopOf="@+id/plWordTv"
+        app:layout_constraintVertical_bias="0.368" />
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/buttonsLayout"
         android:layout_width="363dp"
         android:layout_height="158dp"
-        android:layout_margin="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"
+        android:layout_margin="40dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.161" />
+        app:layout_constraintVertical_bias="0.161"
+        android:padding="10dp" />
 
     <TextView
         android:id="@+id/plWordTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="24sp"
+        android:layout_margin="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="40dp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.587" />
 
 
 </android.support.constraint.ConstraintLayout>
