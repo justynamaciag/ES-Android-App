@@ -3,14 +3,13 @@ package com.justyna.englishsubtitled.games.utilities;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.justyna.englishsubtitled.Configuration;
+import com.justyna.englishsubtitled.ConnectionUtils;
 import com.justyna.englishsubtitled.LessonsActivity;
 import com.justyna.englishsubtitled.model.Translation;
 
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,23 +42,13 @@ public class DictionarySender {
         protected Boolean doInBackground(Translation... translations) {
             if (translations.length < 1) return false;
             Translation translation = translations[0];
-            try {
-                disableChecks();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             String baseUrl = Configuration.getInstance().getBackendUrl();
-            AccessToken accessToken = AccessToken.getCurrentAccessToken();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", accessToken.getToken());
-            headers.add("Content-Type", "application/json");
-            headers.add("Accept", "application/json");
 
             Gson gson = new Gson();
             String json = gson.toJson(translation);
 
-            HttpEntity<String> entity = new HttpEntity<>(json, headers);
+            HttpEntity<String> entity = ConnectionUtils.getInstance().prepareHttpEntity(json);
 
 
             RestTemplate restTemplate = new RestTemplate();
