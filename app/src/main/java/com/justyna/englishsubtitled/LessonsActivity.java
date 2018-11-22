@@ -1,5 +1,6 @@
 package com.justyna.englishsubtitled;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,28 +9,40 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.justyna.englishsubtitled.games.fragments.ABCDFragment;
 import com.justyna.englishsubtitled.games.fragments.CrosswordFragment;
 import com.justyna.englishsubtitled.games.fragments.FinishLessonFragment;
+import com.justyna.englishsubtitled.games.fragments.LoadingFragment;
 import com.justyna.englishsubtitled.games.fragments.WordFragment;
 import com.justyna.englishsubtitled.games.utilities.DictionarySender;
 import com.justyna.englishsubtitled.games.utilities.Game;
 import com.justyna.englishsubtitled.games.utilities.GameResult;
 import com.justyna.englishsubtitled.model.Lesson;
 import com.justyna.englishsubtitled.model.LessonResult;
+import com.justyna.englishsubtitled.model.LessonSummary;
 import com.justyna.englishsubtitled.model.Translation;
+
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import static com.justyna.englishsubtitled.DisableSSLCertificateCheckUtil.disableChecks;
+
 public class LessonsActivity extends FragmentActivity implements CrosswordFragment.OnDataPass, WordFragment.OnDataPass, ABCDFragment.OnDataPass {
 
     Random rand = new Random();
     List<Translation> translations;
     Translation currentTranslation;
-    boolean first = true, finishedLesson = true;
+    boolean finishedLesson = true;
     int wordRepeats = 2, maxFails = 2, currentTranslationFailures = 0, correctAnswersInRow = 0;
     ImageButton dictionaryBtn;
     LessonResult lessonResult;
@@ -58,7 +71,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                 prepareGame();
 
             } else {
-                findViewById(R.id.dictionary_btn).setVisibility(View.GONE);
+                dictionaryBtn.setVisibility(View.GONE);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("lessonResult", lessonResult);
                 Fragment finishLessonFragment = new FinishLessonFragment();
@@ -94,22 +107,23 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons);
 
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new LoadingFragment()).commit();
+
         dictionaryBtn = this.findViewById(R.id.dictionary_btn);
         dictionaryBtn.setOnClickListener(v -> sendToBackend(currentTranslation));
+        dictionaryBtn.setVisibility(View.INVISIBLE);
 
         Bundle bundle = getIntent().getExtras();
-        String lessonName = null;
+        String lessonName = "";
         if (bundle != null)
             lessonName = (String) bundle.get("lessonName");
 
         lessonResult = new LessonResult();
-        Lesson lesson = LessonRetriever.prepareTranslationList(lessonName);
 
-        if(lesson == null){
-            Toast.makeText(getApplicationContext(), "Nie można pobrać lekcji!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        new LessonRetriever().execute(lessonName);
+    }
 
+    private void finishPreparations(Lesson lesson){
         translations = lesson.getTranslations();
         lessonResult.setLessonId(lesson.getLessonId());
 
@@ -175,12 +189,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                 break;
         }
         fragment.setArguments(bundle);
-        if (first) {
-            first = false;
-            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
-        } else
-            callFragment(fragment);
-
+        callFragment(fragment);
     }
 
     private void prepareGame() {
@@ -194,6 +203,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
         currentTranslation.setFails(0);
 
+        dictionaryBtn.setVisibility(View.VISIBLE);
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("translation", currentTranslation);
@@ -203,6 +213,53 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
     private int getRandomNumber(int a, int b) {
         return rand.nextInt(b) + a;
+    }
+
+    private class LessonRetriever extends AsyncTask<String, Void, Lesson> {
+        @Override
+        protected Lesson doInBackground(String... strings) {
+            if (strings.length < 1) return null;
+            String lessonName = strings[0];
+
+            try {
+                disableChecks();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String baseUrl = Configuration.getInstance().getBackendUrl();
+            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", accessToken.getToken());
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            ResponseEntity<List<LessonSummary>> lessonsListEntity =
+                    restTemplate.exchange(baseUrl + "/lessons/",
+                            HttpMethod.GET, null, new ParameterizedTypeReference<List<LessonSummary>>() {
+                            });
+
+            int lessonId = getLessonId(lessonName, lessonsListEntity.getBody());
+
+            ResponseEntity<Lesson> responseEntity = restTemplate.exchange(baseUrl + "/lessons/" + lessonId,
+                    HttpMethod.GET, entity, Lesson.class);
+            return responseEntity.getBody();
+        }
+
+        @Override
+        protected void onPostExecute(Lesson lesson) {
+            super.onPostExecute(lesson);
+            finishPreparations(lesson);
+        }
+
+        private int getLessonId(String lessonName, List<LessonSummary> lessonSummaries) {
+            for (LessonSummary lesson : lessonSummaries)
+                if (lesson.lessonTitle.equals(lessonName))
+                    return lesson.getLessonId();
+
+            return 0;
+        }
     }
 
 }
