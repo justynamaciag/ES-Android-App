@@ -21,4 +21,13 @@ public class ConnectionUtils {
         headers.add("Authorization", accessToken.getToken());
         return new HttpEntity<>(headers);
     }
+
+    public HttpEntity<String> prepareHttpEntity(String json) {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", accessToken.getToken());
+        headers.add("Content-Type", "application/json");
+        headers.add("Accept", "application/json");
+        return new HttpEntity<>(json, headers);
+    }
 }
