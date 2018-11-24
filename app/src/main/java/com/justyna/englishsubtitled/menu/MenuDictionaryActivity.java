@@ -18,24 +18,31 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.Collator;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public class MenuDictionaryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private final List<Translation> translations = new LinkedList<>();
+
     private SortingStrategy sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
+
+    private SortingButtonState englishSortState;
+    private SortingButtonState polishSortState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_dictionary);
 
-        ImageButton englishAscending = findViewById(R.id.englishAscending);
-        ImageButton englishDescending = findViewById(R.id.englishDescending);
-        ImageButton polishAscending = findViewById(R.id.polishAscending);
-        ImageButton polishDescending = findViewById(R.id.polishDescending);
+        ImageButton englishSort = findViewById(R.id.englishSort);
+        ImageButton polishSort = findViewById(R.id.polishSort);
+
+        englishSortState = new SortingButtonState(englishSort, SortingButtonState.State.ASCENDING);
+        polishSortState = new SortingButtonState(polishSort, SortingButtonState.State.NONE);
 
         recyclerView = findViewById(R.id.films);
 
@@ -47,20 +54,37 @@ public class MenuDictionaryActivity extends AppCompatActivity {
 
         refreshDictionaryData();
 
-        englishAscending.setOnClickListener(view -> {
-            sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
+        englishSort.setOnClickListener(view -> {
+            polishSortState.setState(SortingButtonState.State.NONE);
+
+            switch (englishSortState.getState()) {
+                case NONE:
+                case DESCENDING:
+                    englishSortState.setState(SortingButtonState.State.ASCENDING);
+                    sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
+                    break;
+                case ASCENDING:
+                    englishSortState.setState(SortingButtonState.State.DESCENDING);
+                    sortingStrategy = SortingStrategy.ENGLISH_DESCENDING;
+                    break;
+            }
             refreshDictionaryView();
         });
-        englishDescending.setOnClickListener(view -> {
-            sortingStrategy = SortingStrategy.ENGLISH_DESCENDING;
-            refreshDictionaryView();
-        });
-        polishAscending.setOnClickListener(view -> {
-            sortingStrategy = SortingStrategy.POLISH_ASCENDING;
-            refreshDictionaryView();
-        });
-        polishDescending.setOnClickListener(view -> {
-            sortingStrategy = SortingStrategy.POLISH_DESCENDING;
+
+        polishSort.setOnClickListener(view -> {
+            englishSortState.setState(SortingButtonState.State.NONE);
+
+            switch (polishSortState.getState()) {
+                case NONE:
+                case DESCENDING:
+                    polishSortState.setState(SortingButtonState.State.ASCENDING);
+                    sortingStrategy = SortingStrategy.POLISH_ASCENDING;
+                    break;
+                case ASCENDING:
+                    polishSortState.setState(SortingButtonState.State.DESCENDING);
+                    sortingStrategy = SortingStrategy.POLISH_DESCENDING;
+                    break;
+            }
             refreshDictionaryView();
         });
     }
@@ -82,6 +106,8 @@ public class MenuDictionaryActivity extends AppCompatActivity {
     }
 
     private void sort() {
+        Collator collator = Collator.getInstance(new Locale("pl", "PL"));
+
         switch (sortingStrategy) {
             case ENGLISH_ASCENDING:
                 Collections.sort(translations, (translation, t1) -> translation.getEngWord().compareTo(t1.getEngWord()));
@@ -90,10 +116,10 @@ public class MenuDictionaryActivity extends AppCompatActivity {
                 Collections.sort(translations, (translation, t1) -> t1.getEngWord().compareTo(translation.getEngWord()));
                 break;
             case POLISH_ASCENDING:
-                Collections.sort(translations, (translation, t1) -> translation.getPlWord().compareTo(t1.getPlWord()));
+                Collections.sort(translations, (translation, t1) -> collator.compare(translation.getPlWord(), t1.getPlWord()));
                 break;
             case POLISH_DESCENDING:
-                Collections.sort(translations, (translation, t1) -> t1.getPlWord().compareTo(translation.getPlWord()));
+                Collections.sort(translations, (translation, t1) -> collator.compare(t1.getPlWord(), translation.getPlWord()));
         }
     }
 
