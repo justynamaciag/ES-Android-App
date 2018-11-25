@@ -58,6 +58,12 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             return view;
         }
 
+        if(currentTranslation.getEngWord().length() <= 4)
+            N = 5;
+
+        if (currentTranslation.getEngWord().length()>4 && currentTranslation.getEngWord().length()<=7)
+            N=8;
+
         rand = new Random();
         List<String> gridViewLetters = prepareGameTable(currentTranslation);
         GridView crosswordGrid = prepareCrosswordGrid(gridViewLetters);
