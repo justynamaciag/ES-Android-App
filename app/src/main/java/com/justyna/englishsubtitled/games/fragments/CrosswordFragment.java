@@ -53,7 +53,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             currentTranslation = (Translation) bundle.getSerializable("translation");
         }
 
-        if (currentTranslation.getEngWord().length() >= N) {
+        if (currentTranslation.getEngWord().length() >= N || currentTranslation.getProgress() == 0) {
             passData(GameResult.CANT_EXECUTE);
             return view;
         }
