@@ -13,10 +13,8 @@
     <string name="remove_recent_lesson_3">Usuń trzecią spośród rozpoczętych lekcji</string>
     <string name="english_label">angielski</string>
     <string name="polish_label">polski</string>
-    <string name="english_ascending">Sortuj rosnąco według słowa po angielsku</string>
-    <string name="english_descending">Sortuj malejąco według słowa po angielsku</string>
-    <string name="polish_ascending">Sortuj rosnąco według słowa po polsku</string>
-    <string name="polish_descending">Sortuj malejąco według słowa po polsku</string>
+    <string name="english_sort">Sortuj według słowa po angielsku</string>
+    <string name="polish_sort">Sortuj według słowa po polsku</string>
     <string name="app_logo">Logo aplikacji</string>
     <string name="no_internet_connection">Aplikacja nie zadziała bez dostępu do internetu.</string>
     <string name="please_wait">Proszę czekać, pobieranie danych…</string>
