@@ -2,7 +2,10 @@ package com.justyna.englishsubtitled.games.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,6 +34,10 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     int i = 0, N = 10, row, offset;
     View view;
     boolean transpose, firstCellCorrect = false;
+    GridView crosswordGrid;
+    List<TextView> crosswordCells;
+    List<String> gridViewLetters;
+    boolean isFirstCellCorrect;
 
     OnDataPass dataPasser;
 
@@ -58,37 +65,52 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             return view;
         }
 
-        if(currentTranslation.getEngWord().length() <= 4)
-            N = 5;
-
-        if (currentTranslation.getEngWord().length()>4 && currentTranslation.getEngWord().length()<=7)
-            N=8;
+        setBoardSize();
 
         rand = new Random();
-        List<String> gridViewLetters = prepareGameTable(currentTranslation);
+        gridViewLetters = prepareGameTable(currentTranslation);
         GridView crosswordGrid = prepareCrosswordGrid(gridViewLetters);
         callGame(crosswordGrid, gridViewLetters);
 
         return view;
     }
 
+    private void setBoardSize(){
+        if (currentTranslation.getEngWord().length() <= 4)
+            N = 5;
+
+        if (currentTranslation.getEngWord().length() > 4 && currentTranslation.getEngWord().length() <= 7)
+            N = 8;
+    }
+
 
     private GridView prepareCrosswordGrid(List<String> gridViewLetters) {
 
-        List<TextView> crosswordCells = new ArrayList<>();
+        crosswordCells = new ArrayList<>();
         for (String letter : gridViewLetters) {
             TextView tv = new TextView(getContext());
             tv.setText(letter);
             crosswordCells.add(tv);
         }
 
-        GridView crosswordGrid = view.findViewById(R.id.gridview_crossword);
+        crosswordGrid = view.findViewById(R.id.gridview_crossword);
         crosswordGrid.setNumColumns(N);
         CrosswordAdapter adapter = new CrosswordAdapter(getContext(), crosswordCells);
         adapter.setCustomTVListner(CrosswordFragment.this);
         crosswordGrid.setAdapter(adapter);
 
         return crosswordGrid;
+    }
+
+//    remove green and red colors from board
+    private void clearBoardFromColors(){
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            for (int i = 0; i < crosswordGrid.getChildCount(); i++) {
+                TextView t = (TextView) crosswordGrid.getChildAt(i);
+                t.getBackground().clearColorFilter();
+            }
+        }, 400);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -106,46 +128,67 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
 
                 clicked = gridViewLetters.get(point);
 
-                if (action == MotionEvent.ACTION_MOVE)
-                    checkIfUserClicksCorrect();
+                if (action == MotionEvent.ACTION_MOVE) {
+                    checkIfUserClicksCorrect(point);
+                }
+
+                if (action == MotionEvent.ACTION_UP)
+                    clearBoardFromColors();
 
 //                ACTION_DOWN - called when first touched cell, touching next cells - ACTION_MOVE
-                if (action == MotionEvent.ACTION_DOWN)
+                if (action == MotionEvent.ACTION_DOWN) {
                     firstCellCorrect = checkIfFirstCellCorrect();
+                }
+
                 return true;
 
             } catch (IndexOutOfBoundsException e) {
+                clearBoardFromColors();
                 return false;
             }
 
         });
     }
 
-    //  check if first touched cell is correct,
-//  drawing entire row/column containing correct translation wont work, only specific letters
+//      check if first touched cell is correct,
+//      drawing entire row/column containing correct translation wont work, only specific letters
     private boolean checkIfFirstCellCorrect() {
-        if(clicked.equalsIgnoreCase((table[row][offset]))){
-            return true;
-        }
-        else {
+        if (clicked.equalsIgnoreCase((table[row][offset]))) {
+            isFirstCellCorrect = true;
+        } else {
+            isFirstCellCorrect = false;
             passData(GameResult.FAIL);
-            return false;
         }
+        return isFirstCellCorrect;
     }
 
-    private void checkIfUserClicksCorrect() {
-//        correct
-        if (clicked.equalsIgnoreCase(table[row][offset + i]) && firstCellCorrect)
-            i++;
-//      incorrect - (-1) added due to fact that listener is called multiple times in drawing at one cell
-        else if (!clicked.equalsIgnoreCase(table[row][offset + i - 1])) {
-            i = 0;
+    private void checkIfUserClicksCorrect(int point) {
+        TextView t = (TextView) crosswordGrid.getChildAt(point);
+        int correctCell, nextPoint;
+
+        if (! transpose) {
+            correctCell = row * N + offset + i;
+            nextPoint = point + 1;
+        } else {
+            correctCell = (offset + i) * N + row;
+            nextPoint = point + N;
         }
+
+        if (point == correctCell && isFirstCellCorrect) {
+            i++;
+            t.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
+        } else if (nextPoint != correctCell) {
+            i = 0;
+            t.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+        }
+
 //        if entire word was marked
         if (i == currentTranslation.getEngWord().length()) {
             Toast.makeText(view.getContext(), "Perfect!", Toast.LENGTH_SHORT).show();
             passData(GameResult.SUCCESS);
         }
+
+
     }
 
     private List<String> prepareGameTable(Translation translation) {
