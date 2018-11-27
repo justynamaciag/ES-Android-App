@@ -31,12 +31,15 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     String[][] table;
     String clicked;
     TextView polishTranslationDisplay;
-    int i = 0, N, row, offset;
+    int i = 0, row, offset;
     View view;
     boolean transpose, firstCellCorrect = false;
     List<TextView> crosswordCells;
     List<String> gridViewLetters;
     boolean isFirstCellCorrect;
+//    N set to 10 - max word length in crossword
+    int N = 10;
+
 
     OnDataPass dataPasser;
 
@@ -183,12 +186,8 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         }
 
 //        if entire word was marked
-        if (i == currentTranslation.getEngWord().length()) {
-            Toast.makeText(view.getContext(), "Perfect!", Toast.LENGTH_SHORT).show();
+        if (i == currentTranslation.getEngWord().length())
             passData(GameResult.SUCCESS);
-        }
-
-
     }
 
     private List<String> prepareGameTable(Translation translation) {
