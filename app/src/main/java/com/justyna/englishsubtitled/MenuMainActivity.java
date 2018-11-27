@@ -95,8 +95,6 @@ public class MenuMainActivity extends AppCompatActivity {
         removeRecentButtons.add(removeRecent1);
         removeRecentButtons.add(removeRecent2);
         removeRecentButtons.add(removeRecent3);
-
-        new ProgressRetriever().execute();
     }
 
     @Override
@@ -251,12 +249,17 @@ public class MenuMainActivity extends AppCompatActivity {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<String> result =
-                    restTemplate.exchange(baseUrl + "/progress/" + lessonId,
-                            HttpMethod.DELETE, entity, String.class);
+            ResponseEntity<String> result;
 
-            if (result.getStatusCode() != HttpStatus.OK) {
-                System.out.println("Back-end responded with: " + result.getBody());
+            try {
+                result = restTemplate.exchange(baseUrl + "/progress/" + lessonId,
+                        HttpMethod.DELETE, entity, String.class);
+            } catch (Exception e) {
+                result = null;
+            }
+
+            if (result == null || result.getStatusCode() != HttpStatus.OK) {
+                this.cancel(true);
                 return false;
             }
             return true;
@@ -268,6 +271,12 @@ public class MenuMainActivity extends AppCompatActivity {
             if (deleted) {
                 new ProgressRetriever().execute();
             }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Toast.makeText(MenuMainActivity.this, R.string.delete_lesson_failure, Toast.LENGTH_LONG).show();
         }
     }
 }
