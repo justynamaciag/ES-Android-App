@@ -22,6 +22,7 @@ import java.util.List;
 
 public class MenuAchievementsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private PleaseWaitAdapter pleaseWaitAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,8 @@ public class MenuAchievementsActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(new PleaseWaitAdapter(this));
+        pleaseWaitAdapter = new PleaseWaitAdapter(this);
+        recyclerView.setAdapter(pleaseWaitAdapter);
 
         new AchievementsRetriever().execute();
     }
@@ -50,10 +52,16 @@ public class MenuAchievementsActivity extends AppCompatActivity {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<List<Achievement>> achievements =
-                    restTemplate.exchange(baseUrl + "/achievements",
-                            HttpMethod.GET, entity, new ParameterizedTypeReference<List<Achievement>>() {
-                            });
+            ResponseEntity<List<Achievement>> achievements;
+
+            try {
+                achievements = restTemplate.exchange(baseUrl + "/achievements",
+                        HttpMethod.GET, entity, new ParameterizedTypeReference<List<Achievement>>() {
+                        });
+            } catch (Exception e) {
+                this.cancel(true);
+                return null;
+            }
 
             return achievements.getBody();
         }
@@ -63,6 +71,12 @@ public class MenuAchievementsActivity extends AppCompatActivity {
             super.onPostExecute(achievements);
             RecyclerView.Adapter adapter = new AchievementsAdapter(achievements);
             recyclerView.setAdapter(adapter);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            pleaseWaitAdapter.reportNoInternetConnection();
         }
     }
 }

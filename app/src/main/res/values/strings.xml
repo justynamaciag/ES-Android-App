@@ -2,6 +2,7 @@
     <string name="app_name">EnglishSubtitled</string>
     <string name="facebook_app_id">733670553423793</string>
     <string name="fb_login_protocol_scheme">fb191746534808621</string>
+
     <string name="start_new_lesson">Rozpocznij nową lekcję</string>
     <string name="dictionary">Słownik</string>
     <string name="achievements">Osiągnięcia</string>
@@ -16,7 +17,11 @@
     <string name="english_sort">Sortuj według słowa po angielsku</string>
     <string name="polish_sort">Sortuj według słowa po polsku</string>
     <string name="app_logo">Logo aplikacji</string>
+
     <string name="no_internet_connection">Aplikacja nie zadziała bez dostępu do internetu.</string>
+    <string name="delete_lesson_failure">Nie udało się usunąć nieukończonej lekcji. Sprawdź swoje połączenie z internetem.</string>
+    <string name="data_download_failure">Nie udało się pobrać danych. Sprawdź swoje połączenie z internetem i wróć tu później.</string>
+
     <string name="please_wait">Proszę czekać, pobieranie danych…</string>
     <string name="congratulations">"Gratulacje</string>
     <string name="lesson_finish">"Lekcja ukonczona"</string>
@@ -25,9 +30,12 @@
     <string name="abcd_numbers">"Liczba wykonanych pytań zamkniętych: %1$d"</string>
     <string name="word_numbers">"Liczba wykonanych rozsypanek: %1$d"</string>
     <string name="failure_numbers">"Liczba błędów: %1$d"</string>
-    <string name="dictionary_add">Star button</string>
+    <string name="dictionary_add">Dodaj do słownika</string>
     <string name="received_achievement">Zdobyłeś nowe osiągnięcie!</string>
     <string name="received_achievements">Zdobyłeś nowe osiągnięcia!</string>
+    <string name="dictionary_success">Dodano do słownika!</string>
+    <string name="dictionary_failure">Nie udało się dodać do słownika!</string>
+    <string name="progress_upload_failure">Błąd połączenia. Twoje postępy nie zostaną zapisane. Ponawiam próbę…</string>
     <string name="search">Szukaj po tytule filmu</string>
 
 </resources>

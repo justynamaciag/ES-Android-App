@@ -47,6 +47,8 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
     ImageButton dictionaryBtn;
     LessonResult lessonResult;
 
+    private LoadingFragment loadingFragment;
+
 
     @Override
     public void onDataPass(GameResult data) {
@@ -107,7 +109,8 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lessons);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new LoadingFragment()).commit();
+        loadingFragment = new LoadingFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, loadingFragment).commit();
 
         dictionaryBtn = this.findViewById(R.id.dictionary_btn);
         dictionaryBtn.setOnClickListener(v -> sendToBackend(currentTranslation));
@@ -123,7 +126,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         new LessonRetriever().execute(lessonName);
     }
 
-    private void finishPreparations(Lesson lesson){
+    private void finishPreparations(Lesson lesson) {
         translations = lesson.getTranslations();
         lessonResult.setLessonId(lesson.getLessonId());
 
@@ -139,13 +142,15 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         }
     }
 
+    public void incrementDictionaryAdditions() {
+        lessonResult.incrementDictionaryAdditions();
+    }
+
     private void sendToBackend(Translation translation) {
-        if(!translation.getDictionaryAdded()){
+        if (!translation.getDictionaryAdded()) {
             translation.setDictionaryAdded(true);
-            lessonResult.incrementDictionaryAdditions();
             new DictionarySender().addToDict(translation, LessonsActivity.this);
-        }
-        else
+        } else
             Toast.makeText(getApplicationContext(), "Słowo zostało już dodane do słownika", Toast.LENGTH_SHORT).show();
 
     }
@@ -235,15 +240,26 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<List<LessonSummary>> lessonsListEntity =
-                    restTemplate.exchange(baseUrl + "/lessons/",
-                            HttpMethod.GET, null, new ParameterizedTypeReference<List<LessonSummary>>() {
-                            });
+            ResponseEntity<List<LessonSummary>> lessonsListEntity;
+            try {
+                lessonsListEntity = restTemplate.exchange(baseUrl + "/lessons/",
+                        HttpMethod.GET, null, new ParameterizedTypeReference<List<LessonSummary>>() {
+                        });
+            } catch (Exception e) {
+                this.cancel(true);
+                return null;
+            }
 
             int lessonId = getLessonId(lessonName, lessonsListEntity.getBody());
 
-            ResponseEntity<Lesson> responseEntity = restTemplate.exchange(baseUrl + "/lessons/" + lessonId,
-                    HttpMethod.GET, entity, Lesson.class);
+            ResponseEntity<Lesson> responseEntity;
+            try {
+                responseEntity = restTemplate.exchange(baseUrl + "/lessons/" + lessonId,
+                        HttpMethod.GET, entity, Lesson.class);
+            } catch (Exception e) {
+                this.cancel(true);
+                return null;
+            }
             return responseEntity.getBody();
         }
 
@@ -259,6 +275,12 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
                     return lesson.getLessonId();
 
             return 0;
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            loadingFragment.reportLoadingFailure();
         }
     }
 

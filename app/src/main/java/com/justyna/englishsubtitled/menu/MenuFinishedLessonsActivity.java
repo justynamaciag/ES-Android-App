@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.justyna.englishsubtitled.Configuration;
 import com.justyna.englishsubtitled.ConnectionUtils;
@@ -124,10 +125,15 @@ public class MenuFinishedLessonsActivity extends AppCompatActivity {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<Progress> progress =
-                    restTemplate.exchange(baseUrl + "/progress/",
-                            HttpMethod.GET, entity, new ParameterizedTypeReference<Progress>() {
-                            });
+            ResponseEntity<Progress> progress;
+            try {
+                progress = restTemplate.exchange(baseUrl + "/progress/",
+                        HttpMethod.GET, entity, new ParameterizedTypeReference<Progress>() {
+                        });
+            } catch (Exception e) {
+                this.cancel(true);
+                return null;
+            }
 
             return progress.getBody();
         }
@@ -143,6 +149,12 @@ public class MenuFinishedLessonsActivity extends AppCompatActivity {
             refreshView();
             search(searchBar.getText());
             searchBar.setEnabled(true);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Toast.makeText(MenuFinishedLessonsActivity.this, R.string.data_download_failure, Toast.LENGTH_LONG).show();
         }
     }
 }

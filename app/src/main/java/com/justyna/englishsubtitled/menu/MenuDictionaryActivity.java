@@ -33,16 +33,12 @@ public class MenuDictionaryActivity extends AppCompatActivity {
     private SortingButtonState englishSortState;
     private SortingButtonState polishSortState;
 
+    private PleaseWaitAdapter pleaseWaitAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_dictionary);
-
-        ImageButton englishSort = findViewById(R.id.englishSort);
-        ImageButton polishSort = findViewById(R.id.polishSort);
-
-        englishSortState = new SortingButtonState(englishSort, SortingButtonState.State.ASCENDING);
-        polishSortState = new SortingButtonState(polishSort, SortingButtonState.State.NONE);
 
         recyclerView = findViewById(R.id.films);
 
@@ -50,43 +46,10 @@ public class MenuDictionaryActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(new PleaseWaitAdapter(this));
+        pleaseWaitAdapter = new PleaseWaitAdapter(this);
+        recyclerView.setAdapter(pleaseWaitAdapter);
 
         refreshDictionaryData();
-
-        englishSort.setOnClickListener(view -> {
-            polishSortState.setState(SortingButtonState.State.NONE);
-
-            switch (englishSortState.getState()) {
-                case NONE:
-                case DESCENDING:
-                    englishSortState.setState(SortingButtonState.State.ASCENDING);
-                    sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
-                    break;
-                case ASCENDING:
-                    englishSortState.setState(SortingButtonState.State.DESCENDING);
-                    sortingStrategy = SortingStrategy.ENGLISH_DESCENDING;
-                    break;
-            }
-            refreshDictionaryView();
-        });
-
-        polishSort.setOnClickListener(view -> {
-            englishSortState.setState(SortingButtonState.State.NONE);
-
-            switch (polishSortState.getState()) {
-                case NONE:
-                case DESCENDING:
-                    polishSortState.setState(SortingButtonState.State.ASCENDING);
-                    sortingStrategy = SortingStrategy.POLISH_ASCENDING;
-                    break;
-                case ASCENDING:
-                    polishSortState.setState(SortingButtonState.State.DESCENDING);
-                    sortingStrategy = SortingStrategy.POLISH_DESCENDING;
-                    break;
-            }
-            refreshDictionaryView();
-        });
     }
 
     protected void refreshDictionaryData() {
@@ -123,6 +86,48 @@ public class MenuDictionaryActivity extends AppCompatActivity {
         }
     }
 
+    private void enableButtons() {
+        ImageButton englishSort = findViewById(R.id.englishSort);
+        ImageButton polishSort = findViewById(R.id.polishSort);
+
+        englishSortState = new SortingButtonState(englishSort, SortingButtonState.State.ASCENDING);
+        polishSortState = new SortingButtonState(polishSort, SortingButtonState.State.NONE);
+
+        englishSort.setOnClickListener(view -> {
+            polishSortState.setState(SortingButtonState.State.NONE);
+
+            switch (englishSortState.getState()) {
+                case NONE:
+                case DESCENDING:
+                    englishSortState.setState(SortingButtonState.State.ASCENDING);
+                    sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
+                    break;
+                case ASCENDING:
+                    englishSortState.setState(SortingButtonState.State.DESCENDING);
+                    sortingStrategy = SortingStrategy.ENGLISH_DESCENDING;
+                    break;
+            }
+            refreshDictionaryView();
+        });
+
+        polishSort.setOnClickListener(view -> {
+            englishSortState.setState(SortingButtonState.State.NONE);
+
+            switch (polishSortState.getState()) {
+                case NONE:
+                case DESCENDING:
+                    polishSortState.setState(SortingButtonState.State.ASCENDING);
+                    sortingStrategy = SortingStrategy.POLISH_ASCENDING;
+                    break;
+                case ASCENDING:
+                    polishSortState.setState(SortingButtonState.State.DESCENDING);
+                    sortingStrategy = SortingStrategy.POLISH_DESCENDING;
+                    break;
+            }
+            refreshDictionaryView();
+        });
+    }
+
     private enum SortingStrategy {
         ENGLISH_ASCENDING, ENGLISH_DESCENDING, POLISH_ASCENDING, POLISH_DESCENDING
     }
@@ -135,10 +140,15 @@ public class MenuDictionaryActivity extends AppCompatActivity {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<List<Translation>> progress =
-                    restTemplate.exchange(baseUrl + "/bookmarks/",
-                            HttpMethod.GET, entity, new ParameterizedTypeReference<List<Translation>>() {
-                            });
+            ResponseEntity<List<Translation>> progress;
+            try {
+                progress = restTemplate.exchange(baseUrl + "/bookmarks/",
+                        HttpMethod.GET, entity, new ParameterizedTypeReference<List<Translation>>() {
+                        });
+            } catch (Exception e) {
+                this.cancel(true);
+                return Collections.emptyList();
+            }
 
             return progress.getBody();
         }
@@ -151,6 +161,13 @@ public class MenuDictionaryActivity extends AppCompatActivity {
                 translations.addAll(receivedTranslations);
             }
             refreshDictionaryView();
+            enableButtons();
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            pleaseWaitAdapter.reportNoInternetConnection();
         }
     }
 }

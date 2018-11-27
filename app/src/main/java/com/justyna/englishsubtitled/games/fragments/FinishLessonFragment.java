@@ -31,6 +31,7 @@ import java.util.List;
 public class FinishLessonFragment extends Fragment {
 
     View view;
+    LessonResult lessonResult;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -40,10 +41,14 @@ public class FinishLessonFragment extends Fragment {
         Bundle bundle = getArguments();
 
         if (bundle != null) {
-            LessonResult lessonResult = (LessonResult) bundle.getSerializable("lessonResult");
+            lessonResult = (LessonResult) bundle.getSerializable("lessonResult");
 
-            fillTextViews(lessonResult);
-            new SendResult().execute(lessonResult);
+            if (lessonResult != null) {
+                fillTextViews(lessonResult);
+                new SendResult().execute(lessonResult);
+            } else {
+                fillTextViews(new LessonResult());
+            }
         }
 
         return view;
@@ -81,9 +86,14 @@ public class FinishLessonFragment extends Fragment {
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
-            ResponseEntity<List<Achievement>> result =
-                    restTemplate.exchange(baseUrl + "/progress/" + lessonResult.getLessonId(), HttpMethod.PUT, entity, new ParameterizedTypeReference<List<Achievement>>() {
-                    });
+            ResponseEntity<List<Achievement>> result;
+            try {
+                result = restTemplate.exchange(baseUrl + "/progress/" + lessonResult.getLessonId(), HttpMethod.PUT, entity, new ParameterizedTypeReference<List<Achievement>>() {
+                });
+            } catch (Exception e) {
+                this.cancel(true);
+                return null;
+            }
 
             return result.getBody();
         }
@@ -97,6 +107,19 @@ public class FinishLessonFragment extends Fragment {
             } else if (achievements.size() > 1) {
                 Toast.makeText(getContext(), R.string.received_achievements, Toast.LENGTH_LONG).show();
             }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Toast.makeText(getContext(), R.string.progress_upload_failure, Toast.LENGTH_LONG).show();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                }
+                new SendResult().execute(lessonResult);
+            }).start();
         }
     }
 

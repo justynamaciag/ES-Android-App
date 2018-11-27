@@ -27,6 +27,7 @@ import java.util.List;
 
 public class MenuFindLessonActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private PleaseWaitAdapter pleaseWaitAdapter;
     private List<Film> fetchedFilms;
     private EditText searchBar;
 
@@ -48,7 +49,8 @@ public class MenuFindLessonActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(new PleaseWaitAdapter(this));
+        pleaseWaitAdapter = new PleaseWaitAdapter(this);
+        recyclerView.setAdapter(pleaseWaitAdapter);
 
         new FilmsRetriever().execute();
     }
@@ -74,10 +76,15 @@ public class MenuFindLessonActivity extends AppCompatActivity {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<List<Film>> progress =
-                    restTemplate.exchange(baseUrl + "/films/",
-                            HttpMethod.GET, entity, new ParameterizedTypeReference<List<Film>>() {
-                            });
+            ResponseEntity<List<Film>> progress;
+            try {
+                progress = restTemplate.exchange(baseUrl + "/films/",
+                        HttpMethod.GET, entity, new ParameterizedTypeReference<List<Film>>() {
+                        });
+            } catch (Exception e) {
+                this.cancel(true);
+                return Collections.emptyList();
+            }
 
             return progress.getBody();
         }
@@ -93,6 +100,12 @@ public class MenuFindLessonActivity extends AppCompatActivity {
             RecyclerView.Adapter adapter = new FilmsAdapter(films, MenuFindLessonActivity.this);
             recyclerView.setAdapter(adapter);
             searchBar.setEnabled(true);
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            pleaseWaitAdapter.reportNoInternetConnection();
         }
     }
 }
