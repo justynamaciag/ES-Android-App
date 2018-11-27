@@ -31,10 +31,9 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     String[][] table;
     String clicked;
     TextView polishTranslationDisplay;
-    int i = 0, N = 10, row, offset;
+    int i = 0, N, row, offset;
     View view;
     boolean transpose, firstCellCorrect = false;
-    GridView crosswordGrid;
     List<TextView> crosswordCells;
     List<String> gridViewLetters;
     boolean isFirstCellCorrect;
@@ -78,9 +77,10 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     private void setBoardSize(){
         if (currentTranslation.getEngWord().length() <= 4)
             N = 5;
-
-        if (currentTranslation.getEngWord().length() > 4 && currentTranslation.getEngWord().length() <= 7)
+        else if (currentTranslation.getEngWord().length() > 4 && currentTranslation.getEngWord().length() <= 7)
             N = 8;
+        else
+            N =10;
     }
 
 
@@ -93,7 +93,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             crosswordCells.add(tv);
         }
 
-        crosswordGrid = view.findViewById(R.id.gridview_crossword);
+        GridView crosswordGrid = view.findViewById(R.id.gridview_crossword);
         crosswordGrid.setNumColumns(N);
         CrosswordAdapter adapter = new CrosswordAdapter(getContext(), crosswordCells);
         adapter.setCustomTVListner(CrosswordFragment.this);
@@ -103,7 +103,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     }
 
 //    remove green and red colors from board
-    private void clearBoardFromColors(){
+    private void clearColorsOnBoard(GridView crosswordGrid){
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             for (int i = 0; i < crosswordGrid.getChildCount(); i++) {
@@ -129,11 +129,11 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
                 clicked = gridViewLetters.get(point);
 
                 if (action == MotionEvent.ACTION_MOVE) {
-                    checkIfUserClicksCorrect(point);
+                    checkIfUserClicksCorrect(crosswordGrid, point);
                 }
 
                 if (action == MotionEvent.ACTION_UP)
-                    clearBoardFromColors();
+                    clearColorsOnBoard(crosswordGrid);
 
 //                ACTION_DOWN - called when first touched cell, touching next cells - ACTION_MOVE
                 if (action == MotionEvent.ACTION_DOWN) {
@@ -143,7 +143,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
                 return true;
 
             } catch (IndexOutOfBoundsException e) {
-                clearBoardFromColors();
+                clearColorsOnBoard(crosswordGrid);
                 return false;
             }
 
@@ -162,7 +162,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         return isFirstCellCorrect;
     }
 
-    private void checkIfUserClicksCorrect(int point) {
+    private void checkIfUserClicksCorrect(GridView crosswordGrid, int point) {
         TextView t = (TextView) crosswordGrid.getChildAt(point);
         int correctCell, nextPoint;
 
