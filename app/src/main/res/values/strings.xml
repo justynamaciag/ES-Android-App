@@ -30,8 +30,10 @@
     <string name="abcd_numbers">"Liczba wykonanych pytań zamkniętych: %1$d"</string>
     <string name="word_numbers">"Liczba wykonanych rozsypanek: %1$d"</string>
     <string name="failure_numbers">"Liczba błędów: %1$d"</string>
-    <string name="dictionary_add">Star button</string>
+    <string name="dictionary_add">Dodaj do słownika</string>
     <string name="received_achievement">Zdobyłeś nowe osiągnięcie!</string>
     <string name="received_achievements">Zdobyłeś nowe osiągnięcia!</string>
+    <string name="dictionary_success">Dodano do słownika!</string>
+    <string name="dictionary_failure">Nie udało się dodać do słownika!</string>
 
 </resources>

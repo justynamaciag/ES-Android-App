@@ -123,7 +123,7 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         new LessonRetriever().execute(lessonName);
     }
 
-    private void finishPreparations(Lesson lesson){
+    private void finishPreparations(Lesson lesson) {
         translations = lesson.getTranslations();
         lessonResult.setLessonId(lesson.getLessonId());
 
@@ -139,13 +139,15 @@ public class LessonsActivity extends FragmentActivity implements CrosswordFragme
         }
     }
 
+    public void incrementDictionaryAdditions() {
+        lessonResult.incrementDictionaryAdditions();
+    }
+
     private void sendToBackend(Translation translation) {
-        if(!translation.getDictionaryAdded()){
+        if (!translation.getDictionaryAdded()) {
             translation.setDictionaryAdded(true);
-            lessonResult.incrementDictionaryAdditions();
             new DictionarySender().addToDict(translation, LessonsActivity.this);
-        }
-        else
+        } else
             Toast.makeText(getApplicationContext(), "Słowo zostało już dodane do słownika", Toast.LENGTH_SHORT).show();
 
     }
