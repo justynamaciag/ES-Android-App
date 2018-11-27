@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.justyna.englishsubtitled.R;
 
 public class PleaseWaitAdapter extends RecyclerView.Adapter<PleaseWaitAdapter.AchievementHolder> {
-    private final TextView pleaseWait;
+    private final TextView message;
 
     public static class AchievementHolder extends RecyclerView.ViewHolder {
         public TextView textView;
@@ -20,8 +20,12 @@ public class PleaseWaitAdapter extends RecyclerView.Adapter<PleaseWaitAdapter.Ac
     }
 
     PleaseWaitAdapter(Context context) {
-        pleaseWait = new TextView(context);
-        pleaseWait.setText(R.string.please_wait);
+        message = new TextView(context);
+        message.setText(R.string.please_wait);
+    }
+
+    public void reportNoInternetConnection() {
+        message.setText(R.string.data_download_failure);
     }
 
     // Create new views (invoked by the layout manager)
@@ -29,7 +33,7 @@ public class PleaseWaitAdapter extends RecyclerView.Adapter<PleaseWaitAdapter.Ac
     public AchievementHolder onCreateViewHolder(ViewGroup parent,
                                                 int viewType) {
 
-        return new AchievementHolder(pleaseWait);
+        return new AchievementHolder(message);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -37,7 +41,7 @@ public class PleaseWaitAdapter extends RecyclerView.Adapter<PleaseWaitAdapter.Ac
     public void onBindViewHolder(AchievementHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.textView = pleaseWait;
+        holder.textView = message;
     }
 
     // Return the size of your dataset (invoked by the layout manager)

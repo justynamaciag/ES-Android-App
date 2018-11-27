@@ -12,13 +12,18 @@ import android.widget.TextView;
 import com.justyna.englishsubtitled.R;
 
 public class LoadingFragment extends Fragment {
+    TextView textView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        TextView textView = new TextView(this.getContext());
+        textView = new TextView(this.getContext());
         textView.setText(R.string.please_wait);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PT, 10);
         return textView;
+    }
+
+    public void reportLoadingFailure() {
+        textView.setText(R.string.data_download_failure);
     }
 }
