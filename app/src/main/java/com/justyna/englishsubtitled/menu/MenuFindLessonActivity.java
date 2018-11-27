@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.justyna.englishsubtitled.Configuration;
@@ -18,19 +20,27 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MenuFindLessonActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private List<Film> fetchedFilms;
+    private EditText searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_single_list);
+        setContentView(R.layout.activity_menu_films_list);
 
         TextView title = findViewById(R.id.title);
         title.setText(R.string.start_new_lesson);
+
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.setEnabled(false);
+        searchBar.addTextChangedListener((TextWatcherSkeleton) this::search);
 
         recyclerView = findViewById(R.id.films);
 
@@ -41,6 +51,19 @@ public class MenuFindLessonActivity extends AppCompatActivity {
         recyclerView.setAdapter(new PleaseWaitAdapter(this));
 
         new FilmsRetriever().execute();
+    }
+
+
+    public void search(Editable editable) {
+        String searchTerm = editable.toString().toLowerCase();
+        List<Film> films = new LinkedList<>();
+        for (Film film : fetchedFilms) {
+            if (film.getFilmTitle().toLowerCase().contains(searchTerm)) {
+                films.add(film);
+            }
+        }
+        RecyclerView.Adapter adapter = new FilmsAdapter(films, MenuFindLessonActivity.this);
+        recyclerView.setAdapter(adapter);
     }
 
     private class FilmsRetriever extends AsyncTask<Void, Void, List<Film>> {
@@ -64,10 +87,12 @@ public class MenuFindLessonActivity extends AppCompatActivity {
             super.onPostExecute(films);
 
             Collections.sort(films, (film, t1) -> film.filmTitle.compareTo(t1.filmTitle));
+            fetchedFilms = new ArrayList<>(films);
 
             // specify an adapter
             RecyclerView.Adapter adapter = new FilmsAdapter(films, MenuFindLessonActivity.this);
             recyclerView.setAdapter(adapter);
+            searchBar.setEnabled(true);
         }
     }
 }

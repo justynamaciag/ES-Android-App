@@ -28,5 +28,6 @@
     <string name="dictionary_add">Star button</string>
     <string name="received_achievement">Zdobyłeś nowe osiągnięcie!</string>
     <string name="received_achievements">Zdobyłeś nowe osiągnięcia!</string>
+    <string name="search">Szukaj po tytule filmu</string>
 
 </resources>
