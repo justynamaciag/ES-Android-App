@@ -20,7 +20,7 @@
 
     <string name="no_internet_connection">Aplikacja nie zadziała bez dostępu do internetu.</string>
     <string name="delete_lesson_failure">Nie udało się usunąć nieukończonej lekcji. Sprawdź swoje połączenie z internetem.</string>
-    <string name="data_download_failure">Nie udało się pobrać danych. Sprawdź swoje połączenie z internetem.</string>
+    <string name="data_download_failure">Nie udało się pobrać danych. Sprawdź swoje połączenie z internetem i wróć tu później.</string>
 
     <string name="please_wait">Proszę czekać, pobieranie danych…</string>
     <string name="congratulations">"Gratulacje</string>
