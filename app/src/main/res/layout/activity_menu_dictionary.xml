@@ -50,18 +50,14 @@
                 android:textColor="@color/colorDarkBrown"/>
 
             <ImageButton
-                android:id="@+id/englishAscending"
+                android:id="@+id/englishSort"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/english_ascending"
-                app:srcCompat="@android:drawable/arrow_up_float" />
-
-            <ImageButton
-                android:id="@+id/englishDescending"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/english_descending"
-                app:srcCompat="@android:drawable/arrow_down_float" />
+                android:layout_height="36sp"
+                android:layout_marginLeft="5sp"
+                android:contentDescription="@string/english_sort"
+                app:srcCompat="@drawable/icons8_sort_50"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true" />
 
         </LinearLayout>
         <LinearLayout
@@ -81,18 +77,15 @@
                 android:textColor="@color/colorDarkBrown"/>
 
             <ImageButton
-                android:id="@+id/polishAscending"
+                android:id="@+id/polishSort"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/polish_ascending"
-                app:srcCompat="@android:drawable/arrow_up_float" />
+                android:layout_height="36sp"
+                android:layout_marginLeft="5sp"
+                android:contentDescription="@string/polish_sort"
+                app:srcCompat="@drawable/icons8_sort_50"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true" />
 
-            <ImageButton
-                android:id="@+id/polishDescending"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/polish_descending"
-                app:srcCompat="@android:drawable/arrow_down_float" />
         </LinearLayout>
     </LinearLayout>
 

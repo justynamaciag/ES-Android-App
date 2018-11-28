@@ -18,24 +18,27 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.Collator;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public class MenuDictionaryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private final List<Translation> translations = new LinkedList<>();
+
     private SortingStrategy sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
+
+    private SortingButtonState englishSortState;
+    private SortingButtonState polishSortState;
+
+    private PleaseWaitAdapter pleaseWaitAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_dictionary);
-
-        ImageButton englishAscending = findViewById(R.id.englishAscending);
-        ImageButton englishDescending = findViewById(R.id.englishDescending);
-        ImageButton polishAscending = findViewById(R.id.polishAscending);
-        ImageButton polishDescending = findViewById(R.id.polishDescending);
 
         recyclerView = findViewById(R.id.films);
 
@@ -43,26 +46,10 @@ public class MenuDictionaryActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        recyclerView.setAdapter(new PleaseWaitAdapter(this));
+        pleaseWaitAdapter = new PleaseWaitAdapter(this);
+        recyclerView.setAdapter(pleaseWaitAdapter);
 
         refreshDictionaryData();
-
-        englishAscending.setOnClickListener(view -> {
-            sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
-            refreshDictionaryView();
-        });
-        englishDescending.setOnClickListener(view -> {
-            sortingStrategy = SortingStrategy.ENGLISH_DESCENDING;
-            refreshDictionaryView();
-        });
-        polishAscending.setOnClickListener(view -> {
-            sortingStrategy = SortingStrategy.POLISH_ASCENDING;
-            refreshDictionaryView();
-        });
-        polishDescending.setOnClickListener(view -> {
-            sortingStrategy = SortingStrategy.POLISH_DESCENDING;
-            refreshDictionaryView();
-        });
     }
 
     protected void refreshDictionaryData() {
@@ -82,6 +69,8 @@ public class MenuDictionaryActivity extends AppCompatActivity {
     }
 
     private void sort() {
+        Collator collator = Collator.getInstance(new Locale("pl", "PL"));
+
         switch (sortingStrategy) {
             case ENGLISH_ASCENDING:
                 Collections.sort(translations, (translation, t1) -> translation.getEngWord().compareTo(t1.getEngWord()));
@@ -90,11 +79,53 @@ public class MenuDictionaryActivity extends AppCompatActivity {
                 Collections.sort(translations, (translation, t1) -> t1.getEngWord().compareTo(translation.getEngWord()));
                 break;
             case POLISH_ASCENDING:
-                Collections.sort(translations, (translation, t1) -> translation.getPlWord().compareTo(t1.getPlWord()));
+                Collections.sort(translations, (translation, t1) -> collator.compare(translation.getPlWord(), t1.getPlWord()));
                 break;
             case POLISH_DESCENDING:
-                Collections.sort(translations, (translation, t1) -> t1.getPlWord().compareTo(translation.getPlWord()));
+                Collections.sort(translations, (translation, t1) -> collator.compare(t1.getPlWord(), translation.getPlWord()));
         }
+    }
+
+    private void enableButtons() {
+        ImageButton englishSort = findViewById(R.id.englishSort);
+        ImageButton polishSort = findViewById(R.id.polishSort);
+
+        englishSortState = new SortingButtonState(englishSort, SortingButtonState.State.ASCENDING);
+        polishSortState = new SortingButtonState(polishSort, SortingButtonState.State.NONE);
+
+        englishSort.setOnClickListener(view -> {
+            polishSortState.setState(SortingButtonState.State.NONE);
+
+            switch (englishSortState.getState()) {
+                case NONE:
+                case DESCENDING:
+                    englishSortState.setState(SortingButtonState.State.ASCENDING);
+                    sortingStrategy = SortingStrategy.ENGLISH_ASCENDING;
+                    break;
+                case ASCENDING:
+                    englishSortState.setState(SortingButtonState.State.DESCENDING);
+                    sortingStrategy = SortingStrategy.ENGLISH_DESCENDING;
+                    break;
+            }
+            refreshDictionaryView();
+        });
+
+        polishSort.setOnClickListener(view -> {
+            englishSortState.setState(SortingButtonState.State.NONE);
+
+            switch (polishSortState.getState()) {
+                case NONE:
+                case DESCENDING:
+                    polishSortState.setState(SortingButtonState.State.ASCENDING);
+                    sortingStrategy = SortingStrategy.POLISH_ASCENDING;
+                    break;
+                case ASCENDING:
+                    polishSortState.setState(SortingButtonState.State.DESCENDING);
+                    sortingStrategy = SortingStrategy.POLISH_DESCENDING;
+                    break;
+            }
+            refreshDictionaryView();
+        });
     }
 
     private enum SortingStrategy {
@@ -109,10 +140,15 @@ public class MenuDictionaryActivity extends AppCompatActivity {
 
             RestTemplate restTemplate = new RestTemplate();
 
-            ResponseEntity<List<Translation>> progress =
-                    restTemplate.exchange(baseUrl + "/bookmarks/",
-                            HttpMethod.GET, entity, new ParameterizedTypeReference<List<Translation>>() {
-                            });
+            ResponseEntity<List<Translation>> progress;
+            try {
+                progress = restTemplate.exchange(baseUrl + "/bookmarks/",
+                        HttpMethod.GET, entity, new ParameterizedTypeReference<List<Translation>>() {
+                        });
+            } catch (Exception e) {
+                this.cancel(true);
+                return Collections.emptyList();
+            }
 
             return progress.getBody();
         }
@@ -125,6 +161,13 @@ public class MenuDictionaryActivity extends AppCompatActivity {
                 translations.addAll(receivedTranslations);
             }
             refreshDictionaryView();
+            enableButtons();
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            pleaseWaitAdapter.reportNoInternetConnection();
         }
     }
 }
