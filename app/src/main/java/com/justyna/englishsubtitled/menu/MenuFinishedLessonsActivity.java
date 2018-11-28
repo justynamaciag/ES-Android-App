@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +33,18 @@ import java.util.Map;
 public class MenuFinishedLessonsActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private final List<LessonSummary> finishedLessons = new LinkedList<>();
+    private EditText searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_single_list);
+        setContentView(R.layout.activity_menu_films_list);
 
         TextView title = findViewById(R.id.title);
         title.setText(R.string.finished_lessons);
+
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener((TextWatcherSkeleton) this::search);
 
         recyclerView = findViewById(R.id.films);
 
@@ -53,6 +60,18 @@ public class MenuFinishedLessonsActivity extends AppCompatActivity {
         refreshView();
 
         new ProgressRetriever().execute();
+    }
+
+    private void refreshView() {
+        List<Film> films;
+
+        synchronized (finishedLessons) {
+            films = packLessonSummariesIntoFilms(finishedLessons);
+        }
+
+        // specify an adapter
+        RecyclerView.Adapter adapter = new FilmsAdapter(films, MenuFinishedLessonsActivity.this);
+        recyclerView.setAdapter(adapter);
     }
 
     private List<Film> packLessonSummariesIntoFilms(List<LessonSummary> lessonSummaries) {
@@ -81,10 +100,19 @@ public class MenuFinishedLessonsActivity extends AppCompatActivity {
         return films;
     }
 
-    private void refreshView() {
-        List<Film> films = packLessonSummariesIntoFilms(finishedLessons);
+    private void search(Editable editable) {
+        String searchTerm = editable.toString().toLowerCase();
+        List<Film> films;
+        synchronized (finishedLessons) {
+            films = packLessonSummariesIntoFilms(finishedLessons);
+        }
 
-        // specify an adapter
+        for (Iterator<Film> iterator = films.iterator(); iterator.hasNext(); ) {
+            Film film = iterator.next();
+            if (!film.getFilmTitle().toLowerCase().contains(searchTerm)) {
+                iterator.remove();
+            }
+        }
         RecyclerView.Adapter adapter = new FilmsAdapter(films, MenuFinishedLessonsActivity.this);
         recyclerView.setAdapter(adapter);
     }
@@ -117,7 +145,10 @@ public class MenuFinishedLessonsActivity extends AppCompatActivity {
                 finishedLessons.clear();
                 finishedLessons.addAll(progress.getFinished());
             }
+            searchBar.setEnabled(false);
             refreshView();
+            search(searchBar.getText());
+            searchBar.setEnabled(true);
         }
 
         @Override

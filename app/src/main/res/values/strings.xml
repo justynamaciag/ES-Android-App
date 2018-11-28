@@ -36,5 +36,6 @@
     <string name="dictionary_success">Dodano do słownika!</string>
     <string name="dictionary_failure">Nie udało się dodać do słownika!</string>
     <string name="progress_upload_failure">Błąd połączenia. Twoje postępy nie zostaną zapisane. Ponawiam próbę…</string>
+    <string name="search">Szukaj po tytule filmu</string>
 
 </resources>
