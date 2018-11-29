@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".games.fragments.FinishLessonFragment"
-    android:background="@drawable/background">
+    android:background="@drawable/background_one_color">
 
     <TextView
         android:id="@+id/congrats_textview"
