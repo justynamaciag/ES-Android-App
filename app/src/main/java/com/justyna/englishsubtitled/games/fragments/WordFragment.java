@@ -50,7 +50,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
             currentTranslation = (Translation) bundle.getSerializable("translation");
         }
 
-        plWordTextView = view.findViewById(R.id.plWordTv);
+        plWordTextView = view.findViewById(R.id.polishDisplay);
 
         List<Button> buttonList = prepareButtons(currentTranslation);
         callGame(buttonList);
@@ -87,7 +87,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
         for (int i = 0; i < buttonListSize; i++) {
             TextView letterTV = new TextView(getContext());
             letters.add(letterTV);
-            letterTV.setTextSize(24);
+            letterTV.setTextSize(30);
             letterTV.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             wordLayout.addView(letterTV);
         }
