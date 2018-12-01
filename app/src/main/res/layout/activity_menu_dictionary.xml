@@ -57,7 +57,8 @@
                 android:contentDescription="@string/english_sort"
                 app:srcCompat="@drawable/icons8_sort_50"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:backgroundTint="@color/colorDarkBrown"/>
 
         </LinearLayout>
         <LinearLayout
@@ -84,7 +85,8 @@
                 android:contentDescription="@string/polish_sort"
                 app:srcCompat="@drawable/icons8_sort_50"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:backgroundTint="@color/colorDarkBrown"/>
 
         </LinearLayout>
     </LinearLayout>
