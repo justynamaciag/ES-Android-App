@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:layout_editor_absoluteX="8dp"
     tools:layout_editor_absoluteY="8dp"
-    android:background="@drawable/background_without_blurr">
+    android:background="@drawable/background_without_blur">
 
     <LinearLayout
         android:layout_width="match_parent"

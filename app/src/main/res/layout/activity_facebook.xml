@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:weightSum="100"
     tools:context=".FacebookActivity"
-    android:background="@drawable/background_without_blurr">
+    android:background="@drawable/background_without_blur">
 
 
     <ImageView
