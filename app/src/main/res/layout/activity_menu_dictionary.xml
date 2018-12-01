@@ -29,7 +29,8 @@
         android:orientation="horizontal"
         android:weightSum="100"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        tools:layout_editor_absoluteY="0dp"
+        android:layout_margin="10dp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -95,5 +96,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="80"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:layout_margin="10dp"/>
 </LinearLayout>

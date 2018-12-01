@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".games.fragments.FinishLessonFragment"
-    android:background="@drawable/background_one_color">
+    android:background="@drawable/background_one_color"
+    tools:context=".games.fragments.FinishLessonFragment">
 
     <TextView
         android:id="@+id/congrats_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="40sp"
-        android:textColor="@color/colorDarkDarkBrown"
         android:text="@string/congratulations"
+        android:textColor="@color/colorDarkDarkBrown"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,9 +26,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="20sp"
         android:text="@string/lesson_finish"
         android:textColor="@color/colorDarkDarkBrown"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,42 +55,38 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
             android:text="@string/lesson_statistics"
-            android:textSize="20sp"
             android:textColor="@color/colorDarkBrown"
-            android:padding="10dp"/>
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/crossword_num_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:textColor="@color/colorDarkBrown"
-            android:layout_marginStart="7dp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/abcd_num_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:textColor="@color/colorDarkBrown"
-            android:layout_marginStart="7dp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/word_num_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:textColor="@color/colorDarkBrown"
-            android:layout_marginStart="7dp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/failures_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:textColor="@color/colorDarkBrown"
-            android:layout_marginStart="7dp"/>
+            android:textSize="18sp" />
     </LinearLayout>
 
 
