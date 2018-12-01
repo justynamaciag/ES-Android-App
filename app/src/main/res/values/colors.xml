@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="backgroundColor">#DBBDA2</color>
     <color name="colorLightLightLightBrown">#DBBDA2</color>
     <color name="colorLightLightBrown">#D4B498</color>
     <color name="colorLightBrown">#CAA98B</color>
