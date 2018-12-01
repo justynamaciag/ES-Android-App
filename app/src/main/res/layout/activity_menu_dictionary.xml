@@ -17,30 +17,29 @@
         android:layout_weight="10"
         android:text="@string/dictionary"
         android:textSize="30sp"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="60dp"
+        android:layout_marginTop="15dp"
         android:textStyle="bold"
-        android:textColor="@color/colorDarkDarkBrown"/>
+        android:textColor="@color/colorDarkDarkBrown"
+        android:gravity="center"/>
 
     <LinearLayout
         android:baselineAligned="true"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp"
         android:layout_weight="10"
         android:weightSum="100">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
-            <!--android:layout_weight="60">-->
+            tools:layout_editor_absoluteY="0dp"
+            android:layout_weight="45">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -53,7 +52,6 @@
                 android:id="@+id/englishSort"
                 android:layout_width="wrap_content"
                 android:layout_height="36sp"
-                android:layout_marginLeft="5sp"
                 android:contentDescription="@string/english_sort"
                 app:srcCompat="@drawable/icons8_sort_50"
                 android:scaleType="fitCenter"
@@ -62,12 +60,12 @@
 
         </LinearLayout>
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
-            <!--android:layout_weight="60">-->
+            tools:layout_editor_absoluteY="0dp"
+            android:layout_weight="45">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -81,7 +79,6 @@
                 android:id="@+id/polishSort"
                 android:layout_width="wrap_content"
                 android:layout_height="36sp"
-                android:layout_marginLeft="5sp"
                 android:contentDescription="@string/polish_sort"
                 app:srcCompat="@drawable/icons8_sort_50"
                 android:scaleType="fitCenter"
@@ -96,7 +93,6 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="80"
-        android:layout_margin="20dp" />
-
+        android:layout_marginLeft="0dp"
+        android:layout_weight="80"/>
 </LinearLayout>
