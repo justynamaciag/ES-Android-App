@@ -13,18 +13,16 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
         android:layout_weight="10"
         android:gravity="center"
         android:text="@string/dictionary"
         android:textColor="@color/colorDarkDarkBrown"
-        android:textSize="30sp"/>
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_height="wrap_content"
         android:baselineAligned="true"
         android:orientation="horizontal"
         android:weightSum="100"
@@ -42,7 +40,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/english_label"
                 android:textColor="@color/colorDarkBrown"
                 android:textSize="24sp"
@@ -71,7 +69,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/polish_label"
                 android:textColor="@color/colorDarkBrown"
                 android:textSize="24sp"
@@ -94,8 +92,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/films"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_weight="80"
+        android:layout_height="0dp"
+        android:layout_weight="90"
         android:scrollbars="vertical"
-        android:layout_marginStart="10dp"/>
+        android:paddingStart="10dp"/>
 </LinearLayout>
