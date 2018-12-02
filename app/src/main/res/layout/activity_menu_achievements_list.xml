@@ -17,7 +17,6 @@
         android:layout_weight="10"
         android:text="@string/invisible"
         android:textSize="30sp"
-        android:textStyle="bold"
         android:textColor="@color/colorDarkDarkBrown"
         android:gravity="center"/>
 

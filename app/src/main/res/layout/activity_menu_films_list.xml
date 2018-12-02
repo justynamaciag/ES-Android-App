@@ -16,7 +16,8 @@
         android:layout_height="0dp"
         android:layout_weight="10"
         android:text="@string/invisible"
-        android:textSize="24sp"
+        android:textSize="30sp"
+        android:textColor="@color/colorDarkDarkBrown"
         android:gravity="center"/>
 
     <EditText
