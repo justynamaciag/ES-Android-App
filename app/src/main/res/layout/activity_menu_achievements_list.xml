@@ -13,8 +13,8 @@
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="10"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
         android:text="@string/invisible"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -26,7 +26,7 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="90"
+        android:layout_weight="95"
         android:gravity="center"/>
 
 </LinearLayout>
