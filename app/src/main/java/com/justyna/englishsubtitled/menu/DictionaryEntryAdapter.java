@@ -62,7 +62,7 @@ public class DictionaryEntryAdapter extends RecyclerView.Adapter<DictionaryEntry
         englishWord.setLayoutParams(layoutParams);
         polishWord.setLayoutParams(layoutParams);
         englishWord.setTextSize(TypedValue.COMPLEX_UNIT_PT, 10);
-        englishWord.setPadding(20, 0, 0, 0);
+        englishWord.setPadding(0, 0, 0, 0);
         polishWord.setTextSize(TypedValue.COMPLEX_UNIT_PT, 10);
         ImageButton remove = new ImageButton(linearLayout.getContext());
         remove.setBackgroundResource(android.R.drawable.ic_delete);

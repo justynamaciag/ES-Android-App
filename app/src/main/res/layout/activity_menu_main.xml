@@ -7,13 +7,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:layout_editor_absoluteX="8dp"
-    tools:layout_editor_absoluteY="8dp">
+    tools:layout_editor_absoluteY="8dp"
+    android:background="@drawable/background_without_blur">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginRight="55dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -28,7 +29,8 @@
                 android:layout_weight="80"
                 android:layout_height="wrap_content"
                 android:text="@string/invisible"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:backgroundTint="@color/colorLightBrown"/>
 
             <ImageButton
                 android:id="@+id/remove_recent_lesson_1"
@@ -37,7 +39,8 @@
                 android:layout_weight="20"
                 android:contentDescription="@string/remove_recent_lesson_1"
                 app:srcCompat="@android:drawable/ic_delete"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:backgroundTint="@color/colorLightBrown"/>
         </LinearLayout>
 
         <LinearLayout
@@ -52,7 +55,8 @@
                 android:layout_weight="80"
                 android:layout_height="wrap_content"
                 android:text="@string/invisible"
-                android:visibility="invisible" />
+                android:visibility="invisible"
+                android:backgroundTint="@color/colorLightBrown"/>
 
             <ImageButton
                 android:id="@+id/remove_recent_lesson_2"
@@ -61,7 +65,8 @@
                 android:layout_weight="20"
                 android:contentDescription="@string/remove_recent_lesson_2"
                 app:srcCompat="@android:drawable/ic_delete"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:backgroundTint="@color/colorLightBrown"/>
         </LinearLayout>
 
         <LinearLayout
@@ -76,7 +81,8 @@
             android:layout_weight="80"
             android:layout_height="wrap_content"
             android:text="@string/invisible"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:backgroundTint="@color/colorLightBrown"/>
 
         <ImageButton
             android:id="@+id/remove_recent_lesson_3"
@@ -85,7 +91,8 @@
             android:layout_weight="20"
             android:contentDescription="@string/remove_recent_lesson_3"
             app:srcCompat="@android:drawable/ic_delete"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:backgroundTint="@color/colorLightBrown"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -97,13 +104,16 @@
         android:id="@+id/start_new_lesson"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/start_new_lesson" />
+        android:layout_marginLeft="55dp"
+        android:layout_marginRight="55dp"
+        android:text="@string/start_new_lesson"
+        android:backgroundTint="@color/colorLightBrown" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginRight="55dp"
         android:orientation="vertical">
 
         <Space
@@ -114,19 +124,22 @@
             android:id="@+id/dictionary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/dictionary" />
+            android:text="@string/dictionary"
+            android:backgroundTint="@color/colorLightBrown" />
 
         <Button
             android:id="@+id/achievements"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/achievements" />
+            android:text="@string/achievements"
+            android:backgroundTint="@color/colorLightBrown" />
 
         <Button
             android:id="@+id/finished_lessons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/finished_lessons" />
+            android:text="@string/finished_lessons"
+            android:backgroundTint="@color/colorLightBrown" />
 
         <Space
             android:layout_width="match_parent"
@@ -136,7 +149,8 @@
             android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/logout" />
+            android:text="@string/logout"
+            android:backgroundTint="@color/colorLightBrown" />
 
     </LinearLayout>
 

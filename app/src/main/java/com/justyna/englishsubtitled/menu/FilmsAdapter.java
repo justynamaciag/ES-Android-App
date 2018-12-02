@@ -1,6 +1,8 @@
 package com.justyna.englishsubtitled.menu;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.justyna.englishsubtitled.LessonsActivity;
+import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.model.Film;
 import com.justyna.englishsubtitled.model.LessonSummary;
 
@@ -45,6 +48,9 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.MyViewHolder
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView v = new TextView(linearLayout.getContext());
+        v.setTextSize(17);
+        v.setBackgroundColor(caller.getResources().getColor(R.color.colorBrown));
+        v.setTextColor(caller.getResources().getColor(R.color.colorDarkDarkBrown));
         linearLayout.addView(v, 0);
         return new MyViewHolder(linearLayout);
     }
@@ -61,7 +67,9 @@ public class FilmsAdapter extends RecyclerView.Adapter<FilmsAdapter.MyViewHolder
         for (LessonSummary lessonSummary : dataset.get(position).getLessons()) {
             Button button = new Button(holder.linearLayout.getContext());
             button.setText(lessonSummary.lessonTitle);
-            button.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            button.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+            button.getBackground().setColorFilter(caller.getResources().getColor(R.color.backgroundColor), PorterDuff.Mode.MULTIPLY );
+            button.setTextColor(caller.getResources().getColor(R.color.colorDarkDarkBrown));
             button.setOnClickListener(v -> {
                 Intent intent = new Intent(caller, LessonsActivity.class);
 

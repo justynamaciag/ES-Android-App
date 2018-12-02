@@ -1,7 +1,7 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">EnglishSubtitled</string>
     <string name="facebook_app_id">733670553423793</string>
-    <string name="fb_login_protocol_scheme">fb191746534808621</string>
+    <string name="fb_login_protocol_scheme">fb733670553423793</string>
 
     <string name="start_new_lesson">Rozpocznij nową lekcję</string>
     <string name="dictionary">Słownik</string>
@@ -24,7 +24,7 @@
 
     <string name="please_wait">Proszę czekać, pobieranie danych…</string>
     <string name="congratulations">"Gratulacje</string>
-    <string name="lesson_finish">"Lekcja ukonczona"</string>
+    <string name="lesson_finish">"Lekcja ukończona"</string>
     <string name="lesson_statistics">"Statystyki lekcji"</string>
     <string name="crossword_numbers">"Liczba wykonanych wykreślanek: %1$d"</string>
     <string name="abcd_numbers">"Liczba wykonanych pytań zamkniętych: %1$d"</string>

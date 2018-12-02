@@ -4,18 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_one_color"
     tools:context=".games.fragments.FinishLessonFragment">
 
     <TextView
         android:id="@+id/congrats_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="40sp"
+        android:gravity="center"
         android:text="@string/congratulations"
+        android:textColor="@color/colorDarkDarkBrown"
+        android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,12 +25,10 @@
         android:id="@+id/lesson_finish_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="20sp"
+        android:gravity="center"
         android:text="@string/lesson_finish"
+        android:textColor="@color/colorDarkDarkBrown"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,13 +37,14 @@
 
 
     <LinearLayout
-        android:layout_width="353dp"
+        android:layout_width="match_parent"
         android:layout_height="304dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.533"
@@ -57,31 +55,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
             android:text="@string/lesson_statistics"
+            android:textColor="@color/colorDarkBrown"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/crossword_num_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorDarkBrown"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/abcd_num_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorDarkBrown"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/word_num_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorDarkBrown"
             android:textSize="18sp" />
 
         <TextView
             android:id="@+id/failures_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorDarkBrown"
             android:textSize="18sp" />
     </LinearLayout>
 

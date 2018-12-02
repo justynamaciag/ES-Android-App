@@ -7,7 +7,8 @@
     android:orientation="vertical"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="0dp"
-    android:weightSum="100">
+    android:weightSum="100"
+    android:background="@drawable/background_one_color">
 
     <TextView
         android:id="@+id/title"
@@ -15,21 +16,28 @@
         android:layout_height="0dp"
         android:layout_weight="10"
         android:text="@string/invisible"
-        android:textSize="24sp" />
+        android:textSize="30sp"
+        android:textColor="@color/colorDarkDarkBrown"
+        android:gravity="center"/>
 
     <EditText
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:ems="10"
         android:hint="@string/search"
-        android:inputType="textFilter" />
+        android:inputType="textFilter"
+        android:textColor="@color/colorDarkBrown"
+        android:background="@drawable/edit_text_borders"
+        android:textCursorDrawable="@null"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/films"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="90"/>
+        android:layout_weight="90"
+        android:padding="10dp" />
 
 </LinearLayout>

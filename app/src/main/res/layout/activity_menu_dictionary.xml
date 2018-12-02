@@ -1,88 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_one_color"
     android:orientation="vertical"
+    android:weightSum="100"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="0dp"
-    android:weightSum="100">
+    tools:layout_editor_absoluteY="0dp">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
+        android:gravity="center"
         android:text="@string/dictionary"
-        android:textSize="24sp" />
+        android:textColor="@color/colorDarkDarkBrown"
+        android:textSize="30sp" />
 
     <LinearLayout
-        android:baselineAligned="true"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:baselineAligned="true"
         android:orientation="horizontal"
+        android:weightSum="100"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp"
-        android:layout_weight="10"
-        android:weightSum="100">
+        android:layout_marginStart="10dp">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="45"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp"
-            android:layout_weight="45">
+            tools:layout_editor_absoluteY="0dp">
+
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/english_label"
-                android:textSize="24sp" />
+                android:textColor="@color/colorDarkBrown"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/englishSort"
                 android:layout_width="wrap_content"
                 android:layout_height="36sp"
                 android:layout_marginLeft="5sp"
+                android:adjustViewBounds="true"
+                android:backgroundTint="@color/colorDarkBrown"
                 android:contentDescription="@string/english_sort"
-                app:srcCompat="@drawable/icons8_sort_50"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true" />
+                app:srcCompat="@drawable/icons8_sort_50" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="45"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp"
-            android:layout_weight="45">
+            tools:layout_editor_absoluteY="0dp">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/polish_label"
-                android:textSize="24sp" />
+                android:textColor="@color/colorDarkBrown"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/polishSort"
                 android:layout_width="wrap_content"
                 android:layout_height="36sp"
                 android:layout_marginLeft="5sp"
+                android:adjustViewBounds="true"
+                android:backgroundTint="@color/colorDarkBrown"
                 android:contentDescription="@string/polish_sort"
-                app:srcCompat="@drawable/icons8_sort_50"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true" />
+                app:srcCompat="@drawable/icons8_sort_50" />
 
         </LinearLayout>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/films"
-        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="80"/>
-
+        android:layout_weight="90"
+        android:scrollbars="vertical"
+        android:paddingStart="10dp"/>
 </LinearLayout>

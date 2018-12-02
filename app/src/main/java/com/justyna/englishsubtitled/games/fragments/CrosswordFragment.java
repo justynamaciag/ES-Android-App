@@ -96,7 +96,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             crosswordCells.add(tv);
         }
 
-        GridView crosswordGrid = view.findViewById(R.id.gridview_crossword);
+        GridView crosswordGrid = view.findViewById(R.id.gridviewCrossword);
         crosswordGrid.setNumColumns(N);
         CrosswordAdapter adapter = new CrosswordAdapter(getContext(), crosswordCells);
         adapter.setCustomTVListner(CrosswordFragment.this);
