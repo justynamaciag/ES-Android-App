@@ -24,6 +24,7 @@ import com.justyna.englishsubtitled.model.Translation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class WordFragment extends Fragment implements WordButtonsAdapter.customButtonListener {
 
@@ -34,6 +35,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     View view;
     boolean finishGameSuccess = true;
     int colNum = 5, checkedIndex = 0;
+    Random rand;
 
     @Override
     public void onAttach(Context context) {
@@ -43,6 +45,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rand = new Random();
 
         view = inflater.inflate(R.layout.fragment_word, container, false);
         Bundle bundle = getArguments();
@@ -66,7 +69,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
             btn.setText(Character.toString(translation.getEngWord().charAt(i)));
             buttonList.add(btn);
         }
-        Collections.shuffle(buttonList);
+        Collections.shuffle(buttonList, rand);
 
         return buttonList;
     }

@@ -27,7 +27,7 @@ import java.util.Random;
 public class CrosswordFragment extends Fragment implements CrosswordAdapter.customTVListener {
 
     Translation currentTranslation;
-    Random rand = new Random();
+    Random rand;
     String[][] table;
     String clicked;
     TextView polishTranslationDisplay;

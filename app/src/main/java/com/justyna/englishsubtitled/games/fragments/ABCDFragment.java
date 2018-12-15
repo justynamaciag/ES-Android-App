@@ -30,7 +30,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     OnDataPass dataPasser;
     List<Translation> translations;
     TextView wordTextView;
-    Random rand = new Random();
+    Random rand;
     Translation currentTranslation;
     View view;
 
@@ -42,6 +42,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rand = new Random();
 
         view = inflater.inflate(R.layout.fragment_abcd, container, false);
         Bundle bundle = getArguments();
@@ -84,7 +85,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
             buttonList.add(btn);
         }
 
-        Collections.shuffle(buttonList);
+        Collections.shuffle(buttonList, rand);
 
         return buttonList;
 
