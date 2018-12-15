@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,6 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     List<TextView> letters;
     TextView plWordTextView;
     View view;
-    boolean finishGameSuccess = true;
     int colNum = 5, checkedIndex = 0;
     Random rand;
 
@@ -44,7 +44,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rand = new Random();
 
         view = inflater.inflate(R.layout.fragment_word, container, false);
