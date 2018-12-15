@@ -141,7 +141,7 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
 
 //                ACTION_DOWN - called when first touched cell, touching next cells - ACTION_MOVE
                 if (action == MotionEvent.ACTION_DOWN) {
-                    firstCellCorrect = checkIfFirstCellCorrect();
+                    firstCellCorrect = checkIfFirstCellCorrect(crosswordGrid, point);
                 }
 
                 return true;
@@ -156,12 +156,16 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
 
 //      check if first touched cell is correct,
 //      drawing entire row/column containing correct translation wont work, only specific letters
-    private boolean checkIfFirstCellCorrect() {
+    private boolean checkIfFirstCellCorrect(GridView crosswordGrid, int point) {
+        TextView t = (TextView) crosswordGrid.getChildAt(point);
+
         if (clicked.equalsIgnoreCase((table[row][offset]))) {
             isFirstCellCorrect = true;
+            t.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
         } else {
             isFirstCellCorrect = false;
             passData(GameResult.FAIL);
+            t.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
         }
         return isFirstCellCorrect;
     }
