@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.justyna.englishsubtitled.model.Translation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class WordFragment extends Fragment implements WordButtonsAdapter.customButtonListener {
 
@@ -32,8 +34,8 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     List<TextView> letters;
     TextView plWordTextView;
     View view;
-    boolean finishGameSuccess = true;
     int colNum = 5, checkedIndex = 0;
+    Random rand;
 
     @Override
     public void onAttach(Context context) {
@@ -42,7 +44,8 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rand = new Random();
 
         view = inflater.inflate(R.layout.fragment_word, container, false);
         Bundle bundle = getArguments();
@@ -66,7 +69,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
             btn.setText(Character.toString(translation.getEngWord().charAt(i)));
             buttonList.add(btn);
         }
-        Collections.shuffle(buttonList);
+        Collections.shuffle(buttonList, rand);
 
         return buttonList;
     }

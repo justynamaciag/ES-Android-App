@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +31,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     OnDataPass dataPasser;
     List<Translation> translations;
     TextView wordTextView;
-    Random rand = new Random();
+    Random rand;
     Translation currentTranslation;
     View view;
 
@@ -41,7 +42,8 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rand = new Random();
 
         view = inflater.inflate(R.layout.fragment_abcd, container, false);
         Bundle bundle = getArguments();
@@ -84,7 +86,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
             buttonList.add(btn);
         }
 
-        Collections.shuffle(buttonList);
+        Collections.shuffle(buttonList, rand);
 
         return buttonList;
 
@@ -107,15 +109,15 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
 
         } else {
             passData(GameResult.FAIL);
-            callButtonColorAnimation(Color.RED, b, 400);
+            animateIncorrectChoice(b);
         }
 
     }
 
-    private void callButtonColorAnimation(int color, Button button, int duration) {
-        button.getBackground().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+    private void animateIncorrectChoice(Button button) {
+        button.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
 
-        new CountDownTimer(duration, 1) {
+        new CountDownTimer(400, 1) {
             @Override
             public void onTick(long arg0) {
             }
