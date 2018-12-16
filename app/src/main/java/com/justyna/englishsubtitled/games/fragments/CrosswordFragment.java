@@ -152,8 +152,10 @@ public class CrosswordFragment extends Fragment {
                 return true;
 
             } catch (IndexOutOfBoundsException e) {
+                if (correctlyEnteredSubwordLength == englishWordLength && !alreadyMistaken)
+                    passData(GameResult.SUCCESS);
                 resetBoard(crosswordGrid);
-                return false;
+                return true;
             }
 
         });
