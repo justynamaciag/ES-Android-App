@@ -97,7 +97,7 @@ public class WordFragment extends Fragment implements WordButtonsAdapter.customB
     }
 
     @Override
-    public void onButtonClickListner(Button b) {
+    public void onButtonClickListener(Button b) {
 
         String clicked = String.valueOf(b.getText());
         String correct = Character.toString(currentTranslation.getEngWord().charAt(checkedIndex));

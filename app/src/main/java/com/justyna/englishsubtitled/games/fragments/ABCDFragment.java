@@ -98,7 +98,7 @@ public class ABCDFragment extends Fragment implements WordButtonsAdapter.customB
     }
 
     @Override
-    public void onButtonClickListner(Button b) {
+    public void onButtonClickListener(Button b) {
 
         String clicked = String.valueOf(b.getText());
         if (clicked.equals(currentTranslation.getPlWord())) {
