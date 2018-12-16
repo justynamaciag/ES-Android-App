@@ -20,7 +20,7 @@ public class WordButtonsAdapter extends BaseAdapter {
 
 
     public interface customButtonListener {
-        void onButtonClickListner(Button b);
+        void onButtonClickListener(Button b);
 
     }
 
@@ -63,7 +63,7 @@ public class WordButtonsAdapter extends BaseAdapter {
 
         button.setOnClickListener(v -> {
             if (customListener != null) {
-                customListener.onButtonClickListner(button);
+                customListener.onButtonClickListener(button);
             }
         });
 

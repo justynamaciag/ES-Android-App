@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.justyna.englishsubtitled.R;
 import com.justyna.englishsubtitled.games.utilities.CrosswordAdapter;
@@ -25,20 +24,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class CrosswordFragment extends Fragment implements CrosswordAdapter.customTVListener {
+public class CrosswordFragment extends Fragment {
 
     Translation currentTranslation;
     Random rand;
     String[][] table;
     String clicked;
     TextView polishTranslationDisplay;
-    int i = 0, row, offset;
+    int correctlyEnteredSubwordLength = 0, row, offset, englishWordLength;
     View view;
-    boolean transpose, firstCellCorrect = false;
+    boolean transpose, firstCellCorrect = false, alreadyMistaken = false;
     List<TextView> crosswordCells;
     List<String> gridViewLetters;
     boolean isFirstCellCorrect;
-//    N set to 10 - max word length in crossword
+    // N set to 10 - max word length in crossword
     int N = 10;
 
 
@@ -63,7 +62,8 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             currentTranslation = (Translation) bundle.getSerializable("translation");
         }
 
-        if (currentTranslation.getEngWord().length() >= N || currentTranslation.getProgress() == 0) {
+        englishWordLength = currentTranslation.getEngWord().length();
+        if (englishWordLength > N) {
             passData(GameResult.CANT_EXECUTE);
             return view;
         }
@@ -71,20 +71,20 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         setBoardSize();
 
         rand = new Random();
-        gridViewLetters = prepareGameTable(currentTranslation);
+        gridViewLetters = prepareGameTable();
         GridView crosswordGrid = prepareCrosswordGrid(gridViewLetters);
         callGame(crosswordGrid, gridViewLetters);
 
         return view;
     }
 
-    private void setBoardSize(){
-        if (currentTranslation.getEngWord().length() <= 4)
+    private void setBoardSize() {
+        if (englishWordLength <= 4)
             N = 5;
-        else if (currentTranslation.getEngWord().length() > 4 && currentTranslation.getEngWord().length() <= 7)
+        else if (englishWordLength <= 7)
             N = 8;
         else
-            N =10;
+            N = 10;
     }
 
 
@@ -100,14 +100,16 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         GridView crosswordGrid = view.findViewById(R.id.gridviewCrossword);
         crosswordGrid.setNumColumns(N);
         CrosswordAdapter adapter = new CrosswordAdapter(getContext(), crosswordCells);
-        adapter.setCustomTVListner(CrosswordFragment.this);
         crosswordGrid.setAdapter(adapter);
 
         return crosswordGrid;
     }
 
-//    remove green and red colors from board
-    private void clearColorsOnBoard(GridView crosswordGrid){
+    // remove green and red colors from board
+    private void resetBoard(GridView crosswordGrid) {
+        correctlyEnteredSubwordLength = 0;
+        firstCellCorrect = false;
+        alreadyMistaken = false;
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             for (int i = 0; i < crosswordGrid.getChildCount(); i++) {
@@ -136,10 +138,13 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
                     checkIfUserClicksCorrect(crosswordGrid, point);
                 }
 
-                if (action == MotionEvent.ACTION_UP)
-                    clearColorsOnBoard(crosswordGrid);
+                if (action == MotionEvent.ACTION_UP) {
+                    if (correctlyEnteredSubwordLength == englishWordLength && !alreadyMistaken)
+                        passData(GameResult.SUCCESS);
+                    resetBoard(crosswordGrid);
+                }
 
-//                ACTION_DOWN - called when first touched cell, touching next cells - ACTION_MOVE
+//              ACTION_DOWN - called when first touched cell, touching next cells - ACTION_MOVE
                 if (action == MotionEvent.ACTION_DOWN) {
                     firstCellCorrect = checkIfFirstCellCorrect(crosswordGrid, point);
                 }
@@ -147,8 +152,10 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
                 return true;
 
             } catch (IndexOutOfBoundsException e) {
-                clearColorsOnBoard(crosswordGrid);
-                return false;
+                if (correctlyEnteredSubwordLength == englishWordLength && !alreadyMistaken)
+                    passData(GameResult.SUCCESS);
+                resetBoard(crosswordGrid);
+                return true;
             }
 
         });
@@ -159,7 +166,14 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
     private boolean checkIfFirstCellCorrect(GridView crosswordGrid, int point) {
         TextView t = (TextView) crosswordGrid.getChildAt(point);
 
-        if (clicked.equalsIgnoreCase((table[row][offset]))) {
+        int correctCell;
+        if (!transpose) {
+            correctCell = row * N + offset + correctlyEnteredSubwordLength;
+        } else {
+            correctCell = (offset + correctlyEnteredSubwordLength) * N + row;
+        }
+
+        if (point == correctCell) {
             isFirstCellCorrect = true;
             t.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
         } else {
@@ -174,32 +188,28 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
         TextView t = (TextView) crosswordGrid.getChildAt(point);
         int correctCell, nextPoint;
 
-        if (! transpose) {
-            correctCell = row * N + offset + i;
+        if (!transpose) {
+            correctCell = row * N + offset + correctlyEnteredSubwordLength;
             nextPoint = point + 1;
         } else {
-            correctCell = (offset + i) * N + row;
+            correctCell = (offset + correctlyEnteredSubwordLength) * N + row;
             nextPoint = point + N;
         }
 
-        if (point == correctCell && isFirstCellCorrect) {
-            i++;
+        if (point == correctCell && isFirstCellCorrect && !alreadyMistaken && correctlyEnteredSubwordLength != englishWordLength) {
+            correctlyEnteredSubwordLength++;
             t.getBackground().setColorFilter(Color.GREEN, PorterDuff.Mode.MULTIPLY);
-        } else if (nextPoint != correctCell) {
-            i = 0;
+        } else if (nextPoint != correctCell || alreadyMistaken) { // color red only if it's not just the same, already accepted, cell detected again; or if previous cells were wrong already
+            alreadyMistaken = true;
             t.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
         }
-
-//        if entire word was marked
-        if (i == currentTranslation.getEngWord().length())
-            passData(GameResult.SUCCESS);
     }
 
-    private List<String> prepareGameTable(Translation translation) {
+    private List<String> prepareGameTable() {
 
         table = new String[N][N];
         row = rand.nextInt(N);
-        offset = rand.nextInt(N - translation.getEngWord().length());
+        offset = rand.nextInt(N - englishWordLength + 1);
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
@@ -207,9 +217,9 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
             }
         }
 
-//        offset - where correct translation starts
-        for (int i = offset; i < offset + translation.getEngWord().length(); i++) {
-            table[row][i] = Character.toString(translation.getEngWord().charAt(i - offset)).toUpperCase();
+//      offset - where correct translation starts
+        for (int i = offset; i < offset + englishWordLength; i++) {
+            table[row][i] = Character.toString(currentTranslation.getEngWord().charAt(i - offset)).toUpperCase();
         }
 
 
@@ -229,11 +239,6 @@ public class CrosswordFragment extends Fragment implements CrosswordAdapter.cust
 
     public void passData(GameResult data) {
         dataPasser.onDataPass(data);
-    }
-
-    @Override
-    public boolean onTVClickListner(int position, TextView tv, MotionEvent event) {
-        return true;
     }
 
     public interface OnDataPass {
